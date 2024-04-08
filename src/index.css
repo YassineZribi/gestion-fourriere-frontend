@@ -1,0 +1,10 @@
+.mantine-Notifications-root {
+    width: auto !important;
+}
+
+.mantine-Notifications-notification {
+    @mixin light {
+        background-color: var(--mantine-color-gray-0);
+        box-shadow: var(--mantine-shadow-sm);
+    }
+}
