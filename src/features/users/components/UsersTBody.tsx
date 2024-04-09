@@ -59,6 +59,7 @@ export default function UsersTBody({ users, filters, filtersAreEmpty, showFilter
             <Table.Td style={{ width: columnsWidth.actions }}>
                 <UsersActions
                     selectedUser={user}
+                    roles={roles}
                     onUpdateUser={onUpdateUser}
                     onDeleteUser={onDeleteUser}
                 />

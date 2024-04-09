@@ -7,16 +7,22 @@ import { wait } from "../../../utils/helpers";
 import { useState } from "react";
 import User from "../../../types/User";
 import { alertSuccess } from "../../../utils/feedback";
+import UpsertUserModal, { UpsertUserDto } from "./UpsertUserModal";
+import Role from "../../../types/Role";
 
 interface Props {
     selectedUser: User
+    roles: Role[]
     onUpdateUser: () => void
     onDeleteUser: () => void
 }
 
-export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser }: Props) {
-    const [isCondirmationDeletionLoading, setConfirmationDeletionLoading] = useState(false)
+export default function UsersActions({ selectedUser, roles, onDeleteUser, onUpdateUser }: Props) {
+    const [isConfirmationDeletionLoading, setConfirmationDeletionLoading] = useState(false)
     const [isConfirmationModalOpened, { open: openConfirmationModal, close: closeConfirmationModal }] = useDisclosure(false);
+    
+    const [isSubmittingUpdateUser, setSubmittingUpdateUser] = useState(false)
+    const [isUpdatingUserModalOpened, { open: openUpdatingUserModal, close: closeUpdatingUserModal }] = useDisclosure(false);
 
     const handleConfirmDeletion = async () => {
         setConfirmationDeletionLoading(true)
@@ -34,13 +40,30 @@ export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser 
         }
     }
 
+    const handleSubmitUpdatingUser = async (data: UpsertUserDto) => {
+        setSubmittingUpdateUser(true)
+
+        try {
+            await wait(2000)
+            await usersService.updateUser(selectedUser.id, data)
+            alertSuccess("User account updated successfully!")
+
+            onUpdateUser()
+            closeUpdatingUserModal()
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setSubmittingUpdateUser(false)
+        }
+    }
+
     return (
         <>
             <Group gap={0} justify="flex-end">
                 <ActionIcon variant="subtle" color="blue">
                     <ArrowsPointingOutIcon style={{ width: rem(14), height: rem(14) }} />
                 </ActionIcon>
-                <ActionIcon variant="subtle" color="gray">
+                <ActionIcon variant="subtle" color="gray" onClick={openUpdatingUserModal}>
                     <PencilIcon style={{ width: rem(14), height: rem(14) }} />
                 </ActionIcon>
                 <ActionIcon variant="subtle" color="red" onClick={openConfirmationModal}>
@@ -50,7 +73,7 @@ export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser 
 
             <ConfirmationModal
                 title="Confirmation"
-                isLoading={isCondirmationDeletionLoading}
+                isLoading={isConfirmationDeletionLoading}
                 isOpened={isConfirmationModalOpened}
                 onCancel={closeConfirmationModal}
                 onConfirm={handleConfirmDeletion}
@@ -63,6 +86,16 @@ export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser 
                     to contact support to restore your data.
                 </Text>
             </ConfirmationModal>
+
+            <UpsertUserModal
+                title="Update user account"
+                isOpened={isUpdatingUserModalOpened} 
+                isSubmitting={isSubmittingUpdateUser}
+                selectedUser={selectedUser}
+                roles={roles}
+                onCancel={closeUpdatingUserModal}
+                onSubmit={handleSubmitUpdatingUser}
+            />
         </>
     )
 }

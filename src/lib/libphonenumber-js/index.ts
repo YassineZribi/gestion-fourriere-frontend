@@ -19,6 +19,16 @@ export function parsePhoneNumber(phoneNumberString: string) {
 }
 
 
+export function getCountryCallingCode(phoneNumberString: string) {
+    const phoneNumber = parsePhoneNumber(phoneNumberString)
+    return phoneNumber?.countryCallingCode;
+}
+
+export function getNationalNumber(phoneNumberString: string) {
+    const phoneNumber = parsePhoneNumber(phoneNumberString)
+    return phoneNumber?.nationalNumber;
+}
+
 /*
 
 

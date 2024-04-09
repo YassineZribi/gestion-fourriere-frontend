@@ -1,14 +1,13 @@
-import { useState } from "react";
-import { Anchor, Button, Group, Modal, PasswordInput, Radio, SimpleGrid, Stack, TextInput, useDirection } from "@mantine/core";
+import { useEffect } from "react";
+import { Anchor, Button, Group, Modal, Radio, SimpleGrid, Stack, TextInput, useDirection } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { upperFirst } from "@mantine/hooks";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import Role from "../../../types/Role";
-import usersService from '../services/users';
-import { wait } from "../../../utils/helpers";
-import { alertSuccess } from "../../../utils/feedback";
 import CountriesPhoneNumbersCombobox from "../../../components/CountriesPhoneNumbersCombobox";
+import User from "../../../types/User";
+import { getCountryCallingCode, getNationalNumber } from "../../../lib/libphonenumber-js";
 
 
 const schema = z.object({
@@ -22,41 +21,40 @@ const schema = z.object({
 
 export type FormData = z.infer<typeof schema>
 
-export type CreateUserDto = Omit<FormData, 'dial_code' | 'nationalPhoneNumber'> & {phoneNumber: string}
+export type UpsertUserDto = Omit<FormData, 'dial_code' | 'nationalPhoneNumber'> & {phoneNumber: string}
 
 interface Props {
     title: string
     isOpened: boolean
+    isSubmitting: boolean
+    selectedUser?: User
     roles: Role[]
     onCancel: () => void
-    onSubmit: () => void
+    onSubmit: (upsertUserDto: UpsertUserDto) => void
 }
 
-export default function CreateUserModal({ title, isOpened, roles, onCancel, onSubmit }: Props) {
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const { dir } = useDirection();
+export default function UpsertUserModal({ title, isOpened, isSubmitting, selectedUser, roles, onCancel, onSubmit }: Props) {
+    const { dir } = useDirection();    
+    
     const form = useForm<FormData>({
         initialValues: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            dial_code: '+216',
-            nationalPhoneNumber: '',
-            roleName: ''
+            firstName: selectedUser?.firstName || '',
+            lastName: selectedUser?.lastName || '',
+            email: selectedUser?.email || '',
+            dial_code: (selectedUser?.phoneNumber && getCountryCallingCode(selectedUser.phoneNumber)) ?? '+216',
+            nationalPhoneNumber: (selectedUser?.phoneNumber && getNationalNumber(selectedUser.phoneNumber)) ?? '',
+            roleName: selectedUser?.role.name.toLowerCase() || ''
         },
         validate: zodResolver(schema),
     });
 
 
     const handleCancel = () => {
-        form.reset()
         onCancel()
     }
 
     const handleSubmit = async (data: FormData) => {
-        setIsSubmitting(true)
-
-        const createUserDto: CreateUserDto = {
+        const upsertUserDto: UpsertUserDto = {
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
@@ -64,20 +62,15 @@ export default function CreateUserModal({ title, isOpened, roles, onCancel, onSu
             roleName: data.roleName
         }
 
-        try {
-            await wait(2000)
-            await usersService.createUser(createUserDto)
-            alertSuccess("New user account created successfully!")
-            form.reset()
-            onSubmit()
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setIsSubmitting(false)
-        }
+        onSubmit(upsertUserDto)
 
 
     }
+
+    useEffect(() => {
+        if (!isOpened && !selectedUser && form.isDirty()) form.reset() // !selectedUser ->  not 'update' mode
+    }, [isOpened])
+    
 
     return (
         <Modal title={title} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
@@ -137,8 +130,9 @@ export default function CreateUserModal({ title, isOpened, roles, onCancel, onSu
                     >
                         <Group justify="center" gap={"xl"}>
                             {
-                                roles.map(role => (
+                                roles.map((role) => (
                                     <Radio
+                                        
                                         key={role.id}
                                         value={role.name.toLowerCase()}
                                         label={upperFirst(role.name.toLowerCase())}
