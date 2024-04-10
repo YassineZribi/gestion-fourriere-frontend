@@ -1,3 +1,5 @@
+import { upperFirst } from "@mantine/hooks";
+
 export async function wait(duration: number = 2000) {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -5,3 +7,8 @@ export async function wait(duration: number = 2000) {
         }, duration);
     })
 }
+
+export function capitalize(str: string) {
+    return upperFirst(str.toLowerCase())
+}
+

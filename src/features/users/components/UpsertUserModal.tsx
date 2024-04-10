@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { Anchor, Button, Group, Modal, Radio, SimpleGrid, Stack, TextInput, useDirection } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { upperFirst } from "@mantine/hooks";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import Role from "../../../types/Role";
 import CountriesPhoneNumbersCombobox from "../../../components/CountriesPhoneNumbersCombobox";
 import User from "../../../types/User";
 import { getCountryCallingCode, getNationalNumber } from "../../../lib/libphonenumber-js";
+import { capitalize } from "../../../utils/helpers";
 
 
 const schema = z.object({
@@ -135,7 +135,7 @@ export default function UpsertUserModal({ title, isOpened, isSubmitting, selecte
                                         
                                         key={role.id}
                                         value={role.name.toLowerCase()}
-                                        label={upperFirst(role.name.toLowerCase())}
+                                        label={capitalize(role.name)}
                                     />
                                 ))
                             }

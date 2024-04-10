@@ -9,6 +9,8 @@ import User from "../../../types/User";
 import { alertSuccess } from "../../../utils/feedback";
 import UpsertUserModal, { UpsertUserDto } from "./UpsertUserModal";
 import Role from "../../../types/Role";
+import InfoDetailsModal from "../../../components/InfoDetailsModal";
+import UserDetails from "./UserDetails";
 
 interface Props {
     selectedUser: User
@@ -23,6 +25,8 @@ export default function UsersActions({ selectedUser, roles, onDeleteUser, onUpda
     
     const [isSubmittingUpdateUser, setSubmittingUpdateUser] = useState(false)
     const [isUpdatingUserModalOpened, { open: openUpdatingUserModal, close: closeUpdatingUserModal }] = useDisclosure(false);
+
+    const [isUserDetailsModalOpened, { open: openUserDetailsModal, close: closeUserDetailsModal }] = useDisclosure(false);
 
     const handleConfirmDeletion = async () => {
         setConfirmationDeletionLoading(true)
@@ -60,7 +64,7 @@ export default function UsersActions({ selectedUser, roles, onDeleteUser, onUpda
     return (
         <>
             <Group gap={0} justify="flex-end">
-                <ActionIcon variant="subtle" color="blue">
+                <ActionIcon variant="subtle" color="blue" onClick={openUserDetailsModal}>
                     <ArrowsPointingOutIcon style={{ width: rem(14), height: rem(14) }} />
                 </ActionIcon>
                 <ActionIcon variant="subtle" color="gray" onClick={openUpdatingUserModal}>
@@ -96,6 +100,16 @@ export default function UsersActions({ selectedUser, roles, onDeleteUser, onUpda
                 onCancel={closeUpdatingUserModal}
                 onSubmit={handleSubmitUpdatingUser}
             />
+
+            <InfoDetailsModal 
+                title="Details"
+                isOpened={isUserDetailsModalOpened}
+                onClose={closeUserDetailsModal}
+            >
+                <UserDetails 
+                    user={selectedUser}
+                />
+            </InfoDetailsModal>
         </>
     )
 }
