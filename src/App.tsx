@@ -11,6 +11,7 @@ import Profile from "./pages/Profile"
 import Dashboard from "./pages/Dashboard"
 import ChangePassword from "./pages/ChangePassword"
 import UserAccountsManagement from "./pages/UserAccountsManagement"
+import Institution from "./pages/Institution"
 
 function App() {
   useAppDirection()
@@ -27,6 +28,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/user-accounts-management" element={<UserAccountsManagement />} />
+          <Route path="/institution" element={<Institution />} />
         </Route>
         {/* <Route path="/dashboard" element={
           <PrivateRoute>

@@ -3,7 +3,7 @@ import Role from "../../../types/Role";
 
 class RolesService {
     getNonAdminRoles() {
-        return PRIVATE_API.get<Role[]>("/roles")
+        return PRIVATE_API.get<Role[]>("/roles/non-admin")
     }
 }
 
