@@ -1,7 +1,7 @@
-import { ActionIcon, Anchor, Avatar, Badge, Group, Table, Text, rem } from "@mantine/core"
+import { Anchor, Avatar, Badge, Table, Text } from "@mantine/core"
 import Role from "../../../types/Role"
 import UsersFilterTRow from "./UsersFilterTRow"
-import { ArrowsPointingOutIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
+import usersService from "../services/users"
 import { columnsWidth } from "./helpers";
 import User from "../../../types/User";
 import UsersActions from "./UsersActions";
@@ -28,7 +28,11 @@ export default function UsersTBody({ users, filters, filtersAreEmpty, showFilter
     const rows = users.map((user) => (
         <Table.Tr key={user.id}>
             <Table.Td style={{ width: columnsWidth.avatar }}>
-                <Avatar size={30} src={user.photoPath} radius={30} />
+                <Avatar 
+                    size={30} 
+                    src={user.photoPath ? usersService.getFullPhotoPath(user.photoPath) : ""}
+                    radius={30} 
+                />
             </Table.Td>
 
             <Table.Td>

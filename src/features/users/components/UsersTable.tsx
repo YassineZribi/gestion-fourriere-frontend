@@ -1,11 +1,8 @@
-import { Table, Group, ActionIcon, rem } from '@mantine/core';
+import { Table } from '@mantine/core';
 import User from '../../../types/User';
-import Th from '../../../components/Th';
-import { FunnelIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import Role from '../../../types/Role';
 import UsersTBody from './UsersTBody';
-import { columnsWidth } from './helpers';
 import UsersTHead from './UsersTHead';
 
 interface Props {
