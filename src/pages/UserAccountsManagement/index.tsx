@@ -4,7 +4,7 @@ import Title from '../../components/Title';
 import { UsersTable } from '../../features/users/components/UsersTable';
 import usersService from '../../features/users/services/users'
 import User from '../../types/User';
-import UsersPagination from '../../features/users/components/UsersPagination';
+import TablePagination from '../../components/TablePagination';
 import UsersControls from '../../features/users/components/UsersControls';
 import useFetchRoles from '../../features/roles/hooks/useFetchRoles';
 import useFetchWithPagination from '../../hooks/useFetchWithPagination';
@@ -53,13 +53,13 @@ export default function UserAccountsManagement() {
                         onUpdateUser={onUpdateUser}
                         onDeleteUser={onDeleteUser}
                     />
-                    <UsersPagination
+                    <TablePagination
                         onChange={setPageParam}
                         currentPage={responseData.pageable.pageNumber + 1}
                         totalPages={responseData.totalPages}
-                        totalUsers={responseData.totalElements}
-                        numberOfUsersInCurrentPage={responseData.numberOfElements}
-                        skippedUsers={responseData.pageable.offset}
+                        totalEntities={responseData.totalElements}
+                        numberOfEntitiesInCurrentPage={responseData.numberOfElements}
+                        skippedEntities={responseData.pageable.offset}
                         isFetching={isLoading}
                     />
                 </>
