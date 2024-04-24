@@ -1,8 +1,8 @@
 import { PRIVATE_API, baseURL } from "../../../lib/axios/api";
 import User from "../../../types/User";
 import { APPLICATION_JSON, MULTIPART_FORM_DATA } from "../../../utils/constants";
+import { UpdateProfileDto } from "../components/UpdateProfileForm";
 import ChangePasswordDto from "../types/ChangePasswordDto";
-import UpdateProfileDto from "../types/UpdateProfileDto";
 
 class AccountService {
     getProfile() {

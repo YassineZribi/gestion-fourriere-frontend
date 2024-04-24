@@ -1,28 +1,40 @@
 
 import { useState } from 'react';
-import { TextInput, SimpleGrid, Group, Button, useDirection, Center, Tooltip, InputLabel, Indicator, Avatar, FileInput, rem } from '@mantine/core';
+import { TextInput, SimpleGrid, Group, Button, Center, Tooltip, InputLabel, Indicator, Avatar, FileInput, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import CountriesPhoneNumbersCombobox from '../../../components/CountriesPhoneNumbersCombobox';
+import { z } from 'zod';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import { parsePhoneNumber } from '../../../lib/libphonenumber-js';
 import useAuthStore from '../../../store/useAuthStore';
 import { wait } from '../../../utils/helpers';
 import accountService from '../services/account'
-import UpdateProfileDto from '../types/UpdateProfileDto';
 import { alertInfo, alertSuccess } from '../../../utils/feedback';
 import { PencilIcon } from '@heroicons/react/24/outline';
+import PhoneInputWithCountryCombobox from '../../../components/PhoneInput';
+
+const schema = z.object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z.string().email('Invalid email'),
+    dial_code: z.string(),
+    nationalPhoneNumber: z.string().min(1, 'Phone number is required'),
+});
+
+export type FormData = z.infer<typeof schema>
+
+export type UpdateProfileDto = Omit<FormData, 'dial_code' | 'nationalPhoneNumber'> & { phoneNumber: string }
 
 export default function UpdateProfileForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [photoFile, setPhotoFile] = useState<File | null>(null)
-    const {user, updateAuthenticatedUser} = useAuthStore();
-    const { dir } = useDirection();
+    const { user, updateAuthenticatedUser } = useAuthStore();
 
     if (!user) return null;
 
     // Parse the phone number
-    const phoneNumber = parsePhoneNumber(user.phoneNumber); // "+21622585016"
+    const phoneNumber = parsePhoneNumber(user.phoneNumber); // like "+21622585016"
 
-    const form = useForm({
+    const form = useForm<FormData>({
         initialValues: {
             firstName: user.firstName,
             lastName: user.lastName,
@@ -30,39 +42,42 @@ export default function UpdateProfileForm() {
             dial_code: phoneNumber?.countryCallingCode || '+216',
             nationalPhoneNumber: phoneNumber?.nationalNumber || '',
         },
-        validate: {
-            firstName: (value) => value.trim().length === 0 ? "First name is required" : null,
-            lastName: (value) => value.trim().length === 0 ? "Last name is required" : null,
-            email: (value) => !/^\S+@\S+$/.test(value) ? "Invalid email" : null,
-            nationalPhoneNumber: (value) => value.trim().length === 0 ? "Phone number is required" : null, // ? null : "Phone number should be valid"
-        },
+        validate: zodResolver(schema),
     });
 
+
+    const handleSubmit = async (values: FormData) => {
+        console.log(values);
+
+        const updateProfileDto: UpdateProfileDto = {
+            email: values.email,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            phoneNumber: values.dial_code + values.nationalPhoneNumber
+        }
+
+        setIsSubmitting(true)
+        try {
+            await wait(2000)
+            const res = await accountService.updateProfile(updateProfileDto, photoFile)
+            updateAuthenticatedUser(res.data)
+            setPhotoFile(null)
+            alertSuccess("Profile updated successfully!")
+        } catch (error) {
+            console.log(error);
+
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
+    const handleReset = () => {
+        form.reset();
+        setPhotoFile(null)
+    }
+
     return (
-        <form onSubmit={form.onSubmit(async (values) => {
-            console.log(values);
-
-            const updateProfileDto: UpdateProfileDto = {
-                email: values.email,
-                firstName: values.firstName,
-                lastName: values.lastName,
-                phoneNumber: values.dial_code + values.nationalPhoneNumber
-            }
-
-            setIsSubmitting(true)
-            try {
-                await wait(2000)
-                const res = await accountService.updateProfile(updateProfileDto, photoFile)
-                updateAuthenticatedUser(res.data)
-                setPhotoFile(null)
-                alertSuccess("Profile updated successfully!")
-            } catch (error) {
-                console.log(error);
-    
-            } finally {
-                setIsSubmitting(false)
-            }
-        })}>
+        <form onSubmit={form.onSubmit(handleSubmit)}>
             <Center my={'xl'}>
                 <Tooltip label="Update profile picture" withArrow position='bottom'>
                     <InputLabel htmlFor='profile-photo'>
@@ -80,24 +95,24 @@ export default function UpdateProfileForm() {
                             <Avatar
                                 size={120}
                                 radius={120}
-                                style={{border: "2px solid"}}
+                                style={{ border: "2px solid" }}
                                 src={
-                                    photoFile 
-                                        ? URL.createObjectURL(photoFile) 
+                                    photoFile
+                                        ? URL.createObjectURL(photoFile)
                                         : user.photoPath ? accountService.getFullPhotoPath(user.photoPath) : ""
                                 }
                             />
                         </Indicator>
                     </InputLabel>
                 </Tooltip>
-                <FileInput 
-                    id='profile-photo' 
-                    accept="image/*" 
+                <FileInput
+                    id='profile-photo'
+                    accept="image/*"
                     onChange={file => {
                         setPhotoFile(file);
                         alertInfo('Click on "Save changes" to confirm the modification')
-                    }} 
-                    style={{display: 'none'}} 
+                    }}
+                    style={{ display: 'none' }}
                 />
             </Center>
             <SimpleGrid cols={{ base: 1, sm: 2 }} mt="xl">
@@ -123,28 +138,19 @@ export default function UpdateProfileForm() {
                     disabled
                     {...form.getInputProps('email')}
                 />
-                <div style={{ position: 'relative' }}>
-                    <TextInput
-                        type='text'
-                        styles={{ input: { paddingInlineStart: 100 } }}
-                        name="nationalPhoneNumber"
-                        label="Phone Number"
-                        placeholder="enter your phone number"
-                        {...form.getInputProps('nationalPhoneNumber')}
-                    />
-                    <div style={{ position: 'absolute', top: 24.8, transform: `scale(0.9) translateX(${dir === "ltr" ? "-" : ""}4px)` }}>
-                        <CountriesPhoneNumbersCombobox
-                            style={{
-                                width: 100
-                            }}
-                            onChange={(v) => form.setFieldValue('dial_code', v)}
-                            dial_code={form.values.dial_code}
-                        />
-                    </div>
-                </div>
+                <PhoneInputWithCountryCombobox
+                    input={{
+                        name: "nationalPhoneNumber",
+                        ...form.getInputProps('nationalPhoneNumber')
+                    }}
+                    combobox={{
+                        onChange: (v) => form.setFieldValue('dial_code', v),
+                        dial_code: form.values.dial_code
+                    }}
+                />
             </SimpleGrid>
             <Group justify="end" mt="xl">
-                <Button type="reset" onClick={() => {form.reset(); setPhotoFile(null)}} size="md" variant='outline'>
+                <Button type="reset" onClick={handleReset} size="md" variant='outline'>
                     Reset
                 </Button>
                 <Button type="submit" size="md" disabled={isSubmitting} loading={isSubmitting}>

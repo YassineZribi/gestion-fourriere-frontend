@@ -31,10 +31,11 @@ function OptionContent({ country }: { country: Country }) {
 
 interface Props {
     style?: React.CSSProperties
-    width?: number,
     onChange: (v: string) => void;
     dial_code: string;
 }
+
+export type CountriesPhoneNumbersComboboxType = Props
 
 export default function CountriesPhoneNumbersCombobox({style, onChange, dial_code}: Props) {
     const combobox = useCombobox({

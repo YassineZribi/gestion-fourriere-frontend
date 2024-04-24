@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { Anchor, Button, Group, Modal, Radio, SimpleGrid, Stack, TextInput, useDirection } from "@mantine/core";
+import { Anchor, Button, Group, Modal, Radio, SimpleGrid, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import Role from "../../../types/Role";
-import CountriesPhoneNumbersCombobox from "../../../components/CountriesPhoneNumbersCombobox";
 import User from "../../../types/User";
 import { getCountryCallingCode, getNationalNumber } from "../../../lib/libphonenumber-js";
 import { capitalize } from "../../../utils/helpers";
+import PhoneInputWithCountryCombobox from "../../../components/PhoneInput";
 
 
 const schema = z.object({
@@ -21,7 +21,7 @@ const schema = z.object({
 
 export type FormData = z.infer<typeof schema>
 
-export type UpsertUserDto = Omit<FormData, 'dial_code' | 'nationalPhoneNumber'> & {phoneNumber: string}
+export type UpsertUserDto = Omit<FormData, 'dial_code' | 'nationalPhoneNumber'> & { phoneNumber: string }
 
 interface Props {
     title: string
@@ -34,8 +34,7 @@ interface Props {
 }
 
 export default function UpsertUserModal({ title, isOpened, isSubmitting, selectedUser, roles, onCancel, onSubmit }: Props) {
-    const { dir } = useDirection();    
-    
+
     const form = useForm<FormData>({
         initialValues: {
             firstName: selectedUser?.firstName || '',
@@ -70,7 +69,7 @@ export default function UpsertUserModal({ title, isOpened, isSubmitting, selecte
     useEffect(() => {
         if (!isOpened && !selectedUser && form.isDirty()) form.reset() // !selectedUser ->  not 'update' mode
     }, [isOpened])
-    
+
 
     return (
         <Modal title={title} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
@@ -102,25 +101,16 @@ export default function UpsertUserModal({ title, isOpened, isSubmitting, selecte
                         {...form.getInputProps('email')}
                     />
 
-                    <div style={{ position: 'relative' }}>
-                        <TextInput
-                            type='text'
-                            styles={{ input: { paddingInlineStart: 100 } }}
-                            name="nationalPhoneNumber"
-                            label="Phone Number"
-                            placeholder="enter your phone number"
-                            {...form.getInputProps('nationalPhoneNumber')}
-                        />
-                        <div style={{ position: 'absolute', top: 24.8, transform: `scale(0.9) translateX(${dir === "ltr" ? "-" : ""}4px)` }}>
-                            <CountriesPhoneNumbersCombobox
-                                style={{
-                                    width: 100
-                                }}
-                                onChange={(v) => form.setFieldValue('dial_code', v)}
-                                dial_code={form.values.dial_code}
-                            />
-                        </div>
-                    </div>
+                    <PhoneInputWithCountryCombobox
+                        input={{
+                            name: "nationalPhoneNumber",
+                            ...form.getInputProps('nationalPhoneNumber')
+                        }}
+                        combobox={{
+                            onChange: (v) => form.setFieldValue('dial_code', v),
+                            dial_code: form.values.dial_code
+                        }}
+                    />
 
                     <Radio.Group
                         label="Role"
@@ -132,7 +122,7 @@ export default function UpsertUserModal({ title, isOpened, isSubmitting, selecte
                             {
                                 roles.map((role) => (
                                     <Radio
-                                        
+
                                         key={role.id}
                                         value={role.name.toLowerCase()}
                                         label={capitalize(role.name)}
