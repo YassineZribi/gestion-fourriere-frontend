@@ -2,8 +2,8 @@ import { Anchor, Avatar, Badge, Table, Text } from "@mantine/core"
 import User from "../../../types/User"
 import UsersActions from "./UsersActions"
 import { ACTIONS_COLUMN_WIDTH } from "../../../utils/constants"
-import usersService from '../services'
 import { columnsWidth } from "./helpers"
+import { getFullResourcePath } from "../../../lib/axios/api"
 
 const jobColors: Record<string, string> = {
     MANAGER: 'blue',
@@ -23,7 +23,7 @@ export default function UserTRow({ user, onUpdateUser, onDeleteUser }: Props) {
             <Table.Td style={{ width: columnsWidth.avatar }}>
                 <Avatar
                     size={30}
-                    src={user.photoPath ? usersService.getFullPhotoPath(user.photoPath) : ""}
+                    src={user.photoPath ? getFullResourcePath(user.photoPath) : ""}
                     radius={30}
                 />
             </Table.Td>

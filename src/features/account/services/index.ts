@@ -1,4 +1,4 @@
-import { PRIVATE_API, baseURL } from "../../../lib/axios/api";
+import { PRIVATE_API } from "../../../lib/axios/api";
 import User from "../../../types/User";
 import { APPLICATION_JSON, MULTIPART_FORM_DATA } from "../../../utils/constants";
 import { UpdateProfileDto } from "../components/UpdateProfileForm";
@@ -22,10 +22,6 @@ class AccountService {
         }
 
         return PRIVATE_API.patch<User>("/account/profile", formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
-    }
-
-    getFullPhotoPath(photoPath: string) {
-        return baseURL + photoPath;
     }
 
     changePassword(data: ChangePasswordDto) {

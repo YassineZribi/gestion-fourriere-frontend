@@ -1,6 +1,6 @@
 import { AppShell, Avatar, Divider, Group, Text } from '@mantine/core';
 import useAuthStore from '../../../../../../store/useAuthStore';
-import accountService from '../../../../../../features/account/services'
+import { getFullResourcePath } from '../../../../../../lib/axios/api';
 
 
 export function NavbarHeader() {
@@ -12,7 +12,7 @@ export function NavbarHeader() {
                 <Avatar
                     radius="xl"
                     style={{border: "1px solid"}}
-                    src={user?.photoPath ? accountService.getFullPhotoPath(user.photoPath) : ""}
+                    src={user?.photoPath ? getFullResourcePath(user.photoPath) : ""}
                 />
 
                 <div>

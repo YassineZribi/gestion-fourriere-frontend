@@ -2,8 +2,8 @@ import { AtSymbolIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { Avatar, Center, Group, Text, rem } from "@mantine/core";
 import classes from './index.module.css';
 import User from "../../../../types/User";
-import usersService from "../../services"
 import { getCountryCallingCode, getNationalNumber } from "../../../../lib/libphonenumber-js";
+import { getFullResourcePath } from "../../../../lib/axios/api";
 
 interface Props {
     user: User
@@ -15,7 +15,7 @@ export default function UserDetails({user}: Props) {
         <Center>
         <Group wrap="nowrap">
           <Avatar
-            src={user?.photoPath ? usersService.getFullPhotoPath(user.photoPath) : ""}
+            src={user?.photoPath ? getFullResourcePath(user.photoPath) : ""}
             size={94}
             style={{border: "2px solid"}}
             radius="md"

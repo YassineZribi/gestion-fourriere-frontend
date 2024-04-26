@@ -1,4 +1,4 @@
-import { PRIVATE_API, baseURL } from "../../../lib/axios/api";
+import { PRIVATE_API } from "../../../lib/axios/api";
 import Institution from "../../../types/Institution";
 import { APPLICATION_JSON, MULTIPART_FORM_DATA } from "../../../utils/constants";
 import { SaveInstitutionDto } from "../components/SaveInstitutionForm";
@@ -21,10 +21,6 @@ class InstitutionService {
         }
 
         return PRIVATE_API.post<Institution>("/institution", formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
-    }
-
-    getFullLogoPath(logoPath: string) {
-        return baseURL + logoPath;
     }
 }
 

@@ -11,6 +11,7 @@ import { alertInfo, alertSuccess } from '../../../utils/feedback';
 import { BuildingLibraryIcon, PencilIcon } from '@heroicons/react/24/outline';
 import PhoneInputWithCountryCombobox from '../../../components/PhoneInput';
 import Institution from '../../../types/Institution';
+import { getFullResourcePath } from '../../../lib/axios/api';
 
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -98,7 +99,7 @@ export default function SaveInstitutionForm({ institution, onSaveInstitution }: 
                                 src={
                                     logoFile
                                         ? URL.createObjectURL(logoFile)
-                                        : institution?.logoPath ? institutionService.getFullLogoPath(institution?.logoPath) : null
+                                        : institution?.logoPath ? getFullResourcePath(institution.logoPath) : null
                                 }
                             >
                                 <BuildingLibraryIcon style={{ width: rem(64), height: rem(64) }} />

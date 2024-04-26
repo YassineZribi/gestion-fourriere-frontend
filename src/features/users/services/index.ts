@@ -1,4 +1,4 @@
-import { PRIVATE_API, baseURL } from "../../../lib/axios/api";
+import { PRIVATE_API } from "../../../lib/axios/api";
 import FetchWithPaginationResponse from "../../../types/FetchWithPaginationResponse";
 import User from "../../../types/User";
 import { UpsertUserDto } from "../components/UpsertUserModal";
@@ -20,10 +20,6 @@ class UsersService {
 
     deleteUser(id: number) {
         return PRIVATE_API.delete<User>("/users/" + id)
-    }
-
-    getFullPhotoPath(photoPath: string) {
-        return baseURL + photoPath;
     }
 }
 

@@ -11,6 +11,7 @@ import accountService from '../services'
 import { alertInfo, alertSuccess } from '../../../utils/feedback';
 import { PencilIcon } from '@heroicons/react/24/outline';
 import PhoneInputWithCountryCombobox from '../../../components/PhoneInput';
+import { getFullResourcePath } from '../../../lib/axios/api';
 
 const schema = z.object({
     firstName: z.string().min(1, 'First name is required'),
@@ -99,7 +100,7 @@ export default function UpdateProfileForm() {
                                 src={
                                     photoFile
                                         ? URL.createObjectURL(photoFile)
-                                        : user.photoPath ? accountService.getFullPhotoPath(user.photoPath) : ""
+                                        : user.photoPath ? getFullResourcePath(user.photoPath) : ""
                                 }
                             />
                         </Indicator>

@@ -2,7 +2,11 @@ import axios from 'axios';
 export { AxiosError } from 'axios';
 import { ACCESS_TOKEN_KEY, APPLICATION_JSON } from '../../utils/constants';
 
-export const baseURL = import.meta.env.VITE_API_URL
+const baseURL = import.meta.env.VITE_API_URL
+
+export function getFullResourcePath(resourcePath: string) {
+    return baseURL + resourcePath;
+}
 
 const config = {
     baseURL,
