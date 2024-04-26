@@ -1,5 +1,5 @@
 import useEffectOnce from "../../../hooks/useEffectOnce";
-import rolesService from "../services/roles"
+import rolesService from "../services"
 import useRolesStore from "../../../store/useRolesStore";
 
 export default function useFetchRoles() {

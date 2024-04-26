@@ -2,7 +2,7 @@ import { UpsertUserDto } from "../components/UpsertUserModal";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import { wait } from "../../../utils/helpers";
-import usersService from '../services/users';
+import usersService from '../services';
 import { alertSuccess } from "../../../utils/feedback";
 
 interface Props {

@@ -12,7 +12,7 @@ import { useForm } from '@mantine/form';
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { wait } from '../../../utils/helpers';
-import authService from '../services/authentication';
+import authService from '../services';
 import useAuthStore from '../../../store/useAuthStore';
 import { alertSuccess } from '../../../utils/feedback';
 

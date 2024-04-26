@@ -1,7 +1,7 @@
 
 import { Center, Loader, Space } from '@mantine/core';
 import Title from '../../components/Title';
-import usersService from '../../features/users/services/users'
+import usersService from '../../features/users/services'
 import User from '../../types/User';
 import DataTablePagination from '../../components/DataTable/DataTablePagination';
 import DataTableControlPanel from '../../components/DataTable/DataTableControlPanel';

@@ -1,5 +1,5 @@
 import { useDisclosure } from "@mantine/hooks";
-import usersService from "../services/users"
+import usersService from "../services"
 import { wait } from "../../../utils/helpers";
 import { useState } from "react";
 import User from "../../../types/User";

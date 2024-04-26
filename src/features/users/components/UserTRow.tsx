@@ -2,7 +2,7 @@ import { Anchor, Avatar, Badge, Table, Text } from "@mantine/core"
 import User from "../../../types/User"
 import UsersActions from "./UsersActions"
 import { ACTIONS_COLUMN_WIDTH } from "../../../utils/constants"
-import usersService from '../services/users'
+import usersService from '../services'
 import { columnsWidth } from "./helpers"
 
 const jobColors: Record<string, string> = {

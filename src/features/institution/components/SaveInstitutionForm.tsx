@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { getCountryCallingCode, getNationalNumber } from '../../../lib/libphonenumber-js';
 import { wait } from '../../../utils/helpers';
-import institutionService from '../services/institution'
+import institutionService from '../services'
 import { alertInfo, alertSuccess } from '../../../utils/feedback';
 import { BuildingLibraryIcon, PencilIcon } from '@heroicons/react/24/outline';
 import PhoneInputWithCountryCombobox from '../../../components/PhoneInput';

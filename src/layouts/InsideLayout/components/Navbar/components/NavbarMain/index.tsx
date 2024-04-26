@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ScrollArea, Group, Box, Collapse, ThemeIcon, Text, UnstyledButton, rem, AppShell, useDirection } from '@mantine/core';
-import { AdjustmentsVerticalIcon, ChartPieIcon, ChevronLeftIcon, ChevronRightIcon, LockClosedIcon, PresentationChartBarIcon, UserIcon } from '@heroicons/react/24/outline'
+import { AdjustmentsVerticalIcon, ChartPieIcon, ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, LockClosedIcon, PresentationChartBarIcon, UserIcon } from '@heroicons/react/24/outline'
 import classes from './index.module.css';
 import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
@@ -23,6 +23,15 @@ type MenuItem = SimpleMenuItem | ComplexMenuItem
 const mockdata: MenuItem[] = [
     { label: 'Dashboard', icon: ChartPieIcon, link: '/dashboard' },
     { label: 'Profile', icon: UserIcon, link: '/profile' },
+    {
+        label: 'Basic data',
+        icon: ClipboardDocumentListIcon,
+        initiallyOpened: true,
+        links: [
+            { label: 'Institution', link: '/institution' },
+            { label: 'Warehouse management', link: '/warehouse-management' },
+        ],
+    },
     {
         label: 'Administration',
         icon: PresentationChartBarIcon,

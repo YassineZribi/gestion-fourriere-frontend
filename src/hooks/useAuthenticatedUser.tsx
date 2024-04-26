@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useAuthStore from "../store/useAuthStore";
 import { ACCESS_TOKEN_KEY } from "../utils/constants";
-import accountService from "../features/account/services/account";
+import accountService from "../features/account/services";
 
 export default function useAuthenticatedUser() {
     const [isLoading, setLoading] = useState(true);

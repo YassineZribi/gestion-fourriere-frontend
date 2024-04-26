@@ -7,7 +7,7 @@ import { zodResolver } from 'mantine-form-zod-resolver';
 import { parsePhoneNumber } from '../../../lib/libphonenumber-js';
 import useAuthStore from '../../../store/useAuthStore';
 import { wait } from '../../../utils/helpers';
-import accountService from '../services/account'
+import accountService from '../services'
 import { alertInfo, alertSuccess } from '../../../utils/feedback';
 import { PencilIcon } from '@heroicons/react/24/outline';
 import PhoneInputWithCountryCombobox from '../../../components/PhoneInput';

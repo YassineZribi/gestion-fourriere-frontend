@@ -1,6 +1,6 @@
 import { useForm } from '@mantine/form';
 import { PasswordInput, Group, Button } from '@mantine/core';
-import accountService from '../services/account';
+import accountService from '../services';
 import ChangePasswordDto from '../types/ChangePasswordDto';
 import { useState } from 'react';
 import { wait } from '../../../utils/helpers';

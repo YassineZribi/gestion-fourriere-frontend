@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useEffectOnce from "../../../hooks/useEffectOnce";
-import institutionService from "../services/institution"
+import institutionService from "../services"
 import Institution from "../../../types/Institution";
 import { AxiosError } from '../../../lib/axios/api';
 

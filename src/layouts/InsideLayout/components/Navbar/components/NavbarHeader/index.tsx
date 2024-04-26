@@ -1,6 +1,6 @@
 import { AppShell, Avatar, Divider, Group, Text } from '@mantine/core';
 import useAuthStore from '../../../../../../store/useAuthStore';
-import accountService from '../../../../../../features/account/services/account'
+import accountService from '../../../../../../features/account/services'
 
 
 export function NavbarHeader() {

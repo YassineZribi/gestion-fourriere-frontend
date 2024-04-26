@@ -2,7 +2,7 @@ import { AtSymbolIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { Avatar, Center, Group, Text, rem } from "@mantine/core";
 import classes from './index.module.css';
 import User from "../../../../types/User";
-import usersService from "../../services/users"
+import usersService from "../../services"
 import { getCountryCallingCode, getNationalNumber } from "../../../../lib/libphonenumber-js";
 
 interface Props {
