@@ -10,7 +10,7 @@ interface Props {
     onChange: (newValue: number) => void;
 }
 
-export default function TablePagination({ currentPage, totalPages, totalEntities, numberOfEntitiesInCurrentPage, skippedEntities, isFetching, onChange }: Props) {
+export default function DataTablePagination({ currentPage, totalPages, totalEntities, numberOfEntitiesInCurrentPage, skippedEntities, isFetching, onChange }: Props) {
 
     return (
         <Group justify="end" mt={"md"}>

@@ -3,11 +3,11 @@ import { Anchor, Button, Group, Modal, Radio, SimpleGrid, Stack, TextInput } fro
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import Role from "../../../types/Role";
 import User from "../../../types/User";
 import { getCountryCallingCode, getNationalNumber } from "../../../lib/libphonenumber-js";
 import { capitalize } from "../../../utils/helpers";
 import PhoneInputWithCountryCombobox from "../../../components/PhoneInput";
+import useRolesStore from "../../../store/useRolesStore";
 
 
 const schema = z.object({
@@ -28,12 +28,12 @@ interface Props {
     isOpened: boolean
     isSubmitting: boolean
     selectedUser?: User
-    roles: Role[]
     onCancel: () => void
     onSubmit: (upsertUserDto: UpsertUserDto) => void
 }
 
-export default function UpsertUserModal({ title, isOpened, isSubmitting, selectedUser, roles, onCancel, onSubmit }: Props) {
+export default function UpsertUserModal({ title, isOpened, isSubmitting, selectedUser, onCancel, onSubmit }: Props) {
+    const {roles} = useRolesStore()
 
     const form = useForm<FormData>({
         initialValues: {

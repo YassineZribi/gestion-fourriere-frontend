@@ -12,7 +12,7 @@ function useEffectOnce(effect: () => void, cleanUp?: () => void) {
         }
 
         return () => cleanUp?.()
-    }, [effect]);
+    }, []);
 }
 
 export default useEffectOnce;

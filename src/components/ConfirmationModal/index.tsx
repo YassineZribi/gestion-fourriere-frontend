@@ -1,4 +1,4 @@
-import { Anchor, Button, Group, Modal } from "@mantine/core";
+import { Anchor, Button, Group, Modal, Text } from "@mantine/core";
 import { ReactNode } from "react";
 
 interface Props {
@@ -14,6 +14,10 @@ export default function ConfirmationModal({ isOpened, isLoading, title, children
     return (
         <Modal opened={isOpened} onClose={onCancel} title={title}>
             {children}
+            <Text size="sm">
+                This action is destructive and you will have
+                to contact support to restore your data.
+            </Text>
             <Group justify="space-between" mt="xl">
                 <Anchor component="button" type="button" variant="gradient" onClick={onCancel} size="sm">
                     Cancel

@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
 import useEffectOnce from "../../../hooks/useEffectOnce";
 import rolesService from "../services/roles"
-import Role from "../../../types/Role";
+import useRolesStore from "../../../store/useRolesStore";
 
 export default function useFetchRoles() {
-    const [roles, setRoles] = useState<Role[]>([])
-    const [isLoading, setLoading] = useState(true)
-    const [error, setError] = useState("");
+    const {setRoles, setLoading, setError, reset} = useRolesStore()
 
-    useEffect(() => {
+    useEffectOnce(() => {
+        setLoading(true)
         rolesService.getNonAdminRoles()
             .then(res => {
                 setRoles(res.data)
@@ -19,7 +17,7 @@ export default function useFetchRoles() {
             .finally(() => {
                 setLoading(false)
             })
-    }, [])
+    }, () => reset())
 
-    return {roles, isLoading, error}
+    return null
 }

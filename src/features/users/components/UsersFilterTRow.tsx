@@ -1,18 +1,18 @@
-import { ActionIcon, ComboboxItem, Group, Table, rem } from "@mantine/core";
+import { ComboboxItem, Group, Table } from "@mantine/core";
 import ClearableInput from "../../../components/ClearableInput";
 import ClearableSelect from "../../../components/ClearableSelect";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import Role from "../../../types/Role";
+import useRolesStore from "../../../store/useRolesStore";
+import ClearFiltersButton from "../../../components/DataTable/ClearFiltersButton";
 
 interface Props {
     filters: { [key: string]: string | undefined }
-    filtersAreEmpty: boolean
-    roles: Role[]
+    hasFilters: boolean
     onFilter: (property: string, value: string) => void
     onClearFilters: () => void
 }
 
-export default function UsersFilterTRow({ filters, filtersAreEmpty, roles, onFilter, onClearFilters }: Props) {
+export default function UsersFilterTRow({ filters, hasFilters, onFilter, onClearFilters }: Props) {
+    const {roles} = useRolesStore()
 
     const rolesFilteringData: ComboboxItem[] = roles.map(role => ({ value: role.name.toLowerCase(), label: role.name.toUpperCase() }))
 
@@ -53,10 +53,10 @@ export default function UsersFilterTRow({ filters, filtersAreEmpty, roles, onFil
             <Table.Td>
                 <Group gap={0} justify="flex-end">
                     {
-                        !filtersAreEmpty && (
-                            <ActionIcon variant="subtle" color="gray" onClick={onClearFilters}>
-                                <XMarkIcon style={{ width: rem(14), height: rem(14) }} />
-                            </ActionIcon>
+                        hasFilters && (
+                            <ClearFiltersButton 
+                                onClick={onClearFilters}
+                            />
                         )
                     }
                 </Group>

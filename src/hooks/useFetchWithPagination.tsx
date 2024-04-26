@@ -96,21 +96,29 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         setSearchParams(searchParams)
     }
 
-    const filtersEmpty = () => {
+    const hasFilters = () => {
         const filters = getFilterParams()
         for (const property in filters) {
             // console.log(`${property}: ${filters[property]}`);
             if (filters[property]?.trim())
-                return false
+                return true
         }
-        return true
+        return false
     }
 
     const getSortList = () => {
         return searchParams.getAll("sort")
     }
 
-    // all queryParams (including : filterParams + sort + page)
+
+    const [showFilters, setShowFilters] = useState(() => hasFilters());
+
+    const toggleFilters = () => {
+        setShowFilters(prev => !prev);
+        handleClearFilters()
+    };
+
+    // all queryParams (including : filterParams + sort + page + size)
     // const queryParams = Object.fromEntries(searchParams.entries())
 
     const onCreateEntity = () => {
@@ -134,8 +142,10 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         
         handleSort,
         handleFilter,
+        showFilters,
+        toggleFilters,
         handleClearFilters,
-        filtersEmpty,
+        hasFilters,
         setPageParam,
         getFilterParams,
         getSortList,

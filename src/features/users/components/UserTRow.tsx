@@ -1,10 +1,9 @@
 import { Anchor, Avatar, Badge, Table, Text } from "@mantine/core"
-import Role from "../../../types/Role"
-import UsersFilterTRow from "./UsersFilterTRow"
-import usersService from "../services/users"
-import { columnsWidth } from "./helpers";
-import User from "../../../types/User";
-import UsersActions from "./UsersActions";
+import User from "../../../types/User"
+import UsersActions from "./UsersActions"
+import { ACTIONS_COLUMN_WIDTH } from "../../../utils/constants"
+import usersService from '../services/users'
+import { columnsWidth } from "./helpers"
 
 const jobColors: Record<string, string> = {
     MANAGER: 'blue',
@@ -13,25 +12,19 @@ const jobColors: Record<string, string> = {
 };
 
 interface Props {
-    users: User[]
-    filters: { [key: string]: string | undefined }
-    filtersAreEmpty: boolean
-    showFilters: boolean
-    roles: Role[]
-    onFilter: (property: string, value: string) => void
-    onClearFilters: () => void
+    user: User
     onUpdateUser: () => void
     onDeleteUser: () => void
 }
 
-export default function UsersTBody({ users, filters, filtersAreEmpty, showFilters, roles, onFilter, onClearFilters, onUpdateUser, onDeleteUser }: Props) {
-    const rows = users.map((user) => (
-        <Table.Tr key={user.id}>
+export default function UserTRow({ user, onUpdateUser, onDeleteUser }: Props) {
+    return (
+        <Table.Tr>
             <Table.Td style={{ width: columnsWidth.avatar }}>
-                <Avatar 
-                    size={30} 
+                <Avatar
+                    size={30}
                     src={user.photoPath ? usersService.getFullPhotoPath(user.photoPath) : ""}
-                    radius={30} 
+                    radius={30}
                 />
             </Table.Td>
 
@@ -60,31 +53,13 @@ export default function UsersTBody({ users, filters, filtersAreEmpty, showFilter
             <Table.Td>
                 <Text fz="sm">{user.phoneNumber}</Text>
             </Table.Td>
-            <Table.Td style={{ width: columnsWidth.actions }}>
+            <Table.Td style={{ width: ACTIONS_COLUMN_WIDTH }}>
                 <UsersActions
                     selectedUser={user}
-                    roles={roles}
                     onUpdateUser={onUpdateUser}
                     onDeleteUser={onDeleteUser}
                 />
             </Table.Td>
         </Table.Tr>
-    ));
-
-    return (
-        <Table.Tbody>
-            {
-                showFilters && (
-                    <UsersFilterTRow
-                        filters={filters}
-                        filtersAreEmpty={filtersAreEmpty}
-                        roles={roles}
-                        onFilter={onFilter}
-                        onClearFilters={onClearFilters}
-                    />
-                )
-            }
-            {rows}
-        </Table.Tbody>
     )
 }
