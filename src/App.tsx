@@ -15,7 +15,7 @@ import Institution from "./pages/Institution"
 
 function App() {
   useAppDirection()
-  const {isLoading} = useAuthenticatedUser()
+  const { isLoading } = useAuthenticatedUser()
 
   if (isLoading) return <AppLoader />;
 
@@ -28,7 +28,9 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/user-accounts-management" element={<UserAccountsManagement />} />
-          <Route path="/institution" element={<Institution />} />
+          {["/institution", "/institution/:tab"].map(path => (
+            <Route key={path} path={path} element={<Institution />} />
+          ))}
         </Route>
         {/* <Route path="/dashboard" element={
           <PrivateRoute>

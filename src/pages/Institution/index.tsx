@@ -1,20 +1,21 @@
 import { Tabs } from '@mantine/core';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import InstitionInformation from '../../features/institution/components/InstitutionInformation';
+import Employees from '../../features/employees/components/Employees';
+import OrganizationalChart from '../../features/employees/components/OrganizationalChart';
 
 const schema = z.enum(["information", "employees", "chart"])
 const { information, employees, chart } = schema.Values
 
 export default function Institution() {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const { tab: currentTab } = useParams();
 
-    const currentSearchParamTab = searchParams.get("tab")
-
-    const value = schema.safeParse(currentSearchParamTab).success ? currentSearchParamTab : information
+    const value = schema.safeParse(currentTab).success ? currentTab : information
 
     const handleChangeTab = (newValue: string | null) => {
-        setSearchParams({ tab: newValue ?? information })
+        navigate(`/institution/${newValue ?? information}`)
     }
 
     return (
@@ -36,11 +37,11 @@ export default function Institution() {
             </Tabs.Panel>
 
             <Tabs.Panel value={employees}>
-                Employees tab content
+                <Employees />
             </Tabs.Panel>
 
             <Tabs.Panel value={chart}>
-                Organizational chart tab content
+                <OrganizationalChart />
             </Tabs.Panel>
 
         </Tabs>
