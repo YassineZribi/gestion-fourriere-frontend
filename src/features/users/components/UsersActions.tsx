@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Text } from "@mantine/core";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import User from "../../../types/User";
@@ -5,9 +6,10 @@ import UpsertUserModal from "./UpsertUserModal";
 import InfoDetailsModal from "../../../components/InfoDetailsModal";
 import UserDetails from "./UserDetails";
 import TRowActions from "../../../components/DataTable/TRowActions";
-import useDeleteUser from "../hooks/useDeleteUser";
-import useUpdateUser from "../hooks/useUpdateUser";
-import useShowUserDetails from "../hooks/useShowUserDetails";
+import useModal from "../../../hooks/useModal";
+import usersService from "../services"
+import { wait } from "../../../utils/helpers";
+import { alertSuccess } from "../../../utils/feedback";
 
 interface Props {
     selectedUser: User
@@ -16,27 +18,27 @@ interface Props {
 }
 
 export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser }: Props) {
-    const {
-        isDeletingUserLoading,
-        isConfirmationModalOpen,
-        openConfirmationModal,
-        closeConfirmationModal,
-        confirmDeletingUser
-    } = useDeleteUser({ selectedUser, onDeleteUser })
+    const [isUpdateUserModalOpen, {open: openUpdateUserModal, close: closeUpdateUserModal}] = useModal()
 
-    const {
-        isUpdatingUserSubmitting,
-        isUpdatingUserModalOpen,
-        openUpdateUserModal,
-        closeUpdateUserModal,
-        submitUpdatingUser
-    } = useUpdateUser({ selectedUser, onUpdateUser })
+    const [isUserDetailsModalOpen, {open: openUserDetailsModal, close: closeUserDetailsModal}] = useModal()
 
-    const {
-        isUserDetailsModalOpen,
-        openUserDetailsModal,
-        closeUserDetailsModal
-    } = useShowUserDetails()
+    const [isConfirmationModalOpen, {open: openConfirmationModal, close: closeConfirmationModal}] = useModal()
+    const [isDeletingUserLoading, setDeletingUserLoading] = useState(false)
+
+    const confirmDeletingUser = async () => {
+        setDeletingUserLoading(true)
+        try {
+            await wait(2000)
+            await usersService.deleteUser(selectedUser.id)
+            alertSuccess("User account deleted successfully!")
+            onDeleteUser()
+        } catch (error) {
+            console.log(error);
+        } finally {
+            closeConfirmationModal()
+            setDeletingUserLoading(false)
+        }
+    }
 
     return (
         <>
@@ -58,11 +60,10 @@ export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser 
 
             <UpsertUserModal
                 title="Update user account"
-                isOpened={isUpdatingUserModalOpen}
-                isSubmitting={isUpdatingUserSubmitting}
+                isOpened={isUpdateUserModalOpen}
                 selectedUser={selectedUser}
-                onCancel={closeUpdateUserModal}
-                onSubmit={submitUpdatingUser}
+                onClose={closeUpdateUserModal}
+                onSubmit={onUpdateUser}
             />
 
             <ConfirmationModal

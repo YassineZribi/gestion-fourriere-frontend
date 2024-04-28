@@ -13,8 +13,8 @@ import DataTable from '../../components/DataTable';
 import { columnsWidth } from '../../features/users/components/helpers';
 import UsersFilterTRow from '../../features/users/components/UsersFilterTRow';
 import UpsertUserModal from '../../features/users/components/UpsertUserModal';
-import useAddUser from '../../features/users/hooks/useAddUser';
 import UserTRow from '../../features/users/components/UserTRow';
+import useModal from '../../hooks/useModal';
 
 const tableHeaderColumns: Th[] = [
     {
@@ -63,13 +63,7 @@ export default function UserAccountsManagement() {
 
     } = useFetchWithPagination<User>(usersService.getAllUsersByCriteria);
 
-    const {
-        isAddingUserSubmitting,
-        isAddUserModalOpen,
-        openAddUserModal,
-        closeAddUserModal,
-        submitCreatingUser
-    } = useAddUser({ onCreateUser })
+    const [isOpen, {open, close}] = useModal()
 
     return (
         <div>
@@ -80,14 +74,13 @@ export default function UserAccountsManagement() {
             {responseData && (
                 <>
                     <DataTableControlPanel
-                        onAddBtnClick={openAddUserModal}
+                        onAddBtnClick={open}
                     >
                         <UpsertUserModal
                             title="Create user account"
-                            isOpened={isAddUserModalOpen}
-                            isSubmitting={isAddingUserSubmitting}
-                            onCancel={closeAddUserModal}
-                            onSubmit={submitCreatingUser}
+                            isOpened={isOpen}
+                            onClose={close}
+                            onSubmit={onCreateUser}
                         />
                     </DataTableControlPanel>
                     <DataTable>

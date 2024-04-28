@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import { Anchor, Button, Group, Modal, Radio, SimpleGrid, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import User from "../../../types/User";
 import { getCountryCallingCode, getNationalNumber } from "../../../lib/libphonenumber-js";
-import { capitalize } from "../../../utils/helpers";
+import { capitalize, wait } from "../../../utils/helpers";
 import PhoneInputWithCountryCombobox from "../../../components/PhoneInput";
 import useRolesStore from "../../../store/useRolesStore";
+import usersService from "../services"
+import { alertSuccess } from "../../../utils/feedback";
 
 
 const schema = z.object({
@@ -26,13 +28,13 @@ export type UpsertUserDto = Omit<FormData, 'dial_code' | 'nationalPhoneNumber'> 
 interface Props {
     title: string
     isOpened: boolean
-    isSubmitting: boolean
     selectedUser?: User
-    onCancel: () => void
-    onSubmit: (upsertUserDto: UpsertUserDto) => void
+    onClose: () => void
+    onSubmit: () => void
 }
 
-export default function UpsertUserModal({ title, isOpened, isSubmitting, selectedUser, onCancel, onSubmit }: Props) {
+export default function UpsertUserModal({ title, isOpened, selectedUser, onClose, onSubmit }: Props) {
+    const [isSubmitting, setSubmitting] = useState(false)
     const {roles} = useRolesStore()
 
     const form = useForm<FormData>({
@@ -47,11 +49,6 @@ export default function UpsertUserModal({ title, isOpened, isSubmitting, selecte
         validate: zodResolver(schema),
     });
 
-
-    const handleCancel = () => {
-        onCancel()
-    }
-
     const handleSubmit = async (data: FormData) => {
         const upsertUserDto: UpsertUserDto = {
             firstName: data.firstName,
@@ -61,18 +58,30 @@ export default function UpsertUserModal({ title, isOpened, isSubmitting, selecte
             roleName: data.roleName
         }
 
-        onSubmit(upsertUserDto)
+        
+        try {
+            setSubmitting(true)
+            await wait(2000)
+            if (selectedUser) {
+                await usersService.updateUser(selectedUser.id, upsertUserDto)
+                alertSuccess("User account updated successfully!")
+            } else {
+                await usersService.createUser(upsertUserDto)
+                alertSuccess("New user account created successfully!")
+                form.reset()
+            }
 
-
+            onSubmit()
+            onClose()
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setSubmitting(false)
+        }
     }
 
-    useEffect(() => {
-        if (!isOpened && !selectedUser && form.isDirty()) form.reset() // !selectedUser ->  not 'update' mode
-    }, [isOpened])
-
-
     return (
-        <Modal title={title} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
+        <Modal title={title} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>
                     <SimpleGrid cols={{ base: 1, sm: 2 }}>
@@ -134,7 +143,7 @@ export default function UpsertUserModal({ title, isOpened, isSubmitting, selecte
                 </Stack>
 
                 <Group justify="space-between" mt="xl">
-                    <Anchor component="button" type="button" variant="gradient" onClick={handleCancel} size="sm">
+                    <Anchor component="button" type="button" variant="gradient" onClick={onClose} size="sm">
                         Cancel
                     </Anchor>
                     <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
