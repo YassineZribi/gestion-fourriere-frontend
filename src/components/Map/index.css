@@ -1,0 +1,38 @@
+.geosearch .results > div {
+    @mixin dark {
+        color: initial;
+    }
+}
+
+.current_location_btn_container {
+    position: absolute; 
+    top: 0;
+    right: 0;
+    margin-right: 10px;
+    margin-top: 10px;
+    z-index: 10000;
+    border: 2px solid rgba(0,0,0,0.2);
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 4px;
+}
+
+.current_location_btn {
+    width: 30px;
+    height: 30px;
+    border-radius: inherit;
+    line-height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: inherit;
+    &:hover {
+        background-color: #f4f4f4;
+    }
+}
+
+.leaflet-bottom.leaflet-right {
+    display: none;
+}
