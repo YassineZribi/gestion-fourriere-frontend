@@ -3,20 +3,73 @@ type Common = {
         cancel: string,
         confirm: string,
         login: string,
-        logout: string
+        logout: string,
+        save: string,
+        saveChanges: string,
+        add: string,
+        removeModification: string,
+        update: string,
+        close: string
     },
-    forms: {
-        email: string,
-        password: string,
+    labels: {
+        noFilter: string
     },
     locales: {
         ar: string,
         en: string,
         fr: string
-    }
+    },
     components: {
         loginForm: {
             forgotPassword: string
+        }
+        changePasswordForm: {
+            currentPassword: string,
+            newPassword: string,
+            confirmNewPassword: string,
+        },
+        upsertUserModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
+        upsertEmployeeModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
+        upsertWarehouseModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
+        confirmationModal: {
+            title: string,
+            text: string
+        },
+        usersActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        employeesActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        warehousesActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        dataTablePagination: {
+            summary: string
+        },
+        infoDetailsModal: {
+            title: string
         }
     },
 };

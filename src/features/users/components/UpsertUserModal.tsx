@@ -10,6 +10,8 @@ import PhoneInputWithCountryCombobox from "../../../components/PhoneInput";
 import useRolesStore from "../../../store/useRolesStore";
 import usersService from "../services"
 import { alertSuccess } from "../../../utils/feedback";
+import { useTranslation } from "react-i18next";
+import { RoleNameLowercase } from "../../../types/Role";
 
 
 const schema = z.object({
@@ -35,7 +37,9 @@ interface Props {
 
 export default function UpsertUserModal({ title, isOpened, selectedUser, onClose, onSubmit }: Props) {
     const [isSubmitting, setSubmitting] = useState(false)
-    const {roles} = useRolesStore()
+    const { roles } = useRolesStore()
+    const { t } = useTranslation()
+    const { t: tGlossary } = useTranslation("glossary")
 
     const form = useForm<FormData>({
         initialValues: {
@@ -58,7 +62,7 @@ export default function UpsertUserModal({ title, isOpened, selectedUser, onClose
             roleName: data.roleName
         }
 
-        
+
         try {
             setSubmitting(true)
             await wait(2000)
@@ -87,15 +91,15 @@ export default function UpsertUserModal({ title, isOpened, selectedUser, onClose
                     <SimpleGrid cols={{ base: 1, sm: 2 }}>
                         <TextInput
                             data-autofocus
-                            label="First Name"
-                            placeholder="First name"
+                            label={tGlossary("user.firstName")}
+                            placeholder={tGlossary("user.firstName")}
                             name="firstName"
                             withAsterisk
                             {...form.getInputProps('firstName')}
                         />
                         <TextInput
-                            label="Last Name"
-                            placeholder="Last name"
+                            label={tGlossary("user.lastName")}
+                            placeholder={tGlossary("user.lastName")}
                             name="lastName"
                             withAsterisk
                             {...form.getInputProps('lastName')}
@@ -103,8 +107,8 @@ export default function UpsertUserModal({ title, isOpened, selectedUser, onClose
                     </SimpleGrid>
 
                     <TextInput
-                        label="Email"
-                        placeholder="example@example.com"
+                        label={tGlossary("user.email")}
+                        placeholder={tGlossary("user.email")}
                         name="email"
                         withAsterisk
                         {...form.getInputProps('email')}
@@ -112,6 +116,8 @@ export default function UpsertUserModal({ title, isOpened, selectedUser, onClose
 
                     <PhoneInputWithCountryCombobox
                         input={{
+                            label: tGlossary("user.phoneNumber"),
+                            placeholder: tGlossary("user.phoneNumber"),
                             name: "nationalPhoneNumber",
                             ...form.getInputProps('nationalPhoneNumber')
                         }}
@@ -122,21 +128,23 @@ export default function UpsertUserModal({ title, isOpened, selectedUser, onClose
                     />
 
                     <Radio.Group
-                        label="Role"
+                        label={tGlossary("user.role")}
                         name="roleName"
                         {...form.getInputProps('roleName')}
                         withAsterisk
                     >
                         <Group justify="center" gap={"xl"}>
                             {
-                                roles.map((role) => (
-                                    <Radio
-
-                                        key={role.id}
-                                        value={role.name.toLowerCase()}
-                                        label={capitalize(role.name)}
-                                    />
-                                ))
+                                roles.map((role) => {
+                                    const roleNameLowercase = role.name.toLowerCase() as RoleNameLowercase;
+                                    return (
+                                        <Radio
+                                            key={role.id}
+                                            value={role.name.toLowerCase()}
+                                            label={capitalize(tGlossary(`roles.${roleNameLowercase}`))}
+                                        />
+                                    )
+                                })
                             }
                         </Group>
                     </Radio.Group>
@@ -144,10 +152,10 @@ export default function UpsertUserModal({ title, isOpened, selectedUser, onClose
 
                 <Group justify="space-between" mt="xl">
                     <Anchor component="button" type="button" variant="gradient" onClick={onClose} size="sm">
-                        Cancel
+                        {t("buttons.cancel")}
                     </Anchor>
                     <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                        Save
+                        {t("buttons.save")}
                     </Button>
                 </Group>
             </form>

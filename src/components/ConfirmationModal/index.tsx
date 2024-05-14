@@ -1,29 +1,30 @@
 import { Anchor, Button, Group, Modal, Text } from "@mantine/core";
 import { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     isOpened: boolean
     isLoading: boolean
-    title: string
     children: ReactNode
     onConfirm: () => void
     onCancel: () => void
 }
 
-export default function ConfirmationModal({ isOpened, isLoading, title, children, onCancel, onConfirm }: Props) {
+export default function ConfirmationModal({ isOpened, isLoading, children, onCancel, onConfirm }: Props) {
+    const { t } = useTranslation()
+
     return (
-        <Modal opened={isOpened} onClose={onCancel} title={title}>
+        <Modal opened={isOpened} onClose={onCancel} title={t("components.confirmationModal.title")}>
             {children}
             <Text size="sm">
-                This action is destructive and you will have
-                to contact support to restore your data.
+                {t("components.confirmationModal.text")}
             </Text>
             <Group justify="space-between" mt="xl">
                 <Anchor component="button" type="button" variant="gradient" onClick={onCancel} size="sm">
-                    Cancel
+                    {t("buttons.cancel")}
                 </Anchor>
                 <Button type="submit" color="red" disabled={isLoading} loading={isLoading} onClick={onConfirm}>
-                    Confirm
+                    {t("buttons.confirm")}
                 </Button>
             </Group>
         </Modal>

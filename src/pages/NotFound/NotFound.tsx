@@ -1,20 +1,22 @@
 import { Container, Title, Text, Button, Group } from '@mantine/core';
 import classes from './NotFound.module.css';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function NotFound() {
+  const {t} = useTranslation('root')
+
   return (
     <Container className={classes.root}>
       <div className={classes.inner}>
         <Illustration className={classes.image} />
         <div className={classes.content}>
-          <Title className={classes.title}>Nothing to see here</Title>
+          <Title className={classes.title}>{t("notFound.title")}</Title>
           <Text c="dimmed" size="lg" ta="center" className={classes.description}>
-            Page you are trying to open does not exist. You may have mistyped the address, or the
-            page has been moved to another URL. If you think this is an error contact support.
+            {t("notFound.description")}
           </Text>
           <Group justify="center">
-            <Button size="md" component={Link} to="/dashboard">Take me back to home page</Button>
+            <Button size="md" component={Link} to="/dashboard">{t("notFound.back")}</Button>
           </Group>
         </div>
       </div>

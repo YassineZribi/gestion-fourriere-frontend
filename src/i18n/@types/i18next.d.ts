@@ -1,6 +1,7 @@
 import { defaultNS } from '..';
 import enCommon from '../locales/en/common';
 import enRoot from '../locales/en/root';
+import enGlossary from '../locales/en/glossary';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -8,6 +9,7 @@ declare module 'i18next' {
     resources: {
       common: typeof enCommon,
       root: typeof enRoot,
+      glossary: typeof enGlossary
     }
   }
 }

@@ -10,39 +10,50 @@ import useFetchWithPagination from '../../hooks/useFetchWithPagination';
 import THead, { type Th } from '../../components/DataTable/THead';
 import TBody from '../../components/DataTable/TBody';
 import DataTable from '../../components/DataTable';
-import { columnsWidth } from '../../features/users/components/helpers';
 import UsersFilterTRow from '../../features/users/components/UsersFilterTRow';
 import UpsertUserModal from '../../features/users/components/UpsertUserModal';
 import UserTRow from '../../features/users/components/UserTRow';
 import useModal from '../../hooks/useModal';
+import { AVATAR_COLUMN_WIDTH } from '../../utils/constants';
+import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 
-const tableHeaderColumns: Th[] = [
+const thColumns = [
     {
-        style: { width: columnsWidth.avatar },
+        style: { width: AVATAR_COLUMN_WIDTH },
         label: ""
     },
     {
         name: "firstName",
-        label: "First Name"
+        label: "firstName"
     },
     {
         name: "lastName",
-        label: "Last Name"
+        label: "lastName"
     },
     {
-        label: "Roles"
+        label: "role"
     },
     {
         name: "email",
-        label: "Email"
+        label: "email"
     },
     {
-        label: "Phone"
+        label: "phoneNumber"
     }
-]
+] as const
 
 export default function UserAccountsManagement() {
     useFetchRoles()
+    
+    const { t } = useTranslation()
+    const { t: tRoot } = useTranslation("root")
+    const { t: tGlossary } = useTranslation("glossary")
+    
+    const thColumnsWithTranslation: Th[] = useMemo(() => thColumns.map(c => (
+        { ...c, label: c.label ? tGlossary(`user.${c.label}`) : c.label }
+    )), [tGlossary])
+
     const {
         responseData,
         isLoading,
@@ -63,11 +74,11 @@ export default function UserAccountsManagement() {
 
     } = useFetchWithPagination<User>(usersService.getAllUsersByCriteria);
 
-    const [isOpen, {open, close}] = useModal()
+    const [isOpen, { open, close }] = useModal()
 
     return (
         <div>
-            <Title>User accounts management</Title>
+            <Title>{tRoot("userAccountsManagement.title")}</Title>
             <Space my={'xl'} />
             {error && <p>{error}</p>}
             {!responseData && isLoading && <Center><Loader size={50} /></Center>}
@@ -77,7 +88,7 @@ export default function UserAccountsManagement() {
                         onAddBtnClick={open}
                     >
                         <UpsertUserModal
-                            title="Create user account"
+                            title={t("components.upsertUserModal.title.onInsert")}
                             isOpened={isOpen}
                             onClose={close}
                             onSubmit={onCreateUser}
@@ -85,7 +96,7 @@ export default function UserAccountsManagement() {
                     </DataTableControlPanel>
                     <DataTable>
                         <THead
-                            columns={tableHeaderColumns}
+                            columns={thColumnsWithTranslation}
                             sortList={getSortList()}
                             showFilters={showFilters}
                             onSort={handleSort}

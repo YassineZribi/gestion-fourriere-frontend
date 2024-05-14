@@ -1,4 +1,4 @@
-import { Table as MantineTable } from '@mantine/core';
+import { Table } from '@mantine/core';
 import { ReactNode } from 'react';
 
 interface Props {
@@ -6,12 +6,12 @@ interface Props {
     minWidth?: number
 }
 
-export default function Table({ children, minWidth = 1000 }: Props) {
+export default function DataTable({ children, minWidth = 1000 }: Props) {
     return (
-        <MantineTable.ScrollContainer minWidth={minWidth}>
-            <MantineTable verticalSpacing="sm" styles={{ table: { tableLayout: 'fixed' } }} striped withRowBorders={false}>
+        <Table.ScrollContainer minWidth={minWidth}>
+            <Table verticalSpacing="sm" styles={{ table: { tableLayout: 'fixed' } }} striped withRowBorders={false}>
                 {children}
-            </MantineTable>
-        </MantineTable.ScrollContainer>
+            </Table>
+        </Table.ScrollContainer>
     )
 }

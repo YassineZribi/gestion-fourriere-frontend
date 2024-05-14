@@ -10,6 +10,7 @@ import useModal from "../../../hooks/useModal";
 import usersService from "../services"
 import { wait } from "../../../utils/helpers";
 import { alertSuccess } from "../../../utils/feedback";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     selectedUser: User
@@ -18,6 +19,8 @@ interface Props {
 }
 
 export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser }: Props) {
+    const { t } = useTranslation();
+
     const [isUpdateUserModalOpen, {open: openUpdateUserModal, close: closeUpdateUserModal}] = useModal()
 
     const [isUserDetailsModalOpen, {open: openUserDetailsModal, close: closeUserDetailsModal}] = useModal()
@@ -49,7 +52,6 @@ export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser 
             />
 
             <InfoDetailsModal
-                title="Details"
                 isOpened={isUserDetailsModalOpen}
                 onClose={closeUserDetailsModal}
             >
@@ -59,7 +61,7 @@ export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser 
             </InfoDetailsModal>
 
             <UpsertUserModal
-                title="Update user account"
+                title={t("components.upsertUserModal.title.onUpdate")}
                 isOpened={isUpdateUserModalOpen}
                 selectedUser={selectedUser}
                 onClose={closeUpdateUserModal}
@@ -67,14 +69,13 @@ export default function UsersActions({ selectedUser, onDeleteUser, onUpdateUser 
             />
 
             <ConfirmationModal
-                title="Confirmation"
                 isLoading={isDeletingUserLoading}
                 isOpened={isConfirmationModalOpen}
                 onCancel={closeConfirmationModal}
                 onConfirm={confirmDeletingUser}
             >
                 <Text size="md" fw={"bold"}>
-                    Are you sure you want to delete this user account?
+                    {t("components.usersActions.confirmationModal.message")}
                 </Text>
             </ConfirmationModal>
         </>

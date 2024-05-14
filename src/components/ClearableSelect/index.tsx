@@ -1,5 +1,6 @@
 import { ComboboxData, ComboboxItem, Select } from '@mantine/core';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     data: ComboboxData
@@ -9,6 +10,7 @@ interface Props {
 
 export default function ClearableSelect({ data, defaultValue, onChange }: Props) {
     const [value, setValue] = useState<ComboboxItem | null>(defaultValue || null);
+    const { t } = useTranslation()
 
     const handleChange = (newOption: ComboboxItem | null) => {
         setValue(newOption)
@@ -29,7 +31,7 @@ export default function ClearableSelect({ data, defaultValue, onChange }: Props)
         <Select
             //   label="Your favorite library"
             variant='filled'
-            placeholder="No filter"
+            placeholder={t("labels.noFilter")}
             data={data}
             value={value ? value.value : null}
             onChange={(_value, option) => handleChange(option)}

@@ -7,6 +7,9 @@ import arCommon from './locales/ar/common';
 import enRoot from './locales/en/root';
 import frRoot from './locales/fr/root';
 import arRoot from './locales/ar/root';
+import enGlossary from './locales/en/glossary';
+import frGlossary from './locales/fr/glossary';
+import arGlossary from './locales/ar/glossary';
 
 export const defaultNS = 'common'; // Default name space
 
@@ -22,9 +25,9 @@ i18next
         defaultNS: defaultNS,
         fallbackNS: defaultNS,
         resources: {
-            en: { [defaultNS]: enCommon, root: enRoot },
-            fr: { [defaultNS]: frCommon, root: frRoot },
-            ar: { [defaultNS]: arCommon, root: arRoot }
+            en: { [defaultNS]: enCommon, root: enRoot, glossary: enGlossary },
+            fr: { [defaultNS]: frCommon, root: frRoot, glossary: frGlossary },
+            ar: { [defaultNS]: arCommon, root: arRoot, glossary: arGlossary }
         },
         detection: {
             order: ['localStorage']

@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { TextInput, SimpleGrid, Group, Button, Center, Tooltip, InputLabel, Indicator, Avatar, FileInput, rem } from '@mantine/core';
+import { TextInput, SimpleGrid, Group, Button, Center, Tooltip, InputLabel, Avatar, FileInput, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -9,9 +9,10 @@ import useAuthStore from '../../../store/useAuthStore';
 import { wait } from '../../../utils/helpers';
 import accountService from '../services'
 import { alertInfo, alertSuccess } from '../../../utils/feedback';
-import { PencilIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import PhoneInputWithCountryCombobox from '../../../components/PhoneInput';
 import { getFullResourcePath } from '../../../lib/axios/api';
+import { useTranslation } from 'react-i18next';
 
 const schema = z.object({
     firstName: z.string().min(1, 'First name is required'),
@@ -29,6 +30,8 @@ export default function UpdateProfileForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [photoFile, setPhotoFile] = useState<File | null>(null)
     const { user, updateAuthenticatedUser } = useAuthStore();
+    const { t } = useTranslation()
+    const { t: tGlossary } = useTranslation("glossary")
 
     if (!user) return null;
 
@@ -72,60 +75,57 @@ export default function UpdateProfileForm() {
         }
     }
 
-    const handleReset = () => {
-        form.reset();
-        setPhotoFile(null)
-    }
-
     return (
         <form onSubmit={form.onSubmit(handleSubmit)}>
             <Center my={'xl'}>
-                <Tooltip label="Update profile picture" withArrow position='bottom'>
+                <div style={{ position: 'relative' }}>
+                    {
+                        photoFile !== null && (
+                            <Tooltip label={t("buttons.removeModification")} withArrow position='bottom'>
+                                <Avatar color="red" variant='filled' size={30} style={{ position: "absolute", left: 0, bottom: 0, zIndex: 1, cursor: 'pointer' }} onClick={() => setPhotoFile(null)}>
+                                    <TrashIcon style={{ width: rem(14), height: rem(14) }} />
+                                </Avatar>
+                            </Tooltip>
+                        )
+                    }
                     <InputLabel htmlFor='profile-photo'>
-                        <Indicator
-                            onClick={() => console.log("clicked")}
-                            inline
-                            label={<PencilIcon style={{ width: rem(14), height: rem(14) }} />}
-                            size={30}
-                            offset={15}
-                            position="bottom-end"
-                            color="blue"
-                            withBorder
-                            style={{ cursor: "pointer" }}
-                        >
-                            <Avatar
-                                size={120}
-                                radius={120}
-                                style={{ border: "2px solid" }}
-                                src={
-                                    photoFile
-                                        ? URL.createObjectURL(photoFile)
-                                        : user.photoPath ? getFullResourcePath(user.photoPath) : ""
-                                }
-                            />
-                        </Indicator>
+                        <Tooltip label={t("buttons.update")} withArrow position='bottom'>
+                            <Avatar color="blue" variant='filled' size={30} style={{ position: "absolute", right: 0, bottom: 0, zIndex: 1, cursor: 'pointer' }}>
+                                <PencilIcon style={{ width: rem(14), height: rem(14) }} />
+                            </Avatar>
+                        </Tooltip>
                     </InputLabel>
-                </Tooltip>
-                <FileInput
-                    id='profile-photo'
-                    accept="image/*"
-                    onChange={file => {
-                        setPhotoFile(file);
-                        alertInfo('Click on "Save changes" to confirm the modification')
-                    }}
-                    style={{ display: 'none' }}
-                />
+                    <Avatar
+                        size={120}
+                        radius={120}
+                        style={{ border: "2px solid" }}
+                        src={
+                            photoFile
+                                ? URL.createObjectURL(photoFile)
+                                : user.photoPath ? getFullResourcePath(user.photoPath) : null
+                        }
+                    />
+                    <FileInput
+                        id='profile-photo'
+                        accept="image/*"
+                        onChange={file => {
+                            setPhotoFile(file);
+                            alertInfo('Click on "Save changes" to confirm the modification')
+                        }}
+                        style={{ display: 'none' }}
+                    />
+                </div>
             </Center>
             <SimpleGrid cols={{ base: 1, sm: 2 }} mt="xl">
                 <TextInput
-                    label="First Name"
-                    placeholder="Your first name"
+                    label={tGlossary("user.firstName")}
+                    placeholder={tGlossary("user.firstName")}
                     name="firstName"
                     {...form.getInputProps('firstName')}
                 />
                 <TextInput
-                    label="Last Name"
-                    placeholder="Your last name"
+                    label={tGlossary("user.lastName")}
+                    placeholder={tGlossary("user.lastName")}
                     name="lastName"
                     {...form.getInputProps('lastName')}
                 />
@@ -133,14 +133,16 @@ export default function UpdateProfileForm() {
 
             <SimpleGrid cols={{ base: 1, sm: 2 }} mt="xl">
                 <TextInput
-                    label="Email"
-                    placeholder="Your email"
+                    label={tGlossary("user.email")}
+                    placeholder={tGlossary("user.email")}
                     name="email"
                     disabled
                     {...form.getInputProps('email')}
                 />
                 <PhoneInputWithCountryCombobox
                     input={{
+                        label: tGlossary("user.phoneNumber"),
+                        placeholder: tGlossary("user.phoneNumber"),
                         name: "nationalPhoneNumber",
                         ...form.getInputProps('nationalPhoneNumber')
                     }}
@@ -151,11 +153,8 @@ export default function UpdateProfileForm() {
                 />
             </SimpleGrid>
             <Group justify="end" mt="xl">
-                <Button type="reset" onClick={handleReset} size="md" variant='outline'>
-                    Reset
-                </Button>
                 <Button type="submit" size="md" disabled={isSubmitting} loading={isSubmitting}>
-                    Save changes
+                    {t('buttons.saveChanges')}
                 </Button>
             </Group>
         </form>

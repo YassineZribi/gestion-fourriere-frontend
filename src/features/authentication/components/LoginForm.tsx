@@ -27,6 +27,7 @@ export default function LoginForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const authStore = useAuthStore()
     const { t } = useTranslation()
+    const { t: tGlossary } = useTranslation("glossary")
 
     const form = useForm<LoginDto>({
         initialValues: {
@@ -59,13 +60,13 @@ export default function LoginForm() {
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <TextInput
                     withAsterisk
-                    label={t('forms.email')}
+                    label={tGlossary('user.email')}
                     placeholder=""
                     {...form.getInputProps('email')}
                 />
                 <PasswordInput
                     withAsterisk
-                    label={t('forms.password')}
+                    label={tGlossary('user.password')}
                     placeholder=""
                     {...form.getInputProps('password')}
                     mt="md"

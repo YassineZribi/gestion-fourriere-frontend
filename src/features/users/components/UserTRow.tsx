@@ -1,9 +1,10 @@
-import { Anchor, Avatar, Badge, Table, Text } from "@mantine/core"
+import { Anchor, Avatar, Badge, Table, Text, useDirection } from "@mantine/core"
 import User from "../../../types/User"
 import UsersActions from "./UsersActions"
-import { ACTIONS_COLUMN_WIDTH } from "../../../utils/constants"
-import { columnsWidth } from "./helpers"
+import { ACTIONS_COLUMN_WIDTH, AVATAR_COLUMN_WIDTH } from "../../../utils/constants"
 import { getFullResourcePath } from "../../../lib/axios/api"
+import { useTranslation } from "react-i18next"
+import { RoleNameLowercase } from "../../../types/Role"
 
 const jobColors: Record<string, string> = {
     MANAGER: 'blue',
@@ -18,9 +19,12 @@ interface Props {
 }
 
 export default function UserTRow({ user, onUpdateUser, onDeleteUser }: Props) {
+    const { dir } = useDirection();
+    const { t: tGlossary } = useTranslation("glossary")
+
     return (
         <Table.Tr>
-            <Table.Td style={{ width: columnsWidth.avatar }}>
+            <Table.Td style={{ width: AVATAR_COLUMN_WIDTH }}>
                 <Avatar
                     size={30}
                     src={user.photoPath ? getFullResourcePath(user.photoPath) : ""}
@@ -42,7 +46,7 @@ export default function UserTRow({ user, onUpdateUser, onDeleteUser }: Props) {
 
             <Table.Td>
                 <Badge key={user.role.id} color={jobColors[user.role.name]} variant="light">
-                    {user.role.name}
+                    {tGlossary(`roles.${user.role.name.toLowerCase() as RoleNameLowercase}`)}
                 </Badge>
             </Table.Td>
             <Table.Td>
@@ -51,7 +55,7 @@ export default function UserTRow({ user, onUpdateUser, onDeleteUser }: Props) {
                 </Anchor>
             </Table.Td>
             <Table.Td>
-                <Text fz="sm">{user.phoneNumber}</Text>
+                <Text fz="sm" dir="ltr" style={{textAlign: dir === 'rtl' ? 'end' : 'start'}}>{user.phoneNumber}</Text>
             </Table.Td>
             <Table.Td style={{ width: ACTIONS_COLUMN_WIDTH }}>
                 <UsersActions

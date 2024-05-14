@@ -1,6 +1,7 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { Button, Group, rem } from "@mantine/core";
 import { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     children: ReactNode
@@ -8,7 +9,7 @@ interface Props {
 }
 
 export default function DataTableControlPanel({ children, onAddBtnClick }: Props) {
-
+    const { t } = useTranslation()
     return (
         <>
             <Group justify="space-between">
@@ -21,7 +22,7 @@ export default function DataTableControlPanel({ children, onAddBtnClick }: Props
                         leftSection={<PlusIcon style={{ width: rem(14), height: rem(14) }} />}
                         variant="light"
                     >
-                        New
+                        {t("buttons.add")}
                     </Button>
                 </Group>
             </Group>

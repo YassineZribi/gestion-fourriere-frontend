@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard"
 import ChangePassword from "./pages/ChangePassword"
 import UserAccountsManagement from "./pages/UserAccountsManagement"
 import Institution from "./pages/Institution"
+import WarehousesManagement from "./pages/WarehousesManagement"
 
 function App() {
   useAppDirection()
@@ -28,6 +29,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/user-accounts-management" element={<UserAccountsManagement />} />
+          <Route path="/warehouses-management" element={<WarehousesManagement />} />
           {["/institution", "/institution/:tab"].map(path => (
             <Route key={path} path={path} element={<Institution />} />
           ))}

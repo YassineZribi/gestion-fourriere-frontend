@@ -5,6 +5,7 @@ import ChangePasswordDto from '../types/ChangePasswordDto';
 import { useState } from 'react';
 import { wait } from '../../../utils/helpers';
 import { alertSuccess } from '../../../utils/feedback';
+import { useTranslation } from 'react-i18next';
 
 const initialValues: ChangePasswordDto = {
     currentPassword: '',
@@ -14,6 +15,8 @@ const initialValues: ChangePasswordDto = {
 
 export default function ChangePasswordForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { t } = useTranslation()
+    
     const form = useForm({
         initialValues,
 
@@ -46,27 +49,27 @@ export default function ChangePasswordForm() {
     return (
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <PasswordInput
-                    label="Current password"
-                    placeholder="Current password"
+                    label={t("components.changePasswordForm.currentPassword")}
+                    placeholder={t("components.changePasswordForm.currentPassword")}
                     {...form.getInputProps('currentPassword')}
                 />
 
                 <PasswordInput
                     mt="sm"
-                    label="New password"
-                    placeholder="New password"
+                    label={t("components.changePasswordForm.newPassword")}
+                    placeholder={t("components.changePasswordForm.newPassword")}
                     {...form.getInputProps('newPassword')}
                 />
 
                 <PasswordInput
                     mt="sm"
-                    label="Confirm new password"
-                    placeholder="Confirm new password"
+                    label={t("components.changePasswordForm.confirmNewPassword")}
+                    placeholder={t("components.changePasswordForm.confirmNewPassword")}
                     {...form.getInputProps('confirmNewPassword')}
                 />
 
                 <Group justify="flex-end" mt="md">
-                    <Button type='submit' disabled={isSubmitting} loading={isSubmitting}>Submit</Button>
+                    <Button type='submit' disabled={isSubmitting} loading={isSubmitting}>{t("buttons.save")}</Button>
                 </Group>
             </form>
     );
