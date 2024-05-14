@@ -1,47 +1,49 @@
 import { Tabs } from '@mantine/core';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import InstitionInformation from '../../features/institution/components/InstitutionInformation';
-import Employees from '../../features/employees/components/Employees';
-import OrganizationalChart from '../../features/employees/components/OrganizationalChart';
+import InstitutionProfile from '../../features/institution/components/InstitutionProfile';
+import InstitutionEmployees from '../../features/employees/components/InstitutionEmployees';
+import InstitutionChart from '../../features/employees/components/InstitutionChart';
+import { useTranslation } from 'react-i18next';
 
-const schema = z.enum(["information", "employees", "chart"])
-const { information, employees, chart } = schema.Values
+const schema = z.enum(["profile", "employees", "chart"])
+const { profile, employees, chart } = schema.Values
 
 export default function Institution() {
     const navigate = useNavigate();
     const { tab: currentTab } = useParams();
+    const {t} = useTranslation('root')
 
-    const value = schema.safeParse(currentTab).success ? currentTab : information
+    const value = schema.safeParse(currentTab).success ? currentTab : profile
 
     const handleChangeTab = (newValue: string | null) => {
-        navigate(`/institution/${newValue ?? information}`)
+        navigate(`/institution/${newValue ?? profile}`)
     }
 
     return (
-        <Tabs variant="outline" value={value} onChange={handleChangeTab}>
+        <Tabs keepMounted={false} variant="outline" value={value} onChange={handleChangeTab}>
             <Tabs.List>
-                <Tabs.Tab value={information}>
-                    Information
+                <Tabs.Tab value={profile}>
+                    {t('institution.tabs.profile')}
                 </Tabs.Tab>
                 <Tabs.Tab value={employees}>
-                    Employees
+                {t('institution.tabs.employees')}
                 </Tabs.Tab>
                 <Tabs.Tab value={chart}>
-                    Organizational chart
+                {t('institution.tabs.chart')}
                 </Tabs.Tab>
             </Tabs.List>
 
-            <Tabs.Panel value={information}>
-                <InstitionInformation />
+            <Tabs.Panel value={profile}>
+                <InstitutionProfile />
             </Tabs.Panel>
 
             <Tabs.Panel value={employees}>
-                <Employees />
+                <InstitutionEmployees />
             </Tabs.Panel>
 
             <Tabs.Panel value={chart}>
-                <OrganizationalChart />
+                <InstitutionChart />
             </Tabs.Panel>
 
         </Tabs>

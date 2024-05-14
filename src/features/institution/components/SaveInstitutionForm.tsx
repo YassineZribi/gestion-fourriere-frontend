@@ -1,17 +1,21 @@
 
 import { useState } from 'react';
-import { TextInput, SimpleGrid, Group, Button, Center, Tooltip, InputLabel, Indicator, Avatar, FileInput, rem } from '@mantine/core';
+import { TextInput, SimpleGrid, Group, Button, Center, Tooltip, InputLabel, Avatar, FileInput, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { getCountryCallingCode, getNationalNumber } from '../../../lib/libphonenumber-js';
-import { wait } from '../../../utils/helpers';
+import { isNumeric, wait } from '../../../utils/helpers';
 import institutionService from '../services'
+import employeesService from '../../employees/services'
 import { alertInfo, alertSuccess } from '../../../utils/feedback';
-import { BuildingLibraryIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { BuildingLibraryIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import PhoneInputWithCountryCombobox from '../../../components/PhoneInput';
 import Institution from '../../../types/Institution';
 import { getFullResourcePath } from '../../../lib/axios/api';
+import { useTranslation } from 'react-i18next';
+import SearchableCombobox from '../../../components/SearchableCombobox';
+import EmployeeSelectOption from '../../employees/components/EmployeeSelectOption';
 
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -23,7 +27,7 @@ const schema = z.object({
 
 export type FormData = z.infer<typeof schema>
 
-export type SaveInstitutionDto = Omit<FormData, 'dial_code' | 'nationalPhoneNumber'> & { phoneNumber: string }
+export type SaveInstitutionDto = Omit<FormData, 'dial_code' | 'nationalPhoneNumber'> & { phoneNumber: string, chiefExecutiveId: number | null }
 
 interface Props {
     institution: Institution | null
@@ -33,15 +37,20 @@ interface Props {
 export default function SaveInstitutionForm({ institution, onSaveInstitution }: Props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [logoFile, setLogoFile] = useState<File | null>(null)
+    const [chiefExecutive, setChiefExecutive] = useState(institution?.chiefExecutive ?? null)
+    const { t } = useTranslation()
+    const { t: tGlossary } = useTranslation("glossary")
+    
+    const initialValues = {
+        name: institution?.name ?? '',
+        address: institution?.address ?? '',
+        email: institution?.email ?? '',
+        dial_code: (institution?.phoneNumber && getCountryCallingCode(institution.phoneNumber)) ?? '+216',
+        nationalPhoneNumber: (institution?.phoneNumber && getNationalNumber(institution.phoneNumber)) ?? '',
+    }
 
     const form = useForm<FormData>({
-        initialValues: {
-            name: institution?.name ?? '',
-            address: institution?.address ?? '',
-            email: institution?.email ?? '',
-            dial_code: (institution?.phoneNumber && getCountryCallingCode(institution.phoneNumber)) ?? '+216',
-            nationalPhoneNumber: (institution?.phoneNumber && getNationalNumber(institution.phoneNumber)) ?? '',
-        },
+        initialValues: initialValues,
         validate: zodResolver(schema),
     });
 
@@ -53,7 +62,8 @@ export default function SaveInstitutionForm({ institution, onSaveInstitution }: 
             name: values.name,
             address: values.address,
             email: values.email,
-            phoneNumber: values.dial_code + values.nationalPhoneNumber
+            phoneNumber: values.dial_code + values.nationalPhoneNumber,
+            chiefExecutiveId: chiefExecutive?.id ?? null
         }
 
         setIsSubmitting(true)
@@ -71,62 +81,59 @@ export default function SaveInstitutionForm({ institution, onSaveInstitution }: 
         }
     }
 
-    const handleReset = () => {
-        form.reset();
-        setLogoFile(null)
-    }
-
     return (
         <form onSubmit={form.onSubmit(handleSubmit)}>
             <Center my={'xl'}>
-                <Tooltip label="Update institution logo" withArrow position='bottom'>
+                <div style={{ position: 'relative' }}>
+                    {
+                        logoFile !== null && (
+                            <Tooltip label={t("buttons.removeModification")} withArrow position='bottom'>
+                                <Avatar color="red" variant='filled' size={30} style={{ position: "absolute", left: 0, bottom: 0, zIndex: 1, cursor: 'pointer' }} onClick={() => setLogoFile(null)}>
+                                    <TrashIcon style={{ width: rem(14), height: rem(14) }} />
+                                </Avatar>
+                            </Tooltip>
+                        )
+                    }
                     <InputLabel htmlFor='institution-logo'>
-                        <Indicator
-                            onClick={() => console.log("clicked")}
-                            inline
-                            label={<PencilIcon style={{ width: rem(14), height: rem(14) }} />}
-                            size={30}
-                            offset={15}
-                            position="bottom-end"
-                            color="blue"
-                            withBorder
-                            style={{ cursor: "pointer" }}
-                        >
-                            <Avatar
-                                size={120}
-                                radius={120}
-                                style={{ border: "2px solid" }}
-                                src={
-                                    logoFile
-                                        ? URL.createObjectURL(logoFile)
-                                        : institution?.logoPath ? getFullResourcePath(institution.logoPath) : null
-                                }
-                            >
-                                <BuildingLibraryIcon style={{ width: rem(64), height: rem(64) }} />
+                        <Tooltip label={t("buttons.update")} withArrow position='bottom'>
+                            <Avatar color="blue" variant='filled' size={30} style={{ position: "absolute", right: 0, bottom: 0, zIndex: 1, cursor: 'pointer' }}>
+                                <PencilIcon style={{ width: rem(14), height: rem(14) }} />
                             </Avatar>
-                        </Indicator>
+                        </Tooltip>
                     </InputLabel>
-                </Tooltip>
-                <FileInput
-                    id='institution-logo'
-                    accept="image/*"
-                    onChange={file => {
-                        setLogoFile(file);
-                        alertInfo('Click on "Save changes" to confirm the modification')
-                    }}
-                    style={{ display: 'none' }}
-                />
+                    <Avatar
+                        size={120}
+                        radius={120}
+                        style={{ border: "2px solid" }}
+                        src={
+                            logoFile
+                                ? URL.createObjectURL(logoFile)
+                                : institution?.logoPath ? getFullResourcePath(institution.logoPath) : null
+                        }
+                    >
+                        <BuildingLibraryIcon style={{ width: rem(64), height: rem(64) }} />
+                    </Avatar>
+                    <FileInput
+                        id='institution-logo'
+                        accept="image/*"
+                        onChange={file => {
+                            setLogoFile(file);
+                            alertInfo('Click on "Save changes" to confirm the modification')
+                        }}
+                        style={{ display: 'none' }}
+                    />
+                </div>
             </Center>
             <SimpleGrid cols={{ base: 1, sm: 2 }} mt="xl">
                 <TextInput
-                    label="Name"
-                    placeholder="Institution name"
+                    label={tGlossary("institution.name")}
+                    placeholder={tGlossary("institution.name")}
                     name="name"
                     {...form.getInputProps('name')}
                 />
                 <TextInput
-                    label="Address"
-                    placeholder="Institution address"
+                    label={tGlossary("institution.address")}
+                    placeholder={tGlossary("institution.address")}
                     name="address"
                     {...form.getInputProps('address')}
                 />
@@ -134,13 +141,15 @@ export default function SaveInstitutionForm({ institution, onSaveInstitution }: 
 
             <SimpleGrid cols={{ base: 1, sm: 2 }} mt="xl">
                 <TextInput
-                    label="Email"
-                    placeholder="Institution email"
+                    label={tGlossary("institution.email")}
+                    placeholder={tGlossary("institution.email")}
                     name="email"
                     {...form.getInputProps('email')}
                 />
                 <PhoneInputWithCountryCombobox
                     input={{
+                        label: tGlossary("institution.phoneNumber"),
+                        placeholder: tGlossary("institution.phoneNumber"),
                         name: "nationalPhoneNumber",
                         ...form.getInputProps('nationalPhoneNumber')
                     }}
@@ -150,12 +159,27 @@ export default function SaveInstitutionForm({ institution, onSaveInstitution }: 
                     }}
                 />
             </SimpleGrid>
+            <SimpleGrid cols={{ base: 1, sm: 2 }} mt="xl">
+                <SearchableCombobox
+                    selectedEntity={chiefExecutive}
+                    placeholder={tGlossary("institution.manager")}
+                    label={tGlossary("institution.manager")}
+                    onFetch={employeesService.getAllEmployeesByFullName}
+                    onSelectOption={newEmployee => {
+                        setChiefExecutive(newEmployee)
+                    }}
+                    onClear={() => {
+                        setChiefExecutive(null)
+                    }}
+                >
+                    {
+                        (employee) => <EmployeeSelectOption employee={employee} />
+                    }
+                </SearchableCombobox>
+            </SimpleGrid>
             <Group justify="end" mt="xl">
-                <Button type="reset" onClick={handleReset} size="md" variant='outline'>
-                    Reset
-                </Button>
                 <Button type="submit" size="md" disabled={isSubmitting} loading={isSubmitting}>
-                    Save changes
+                    {t("buttons.saveChanges")}
                 </Button>
             </Group>
         </form>

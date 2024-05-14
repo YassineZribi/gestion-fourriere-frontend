@@ -1,4 +1,3 @@
-
 import { Box, Center, Loader } from '@mantine/core';
 import SaveInstitutionForm from './SaveInstitutionForm';
 import useHandleInstitution from '../hooks/useHandleInstitution';
