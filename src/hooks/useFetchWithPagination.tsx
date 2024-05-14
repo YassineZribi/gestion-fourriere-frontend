@@ -91,6 +91,10 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         return allFilterParams
     }
 
+    const getSearchParam = (key: string) => {
+        return searchParams.get(key)
+    } 
+
     const setPageParam = (pageNumber: number) => {
         searchParams.set("page", String(pageNumber))
         setSearchParams(searchParams)
@@ -147,6 +151,7 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         handleClearFilters,
         hasFilters,
         setPageParam,
+        getSearchParam,
         getFilterParams,
         getSortList,
         

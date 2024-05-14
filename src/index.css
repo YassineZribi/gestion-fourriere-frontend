@@ -8,3 +8,20 @@
         box-shadow: var(--mantine-shadow-sm);
     }
 }
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* .leaflet-control-attribution.leaflet-control {
+    display: none !important;
+} */
+
+
+[dir="rtl"] input::placeholder {
+    /* color: red !important; */
+    font-size: 1.03em;
+    /* font-size: small; */
+}

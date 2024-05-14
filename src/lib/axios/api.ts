@@ -1,5 +1,5 @@
 import axios from 'axios';
-export { AxiosError } from 'axios';
+export { AxiosError, type AxiosResponse } from 'axios';
 import { ACCESS_TOKEN_KEY, APPLICATION_JSON } from '../../utils/constants';
 
 const baseURL = import.meta.env.VITE_API_URL
