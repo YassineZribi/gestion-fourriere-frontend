@@ -30,6 +30,7 @@ const mockdata: MenuItem[] = [
         links: [
             { label: 'Institution', link: '/institution' },
             { label: 'Warehouses management', link: '/warehouses-management' },
+            { label: 'Registers management', link: '/registers-management' },
         ],
     },
     {

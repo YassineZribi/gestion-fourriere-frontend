@@ -45,7 +45,13 @@ const common: Common = {
         upsertWarehouseModal: {
             title: {
                 onInsert: "Ajouter un nouveau dépôt",
-                onUpdate: "Modifier les données de dépôt"
+                onUpdate: "Modifier les données du dépôt"
+            }
+        },
+        upsertRegisterModal: {
+            title: {
+                onInsert: "Ajouter un nouveau registre",
+                onUpdate: "Modifier les données du registre"
             }
         },
         confirmationModal: {
@@ -65,6 +71,11 @@ const common: Common = {
         warehousesActions: {
             confirmationModal: {
                 message: "Êtes-vous sûr de vouloir supprimer ce dépôt ?"
+            }
+        },
+        registersActions: {
+            confirmationModal: {
+                message: "Êtes-vous sûr de vouloir supprimer ce registre ?"
             }
         },
         dataTablePagination: {

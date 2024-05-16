@@ -48,6 +48,12 @@ const common: Common = {
                 onUpdate: "تحديث بيانات المستودع"
             }
         },
+        upsertRegisterModal: {
+            title: {
+                onInsert: "إضافة سِجل جديد",
+                onUpdate: "تحديث بيانات السِّجل"
+            }
+        },
         confirmationModal: {
             title: "التأكيد",
             text: "هذا الإجراء مدمر وسيتعين عليك الاتصال بالدعم لاستعادة بياناتك."
@@ -65,6 +71,11 @@ const common: Common = {
         warehousesActions: {
             confirmationModal: {
                 message: "هل أنت متأكد أنك تريد حذف هذا المستودع ؟"
+            }
+        },
+        registersActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف هذا السِّجل ؟"
             }
         },
         dataTablePagination: {

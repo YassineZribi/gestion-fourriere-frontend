@@ -21,6 +21,9 @@ type Root = {
     warehousesManagement: {
         title: string
     },
+    registersManagement: {
+        title: string
+    },
     notFound: {
         title: string,
         description: string,

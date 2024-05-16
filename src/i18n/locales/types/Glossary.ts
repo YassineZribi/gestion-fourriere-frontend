@@ -27,6 +27,10 @@ type Glossary = {
         longitude: string,
         manager: string
     },
+    register: {
+        name: string,
+        observation: string
+    },
     roles: {
         admin: string,
         manager: string,

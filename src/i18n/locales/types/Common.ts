@@ -46,6 +46,12 @@ type Common = {
                 onUpdate: string
             }
         },
+        upsertRegisterModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
         confirmationModal: {
             title: string,
             text: string
@@ -61,6 +67,11 @@ type Common = {
             }
         },
         warehousesActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        registersActions: {
             confirmationModal: {
                 message: string
             }

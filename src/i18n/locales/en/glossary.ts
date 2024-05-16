@@ -29,6 +29,10 @@ const glossary: Glossary = {
         longitude: "Longitude",
         manager: "Manager"
     },
+    register: {
+        name: "Name",
+        observation: "Observation"
+    },
     roles: {
         admin: "Admin",
         manager: "Manager",

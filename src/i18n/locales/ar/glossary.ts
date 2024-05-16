@@ -29,6 +29,10 @@ const glossary: Glossary = {
         longitude: "خط الطول",
         manager: "المسؤول"
     },
+    register: {
+        name: "الإسم",
+        observation: "ملاحظة"
+    },
     roles: {
         admin: "مشرف إداري",
         manager: "مدير",

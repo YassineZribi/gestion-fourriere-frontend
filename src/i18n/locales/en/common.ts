@@ -48,6 +48,12 @@ const common: Common = {
                 onUpdate: "Update warehouse"
             }
         },
+        upsertRegisterModal: {
+            title: {
+                onInsert: "Add new register",
+                onUpdate: "Update register"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "This action is destructive and you will have to contact support to restore your data.",
@@ -65,6 +71,11 @@ const common: Common = {
         warehousesActions: {
             confirmationModal: {
                 message: "Are you sure you want to delete this warehouse?"
+            }
+        },
+        registersActions: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this register?"
             }
         },
         dataTablePagination: {
