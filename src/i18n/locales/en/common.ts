@@ -54,6 +54,12 @@ const common: Common = {
                 onUpdate: "Update register"
             }
         },
+        upsertSubRegisterModal: {
+            title: {
+                onInsert: "Add new sub-register",
+                onUpdate: "Update sub-register"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "This action is destructive and you will have to contact support to restore your data.",
@@ -76,6 +82,11 @@ const common: Common = {
         registersActions: {
             confirmationModal: {
                 message: "Are you sure you want to delete this register?"
+            }
+        },
+        subRegistersActions: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this sub-register?"
             }
         },
         dataTablePagination: {

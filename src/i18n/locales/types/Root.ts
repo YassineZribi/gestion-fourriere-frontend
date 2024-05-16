@@ -24,6 +24,9 @@ type Root = {
     registersManagement: {
         title: string
     },
+    subRegistersManagement: {
+        title: string
+    },
     notFound: {
         title: string,
         description: string,

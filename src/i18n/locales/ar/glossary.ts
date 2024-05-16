@@ -33,6 +33,11 @@ const glossary: Glossary = {
         name: "الإسم",
         observation: "ملاحظة"
     },
+    subRegister: {
+        name: "الإسم",
+        description: "الوصف",
+        register: "السِّجل"
+    },
     roles: {
         admin: "مشرف إداري",
         manager: "مدير",

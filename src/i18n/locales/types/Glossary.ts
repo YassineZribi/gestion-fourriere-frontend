@@ -31,6 +31,11 @@ type Glossary = {
         name: string,
         observation: string
     },
+    subRegister: {
+        name: string,
+        description: string,
+        register: string
+    },
     roles: {
         admin: string,
         manager: string,

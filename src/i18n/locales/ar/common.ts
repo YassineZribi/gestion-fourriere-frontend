@@ -54,6 +54,12 @@ const common: Common = {
                 onUpdate: "تحديث بيانات السِّجل"
             }
         },
+        upsertSubRegisterModal: {
+            title: {
+                onInsert: "إضافة سِجل فرعي جديد",
+                onUpdate: "تحديث بيانات السِّجل الفرعي"
+            }
+        },
         confirmationModal: {
             title: "التأكيد",
             text: "هذا الإجراء مدمر وسيتعين عليك الاتصال بالدعم لاستعادة بياناتك."
@@ -76,6 +82,11 @@ const common: Common = {
         registersActions: {
             confirmationModal: {
                 message: "هل أنت متأكد أنك تريد حذف هذا السِّجل ؟"
+            }
+        },
+        subRegistersActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف هذا السِّجل الفرعي ؟"
             }
         },
         dataTablePagination: {

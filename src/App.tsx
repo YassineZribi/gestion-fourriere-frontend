@@ -14,6 +14,7 @@ import UserAccountsManagement from "./pages/UserAccountsManagement"
 import Institution from "./pages/Institution"
 import WarehousesManagement from "./pages/WarehousesManagement"
 import RegistersManagement from "./pages/RegistersManagement"
+import SubRegistersManagement from "./pages/SubRegistersManagement"
 
 function App() {
   useAppDirection()
@@ -32,6 +33,7 @@ function App() {
           <Route path="/user-accounts-management" element={<UserAccountsManagement />} />
           <Route path="/warehouses-management" element={<WarehousesManagement />} />
           <Route path="/registers-management" element={<RegistersManagement />} />
+          <Route path="/sub-registers-management" element={<SubRegistersManagement />} />
           {["/institution", "/institution/:tab"].map(path => (
             <Route key={path} path={path} element={<Institution />} />
           ))}

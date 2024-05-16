@@ -52,6 +52,12 @@ type Common = {
                 onUpdate: string
             }
         },
+        upsertSubRegisterModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
         confirmationModal: {
             title: string,
             text: string
@@ -72,6 +78,11 @@ type Common = {
             }
         },
         registersActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        subRegistersActions: {
             confirmationModal: {
                 message: string
             }

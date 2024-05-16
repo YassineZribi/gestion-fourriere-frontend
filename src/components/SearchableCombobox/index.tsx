@@ -7,6 +7,7 @@ interface Props<T> {
   selectedEntity?: T | null
   placeholder?: string
   label?: string
+  error?: string
   variant?: 'default' | 'filled' | 'unstyled'
   shouldClearOption?: boolean
   onFetch: (search: string) => Promise<AxiosResponse<T[], any>>
@@ -14,7 +15,7 @@ interface Props<T> {
   onClear: () => void
 }
 
-export default function SearchableCombobox<T extends { id: number }>({ children, selectedEntity, placeholder, label, variant = "default", shouldClearOption, onFetch, onSelectOption, onClear }: Props<T>) {
+export default function SearchableCombobox<T extends { id: number }>({ children, selectedEntity, placeholder, label, error, variant = "default", shouldClearOption, onFetch, onSelectOption, onClear }: Props<T>) {
   const [search, setSearch] = useState('');
 
   const [value, setValue] = useState<string | null>(selectedEntity ? selectedEntity.id.toString() : null);
@@ -74,6 +75,7 @@ export default function SearchableCombobox<T extends { id: number }>({ children,
       <Combobox.Target>
         <InputBase
           label={label}
+          error={error}
           variant={variant}
           component="button"
           type="button"

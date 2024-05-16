@@ -33,6 +33,11 @@ const glossary: Glossary = {
         name: "Name",
         observation: "Observation"
     },
+    subRegister: {
+        name: "Name",
+        description: "Description",
+        register: "Register"
+    },
     roles: {
         admin: "Admin",
         manager: "Manager",
