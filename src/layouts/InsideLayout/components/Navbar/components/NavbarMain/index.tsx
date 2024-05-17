@@ -32,6 +32,7 @@ const mockdata: MenuItem[] = [
             { label: 'Warehouses management', link: '/warehouses-management' },
             { label: 'Registers management', link: '/registers-management' },
             { label: 'Sub-registers management', link: '/sub-registers-management' },
+            { label: 'Measurement units management', link: '/measurement-units-management' },
         ],
     },
     {

@@ -29,6 +29,9 @@ const root: Root = {
     subRegistersManagement: {
         title: "Gestion des sous-registres"
     },
+    measurementUnitsManagement: {
+        title: "Gestion des unités de mesure"
+    },
     notFound: {
         title: "Quelque chose ne va pas...",
         description: "La page que vous essayez d'ouvrir n'existe pas. Il se peut que vous ayez mal saisi l'adresse ou que la page ait été déplacée vers une autre URL. Si vous pensez qu'il s'agit d'une erreur, contactez l'assistance.",

@@ -27,6 +27,9 @@ type Root = {
     subRegistersManagement: {
         title: string
     },
+    measurementUnitsManagement: {
+        title: string
+    },
     notFound: {
         title: string,
         description: string,

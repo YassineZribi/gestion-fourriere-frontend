@@ -29,6 +29,9 @@ const root: Root = {
     subRegistersManagement: {
         title: "إدارة السِّجلّات الفرعية"
     },
+    measurementUnitsManagement: {
+        title: "إدارة وحدات القياس"
+    },
     notFound: {
         title: "هناك شيء غير صحيح...",
         description: "الصفحة التي تحاول فتحها غير موجودة. ربما أخطأت في كتابة العنوان، أو ربما تم نقل الصفحة إلى عنوان آخر. إذا كنت تعتقد أن هذا خطأ اتصل بالدعم.",

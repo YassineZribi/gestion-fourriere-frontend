@@ -58,6 +58,12 @@ type Common = {
                 onUpdate: string
             }
         },
+        upsertMeasurementUnitModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
         confirmationModal: {
             title: string,
             text: string
@@ -83,6 +89,11 @@ type Common = {
             }
         },
         subRegistersActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        measurementUnitsActions: {
             confirmationModal: {
                 message: string
             }

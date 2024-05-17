@@ -36,6 +36,10 @@ type Glossary = {
         description: string,
         register: string
     },
+    measurementUnit: {
+        name: string,
+        symbol: string
+    },
     roles: {
         admin: string,
         manager: string,

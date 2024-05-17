@@ -38,6 +38,10 @@ const glossary: Glossary = {
         description: "Description",
         register: "Registre"
     },
+    measurementUnit: {
+        name: "Nom",
+        symbol: "Symbole"
+    },
     roles: {
         admin: "Admin",
         manager: "Manager",

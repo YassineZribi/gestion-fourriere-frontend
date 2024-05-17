@@ -60,6 +60,12 @@ const common: Common = {
                 onUpdate: "تحديث بيانات السِّجل الفرعي"
             }
         },
+        upsertMeasurementUnitModal: {
+            title: {
+                onInsert: "إضافة وحدة قياس جديدة",
+                onUpdate: "تحديث بيانات وحدة القياس"
+            }
+        },
         confirmationModal: {
             title: "التأكيد",
             text: "هذا الإجراء مدمر وسيتعين عليك الاتصال بالدعم لاستعادة بياناتك."
@@ -87,6 +93,11 @@ const common: Common = {
         subRegistersActions: {
             confirmationModal: {
                 message: "هل أنت متأكد أنك تريد حذف هذا السِّجل الفرعي ؟"
+            }
+        },
+        measurementUnitsActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف وحدة القياس هذه ؟"
             }
         },
         dataTablePagination: {

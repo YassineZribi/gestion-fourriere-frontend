@@ -60,6 +60,12 @@ const common: Common = {
                 onUpdate: "Update sub-register"
             }
         },
+        upsertMeasurementUnitModal: {
+            title: {
+                onInsert: "Add new measurement unit",
+                onUpdate: "Update measurement unit"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "This action is destructive and you will have to contact support to restore your data.",
@@ -87,6 +93,11 @@ const common: Common = {
         subRegistersActions: {
             confirmationModal: {
                 message: "Are you sure you want to delete this sub-register?"
+            }
+        },
+        measurementUnitsActions: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this measurement unit?"
             }
         },
         dataTablePagination: {

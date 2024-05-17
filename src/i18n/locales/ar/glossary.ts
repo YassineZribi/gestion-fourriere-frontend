@@ -38,6 +38,10 @@ const glossary: Glossary = {
         description: "الوصف",
         register: "السِّجل"
     },
+    measurementUnit: {
+        name: "الإسم",
+        symbol: "الرَّمز"
+    },
     roles: {
         admin: "مشرف إداري",
         manager: "مدير",
