@@ -104,7 +104,6 @@ export default function UpsertWarehouseModal({ title, isOpened, selectedWarehous
                     </SimpleGrid>
                     <SimpleGrid cols={{ base: 1, sm: 2 }}>
                         <NumberInput
-                            data-autofocus
                             label={tGlossary("warehouse.latitude")}
                             placeholder={tGlossary("warehouse.latitude")}
                             name="latitude"

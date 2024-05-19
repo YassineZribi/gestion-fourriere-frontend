@@ -40,10 +40,23 @@ type Glossary = {
         name: string,
         symbol: string
     },
+    articleFamily: {
+        name: string,
+        description: string,
+        nightlyAmount: string,
+        calculationMethod: string,
+        photo: string,
+        register: string,
+        measurementUnit: string
+    },
     roles: {
         admin: string,
         manager: string,
         operator: string
+    },
+    calculationMethods: { // or paymentCalculationMethods
+        perUnit: string,
+        perBatch: string
     }
 };
 

@@ -42,10 +42,23 @@ const glossary: Glossary = {
         name: "الإسم",
         symbol: "الرَّمز"
     },
+    articleFamily: {
+        name: "الإسم",
+        description: "الوصف",
+        nightlyAmount: "المبلغ / الليلة (د.ت)",
+        calculationMethod: "طريقة الاحتساب",
+        photo: "الصورة",
+        register: "السِّجل",
+        measurementUnit: "وحدة القياس"
+    },
     roles: {
         admin: "مشرف إداري",
         manager: "مدير",
         operator: "مشغّل"
+    },
+    calculationMethods: {
+        perUnit: "لكل وحدة",
+        perBatch: "لكل دفعة"
     }
 } as const;
 

@@ -3,6 +3,9 @@ import ClearableInput from "../../../components/ClearableInput";
 import ClearableSelect from "../../../components/ClearableSelect";
 import useRolesStore from "../../../store/useRolesStore";
 import ClearFiltersButton from "../../../components/DataTable/ClearFiltersButton";
+import { useTranslation } from "react-i18next";
+import { RoleNameLowercase } from "../../../types/Role";
+import { useMemo } from "react";
 
 interface Props {
     filters: { [key: string]: string | undefined }
@@ -12,9 +15,12 @@ interface Props {
 }
 
 export default function UsersFilterTRow({ filters, hasFilters, onFilter, onClearFilters }: Props) {
-    const {roles} = useRolesStore()
-
-    const rolesFilteringData: ComboboxItem[] = roles.map(role => ({ value: role.name.toLowerCase(), label: role.name.toUpperCase() }))
+    const { roles } = useRolesStore()
+    const { t: tGlossary } = useTranslation("glossary")
+    const rolesFilteringData: ComboboxItem[] = useMemo(() => roles.map(role => ({
+        value: role.name.toLowerCase(),
+        label: tGlossary(`roles.${role.name.toLowerCase() as RoleNameLowercase}`).toUpperCase()
+    })), [tGlossary])
 
     return (
         <Table.Tr>
@@ -54,7 +60,7 @@ export default function UsersFilterTRow({ filters, hasFilters, onFilter, onClear
                 <Group gap={0} justify="flex-end">
                     {
                         hasFilters && (
-                            <ClearFiltersButton 
+                            <ClearFiltersButton
                                 onClick={onClearFilters}
                             />
                         )

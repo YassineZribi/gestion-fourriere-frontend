@@ -30,6 +30,9 @@ type Root = {
     measurementUnitsManagement: {
         title: string
     },
+    articleFamiliesManagement: {
+        title: string
+    },
     notFound: {
         title: string,
         description: string,

@@ -66,6 +66,12 @@ const common: Common = {
                 onUpdate: "تحديث بيانات وحدة القياس"
             }
         },
+        upsertArticleFamilyModal: {
+            title: {
+                onInsert: "إضافة صنف محجوزات جديد",
+                onUpdate: "تحديث بيانات صنف المحجوزات"
+            }
+        },
         confirmationModal: {
             title: "التأكيد",
             text: "هذا الإجراء مدمر وسيتعين عليك الاتصال بالدعم لاستعادة بياناتك."
@@ -98,6 +104,11 @@ const common: Common = {
         measurementUnitsActions: {
             confirmationModal: {
                 message: "هل أنت متأكد أنك تريد حذف وحدة القياس هذه ؟"
+            }
+        },
+        articleFamiliesActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف صنف المحجوزات هذا ؟"
             }
         },
         dataTablePagination: {

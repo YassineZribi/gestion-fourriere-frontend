@@ -64,6 +64,12 @@ type Common = {
                 onUpdate: string
             }
         },
+        upsertArticleFamilyModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
         confirmationModal: {
             title: string,
             text: string
@@ -94,6 +100,11 @@ type Common = {
             }
         },
         measurementUnitsActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        articleFamiliesActions: {
             confirmationModal: {
                 message: string
             }

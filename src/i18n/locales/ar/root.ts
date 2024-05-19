@@ -32,6 +32,9 @@ const root: Root = {
     measurementUnitsManagement: {
         title: "إدارة وحدات القياس"
     },
+    articleFamiliesManagement: {
+        title: "إدارة أصناف المحجوزات"
+    },
     notFound: {
         title: "هناك شيء غير صحيح...",
         description: "الصفحة التي تحاول فتحها غير موجودة. ربما أخطأت في كتابة العنوان، أو ربما تم نقل الصفحة إلى عنوان آخر. إذا كنت تعتقد أن هذا خطأ اتصل بالدعم.",

@@ -66,6 +66,12 @@ const common: Common = {
                 onUpdate: "Modifier les données de l'unité de mesure"
             }
         },
+        upsertArticleFamilyModal: {
+            title: {
+                onInsert: "Ajouter une nouvelle famille d'articles",
+                onUpdate: "Modifier les données de la famille d'articles"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "Cette action est destructrice et vous devrez contacter l'assistance pour restaurer vos données."
@@ -98,6 +104,11 @@ const common: Common = {
         measurementUnitsActions: {
             confirmationModal: {
                 message: "Êtes-vous sûr de vouloir supprimer cette unité de mesure ?"
+            }
+        },
+        articleFamiliesActions: {
+            confirmationModal: {
+                message: "Êtes-vous sûr de vouloir supprimer cette famille d'articles ?"
             }
         },
         dataTablePagination: {

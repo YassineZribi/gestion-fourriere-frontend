@@ -106,6 +106,7 @@ export default function UpsertSubRegisterModal({ title, isOpened, selectedSubReg
                         placeholder={tGlossary("subRegister.register")}
                         label={tGlossary("subRegister.register")}
                         error={form.errors.registerId?.toString()}
+                        withAsterisk
                         onFetch={registersService.getAllRegistersByName}
                         onSelectOption={newRegister => {
                             setRegister(newRegister)

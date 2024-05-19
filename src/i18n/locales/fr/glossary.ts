@@ -42,10 +42,23 @@ const glossary: Glossary = {
         name: "Nom",
         symbol: "Symbole"
     },
+    articleFamily: {
+        name: "Nom",
+        description: "Description",
+        nightlyAmount: "Montant / nuit (TND)",
+        calculationMethod: "Méthode de calcul",
+        photo: "Photo",
+        register: "Registre",
+        measurementUnit: "Unité de mesure"
+    },
     roles: {
         admin: "Admin",
         manager: "Manager",
         operator: "Opérateur"
+    },
+    calculationMethods: {
+        perUnit: "Par unité",
+        perBatch: "Par lot"
     }
 } as const;
 
