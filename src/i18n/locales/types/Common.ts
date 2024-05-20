@@ -70,6 +70,18 @@ type Common = {
                 onUpdate: string
             }
         },
+        upsertArticleModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
+        upsertSourceModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
         confirmationModal: {
             title: string,
             text: string
@@ -109,11 +121,25 @@ type Common = {
                 message: string
             }
         },
+        articlesActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        sourcesActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
         dataTablePagination: {
             summary: string
         },
         infoDetailsModal: {
             title: string
+        },
+        fileDropzone: {
+            message: string,
+            note: string
         }
     },
 };

@@ -35,6 +35,12 @@ const root: Root = {
     articleFamiliesManagement: {
         title: "Gestion des familles d'articles"
     },
+    articlesManagement: {
+        title: "Gestion des articles"
+    },
+    sourcesManagement: {
+        title: "Gestion des sources"
+    },
     notFound: {
         title: "Quelque chose ne va pas...",
         description: "La page que vous essayez d'ouvrir n'existe pas. Il se peut que vous ayez mal saisi l'adresse ou que la page ait été déplacée vers une autre URL. Si vous pensez qu'il s'agit d'une erreur, contactez l'assistance.",

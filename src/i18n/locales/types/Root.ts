@@ -33,6 +33,12 @@ type Root = {
     articleFamiliesManagement: {
         title: string
     },
+    articlesManagement: {
+        title: string
+    },
+    sourcesManagement: {
+        title: string
+    },
     notFound: {
         title: string,
         description: string,

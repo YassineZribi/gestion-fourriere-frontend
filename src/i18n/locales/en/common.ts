@@ -72,6 +72,18 @@ const common: Common = {
                 onUpdate: "Update article family"
             }
         },
+        upsertArticleModal: {
+            title: {
+                onInsert: "Add new article",
+                onUpdate: "Update article"
+            }
+        },
+        upsertSourceModal: {
+            title: {
+                onInsert: "Add new source",
+                onUpdate: "Update source"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "This action is destructive and you will have to contact support to restore your data.",
@@ -111,11 +123,25 @@ const common: Common = {
                 message: "Are you sure you want to delete this article family?"
             }
         },
+        articlesActions: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this article?"
+            }
+        },
+        sourcesActions: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this source?"
+            }
+        },
         dataTablePagination: {
             summary: "{{start}} - {{end}} of {{total}}"
         },
         infoDetailsModal: {
             title: "Details"
+        },
+        fileDropzone: {
+            message: "Drag a file here or click to upload",
+            note: "File should not exceed {{limit}}mb"
         }
     }
 } as const;

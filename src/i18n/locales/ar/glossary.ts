@@ -51,6 +51,16 @@ const glossary: Glossary = {
         register: "السِّجل",
         measurementUnit: "وحدة القياس"
     },
+    article: {
+        name: "الإسم",
+        transportFee: "(د.ت) تكاليف النقل",
+        photo: "الصورة",
+        articleFamily: "صنف المحجوزات",
+    },
+    source: {
+        name: "الإسم",
+        description: "الوصف"
+    },
     roles: {
         admin: "مشرف إداري",
         manager: "مدير",

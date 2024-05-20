@@ -35,6 +35,12 @@ const root: Root = {
     articleFamiliesManagement: {
         title: "إدارة أصناف المحجوزات"
     },
+    articlesManagement: {
+        title: "إدارة المحجوزات"
+    },
+    sourcesManagement: {
+        title: "إدارة سُلطات الحجز"
+    },
     notFound: {
         title: "هناك شيء غير صحيح...",
         description: "الصفحة التي تحاول فتحها غير موجودة. ربما أخطأت في كتابة العنوان، أو ربما تم نقل الصفحة إلى عنوان آخر. إذا كنت تعتقد أن هذا خطأ اتصل بالدعم.",

@@ -72,6 +72,18 @@ const common: Common = {
                 onUpdate: "تحديث بيانات صنف المحجوزات"
             }
         },
+        upsertArticleModal: {
+            title: {
+                onInsert: "إضافة محجوز جديد",
+                onUpdate: "تحديث بيانات المحجوز"
+            }
+        },
+        upsertSourceModal: {
+            title: {
+                onInsert: "إضافة سُلطة حاجزة جديدة",
+                onUpdate: "تحديث بيانات السُّلطة الحاجزة"
+            }
+        },
         confirmationModal: {
             title: "التأكيد",
             text: "هذا الإجراء مدمر وسيتعين عليك الاتصال بالدعم لاستعادة بياناتك."
@@ -111,11 +123,25 @@ const common: Common = {
                 message: "هل أنت متأكد أنك تريد حذف صنف المحجوزات هذا ؟"
             }
         },
+        articlesActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف هذا المحجوز ؟"
+            }
+        },
+        sourcesActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف السُّلطة الحاجزة هذه ؟"
+            }
+        },
         dataTablePagination: {
             summary: "{{start}} - {{end}} من {{total}}",
         },
         infoDetailsModal: {
             title: "التفاصيل"
+        },
+        fileDropzone: {
+            message: "اسحب ملفًا هنا أو انقر للتحميل",
+            note: "يجب ألا يتجاوز حجم الملف {{limit}} ميجابايت"
         }
     }
 } as const;

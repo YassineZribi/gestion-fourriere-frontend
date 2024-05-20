@@ -35,6 +35,12 @@ const root: Root = {
     articleFamiliesManagement: {
         title: "Article families management"
     },
+    articlesManagement: {
+        title: "Articles management"
+    },
+    sourcesManagement: {
+        title: "Sources management"
+    },
     notFound: {
         title: "Something is not right...",
         description: "Page you are trying to open does not exist. You may have mistyped the address, or the page has been moved to another URL. If you think this is an error contact support.",

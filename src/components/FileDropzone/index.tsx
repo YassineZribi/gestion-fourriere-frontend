@@ -55,10 +55,10 @@ export default function FileDropzone({ label, required = false, file, savedFileP
 
                     <div>
                         <Text size="md" inline>
-                            Drag a file here or click to upload
+                            {t("components.fileDropzone.message")}
                         </Text>
                         <Text size="xs" c="dimmed" inline mt={7}>
-                            File should not exceed 5mb
+                            {t("components.fileDropzone.note", {limit: '5'})}
                         </Text>
                     </div>
                 </Group>

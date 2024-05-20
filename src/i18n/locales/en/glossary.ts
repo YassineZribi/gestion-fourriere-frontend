@@ -51,6 +51,16 @@ const glossary: Glossary = {
         register: "Register",
         measurementUnit: "Measurement unit"
     },
+    article: {
+        name: "Name",
+        transportFee: "Transport fee (TND)",
+        photo: "Photo",
+        articleFamily: "Article family",
+    },
+    source: {
+        name: "Name",
+        description: "Description"
+    },
     roles: {
         admin: "Admin",
         manager: "Manager",

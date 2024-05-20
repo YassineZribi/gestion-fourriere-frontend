@@ -49,6 +49,16 @@ type Glossary = {
         register: string,
         measurementUnit: string
     },
+    article: {
+        name: string,
+        transportFee: string,
+        photo: string,
+        articleFamily: string,
+    },
+    source: {
+        name: string,
+        description: string
+    },
     roles: {
         admin: string,
         manager: string,

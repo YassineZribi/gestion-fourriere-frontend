@@ -85,6 +85,7 @@ export default function UpsertArticleFamilyModal({ title, isOpened, selectedArti
                 alertSuccess("New articlefamily created successfully!")
                 form.reset()
                 setRegister(null)
+                setMeasurementUnit(null)
             }
             setPhotoFile(null)
 
@@ -196,7 +197,7 @@ export default function UpsertArticleFamilyModal({ title, isOpened, selectedArti
                         {...form.getInputProps('description')}
                     />
                     <FileDropzone
-                        label="Photo"
+                        label={tGlossary("articleFamily.photo")}
                         file={photoFile}
                         savedFilePath={selectedArticlefamily?.photoPath}
                         onChange={(photoFile) => setPhotoFile(photoFile)}

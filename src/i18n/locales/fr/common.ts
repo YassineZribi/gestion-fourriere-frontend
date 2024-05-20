@@ -72,6 +72,18 @@ const common: Common = {
                 onUpdate: "Modifier les données de la famille d'articles"
             }
         },
+        upsertArticleModal: {
+            title: {
+                onInsert: "Ajouter un nouvel article",
+                onUpdate: "Modifier les données de l'article"
+            }
+        },
+        upsertSourceModal: {
+            title: {
+                onInsert: "Ajouter une nouvelle source",
+                onUpdate: "Modifier les données de la source"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "Cette action est destructrice et vous devrez contacter l'assistance pour restaurer vos données."
@@ -111,11 +123,25 @@ const common: Common = {
                 message: "Êtes-vous sûr de vouloir supprimer cette famille d'articles ?"
             }
         },
+        articlesActions: {
+            confirmationModal: {
+                message: "Êtes-vous sûr de vouloir supprimer cet article ?"
+            }
+        },
+        sourcesActions: {
+            confirmationModal: {
+                message: "Êtes-vous sûr de vouloir supprimer cette source ?"
+            }
+        },
         dataTablePagination: {
             summary: "{{start}} - {{end}} de {{total}}"
         },
         infoDetailsModal: {
             title: "Détails"
+        },
+        fileDropzone: {
+            message: "Faites glisser un fichier ici ou cliquez pour le télécharger",
+            note: "Le fichier ne doit pas dépasser {{limit}} Mo"
         }
     }
 } as const;

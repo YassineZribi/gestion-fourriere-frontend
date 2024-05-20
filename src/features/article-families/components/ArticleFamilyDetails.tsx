@@ -24,7 +24,7 @@ export default function ArticleFamilyDetails({ articleFamily }: Props) {
           </Table.Tr>
           <Table.Tr>
             <Table.Th>{tGlossary("articleFamily.nightlyAmount")}</Table.Th>
-            <Table.Td>{articleFamily.nightlyAmount} TND</Table.Td>
+            <Table.Td>{articleFamily.nightlyAmount}</Table.Td>
           </Table.Tr>
           <Table.Tr>
             <Table.Th>{tGlossary("articleFamily.calculationMethod")}</Table.Th>
