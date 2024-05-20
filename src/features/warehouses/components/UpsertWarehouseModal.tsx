@@ -90,7 +90,7 @@ export default function UpsertWarehouseModal({ title, size = "lg", isOpened, sel
 
     return (
         <>
-            <Modal title={title} opened={isOpened} onClose={onClose} closeOnClickOutside={false} size={size}>
+            <Modal title={title} size={size} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
                 <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
                     <Stack>
                         <SimpleGrid cols={{ base: 1, sm: 2 }}>

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Anchor, Button, Group, Modal, Stack, TextInput, Textarea } from "@mantine/core";
+import { ActionIcon, Anchor, Box, Button, Flex, Group, Modal, ModalBaseProps, Stack, TextInput, Textarea, rem } from "@mantine/core";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -11,6 +12,8 @@ import { useTranslation } from "react-i18next";
 import SearchableCombobox from "../../../components/SearchableCombobox";
 import SubRegister from "../../../types/SubRegister";
 import RegisterSelectOption from "../../registers/components/RegisterSelectOption";
+import UpsertRegisterModal from "../../registers/components/UpsertRegisterModal";
+import useModal from "../../../hooks/useModal";
 
 
 const schema = z.object({
@@ -27,15 +30,19 @@ export type UpsertSubRegisterDto = FormData
 
 interface Props {
     title: string
+    size?: ModalBaseProps['size']
     isOpened: boolean
     selectedSubRegister?: SubRegister
     onClose: () => void
     onSubmit: () => void
 }
 
-export default function UpsertSubRegisterModal({ title, isOpened, selectedSubRegister, onClose, onSubmit }: Props) {
+export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, selectedSubRegister, onClose, onSubmit }: Props) {
     const [isSubmitting, setSubmitting] = useState(false)
     const [register, setRegister] = useState(selectedSubRegister?.register ?? null)
+
+    const [isRegisterModalOpen, { open: openRegisterModal, close: closeRegisterModal }] = useModal()
+
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
 
@@ -55,7 +62,7 @@ export default function UpsertSubRegisterModal({ title, isOpened, selectedSubReg
             registerId: data.registerId
         }
         console.log(upsertSubRegisterDto);
-        
+
 
         try {
             setSubmitting(true)
@@ -79,63 +86,82 @@ export default function UpsertSubRegisterModal({ title, isOpened, selectedSubReg
         }
     }
 
-    console.log(form.errors.registerId?.toString());
-    
-
     return (
-        <Modal size={"lg"} title={title} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
-            <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
-                <Stack>
-                    <TextInput
-                        data-autofocus
-                        label={tGlossary("subRegister.name")}
-                        placeholder={tGlossary("subRegister.name")}
-                        name="name"
-                        withAsterisk
-                        {...form.getInputProps('name')}
-                    />
-                    <Textarea
-                        label={tGlossary("subRegister.description")}
-                        placeholder={tGlossary("subRegister.description")}
-                        name="description"
-                        withAsterisk
-                        {...form.getInputProps('description')}
-                    />
-                    <SearchableCombobox
-                        selectedEntity={register}
-                        placeholder={tGlossary("subRegister.register")}
-                        label={tGlossary("subRegister.register")}
-                        error={form.errors.registerId?.toString()}
-                        withAsterisk
-                        onFetch={registersService.getAllRegistersByName}
-                        onSelectOption={newRegister => {
-                            setRegister(newRegister)
-                            if (newRegister) {
-                                form.setFieldValue("registerId", newRegister.id)
-                            }
-                            form.clearFieldError("registerId")
-                        }}
-                        onClear={() => {
-                            setRegister(null)
-                            form.setFieldValue("registerId", -1)
-                            form.clearFieldError("registerId")
-                        }}
-                    >
-                        {
-                            (register) => <RegisterSelectOption register={register} />
-                        }
-                    </SearchableCombobox>
-                </Stack>
+        <>
+            <Modal size={size} title={title} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
+                <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
+                    <Stack>
+                        <TextInput
+                            data-autofocus
+                            label={tGlossary("subRegister.name")}
+                            placeholder={tGlossary("subRegister.name")}
+                            name="name"
+                            withAsterisk
+                            {...form.getInputProps('name')}
+                        />
+                        <Textarea
+                            label={tGlossary("subRegister.description")}
+                            placeholder={tGlossary("subRegister.description")}
+                            name="description"
+                            withAsterisk
+                            {...form.getInputProps('description')}
+                        />
+                        <Flex align="flex-end" gap="5">
+                            <Box style={{ flexGrow: 1 }}>
+                                <SearchableCombobox
+                                    selectedEntity={register}
+                                    placeholder={tGlossary("subRegister.register")}
+                                    label={tGlossary("subRegister.register")}
+                                    error={form.errors.registerId?.toString()}
+                                    withAsterisk
+                                    onFetch={registersService.getAllRegistersByName}
+                                    onSelectOption={newRegister => {
+                                        setRegister(newRegister)
+                                        if (newRegister) {
+                                            form.setFieldValue("registerId", newRegister.id)
+                                        }
+                                        form.clearFieldError("registerId")
+                                    }}
+                                    onClear={() => {
+                                        setRegister(null)
+                                        form.setFieldValue("registerId", -1)
+                                        form.clearFieldError("registerId")
+                                    }}
+                                >
+                                    {
+                                        (register) => <RegisterSelectOption register={register} />
+                                    }
+                                </SearchableCombobox>
+                            </Box>
+                            <ActionIcon variant="default" aria-label="Add new employee" size="input-sm" onClick={openRegisterModal}>
+                                <PlusIcon style={{ width: rem(14) }} />
+                            </ActionIcon>
+                        </Flex>
+                    </Stack>
 
-                <Group justify="space-between" mt="xl">
-                    <Anchor component="button" type="button" variant="gradient" onClick={onClose} size="sm">
-                        {t("buttons.cancel")}
-                    </Anchor>
-                    <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                        Save
-                    </Button>
-                </Group>
-            </form>
-        </Modal>
+                    <Group justify="space-between" mt="xl">
+                        <Anchor component="button" type="button" variant="gradient" onClick={onClose} size="sm">
+                            {t("buttons.cancel")}
+                        </Anchor>
+                        <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
+                            Save
+                        </Button>
+                    </Group>
+                </form>
+            </Modal>
+
+            <UpsertRegisterModal
+                title={t("components.upsertRegisterModal.title.onInsert")}
+                isOpened={isRegisterModalOpen}
+                onClose={closeRegisterModal}
+                onSubmit={(newRegister) => {
+                    setRegister(newRegister)
+                    if (newRegister) {
+                        form.setFieldValue("registerId", newRegister.id)
+                    }
+                    form.clearFieldError("registerId")
+                }}
+            />
+        </>
     )
 }

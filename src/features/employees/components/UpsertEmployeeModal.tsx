@@ -90,7 +90,7 @@ export default function UpsertEmployeeModal({ title, size = "md", isOpened, sele
     }
 
     return (
-        <Modal title={title} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false} size={size}>
+        <Modal title={title} size={size} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
                 <Center mb={'xl'}>
                     <div style={{ position: 'relative' }}>

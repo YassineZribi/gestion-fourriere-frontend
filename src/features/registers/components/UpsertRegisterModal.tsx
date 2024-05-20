@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Anchor, Button, Group, Modal, Stack, TextInput, Textarea } from "@mantine/core";
+import { Anchor, Button, Group, Modal, ModalBaseProps, Stack, TextInput, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -20,13 +20,14 @@ export type UpsertRegisterDto = FormData
 
 interface Props {
     title: string
+    size?: ModalBaseProps['size']
     isOpened: boolean
     selectedRegister?: Register
     onClose: () => void
-    onSubmit: () => void
+    onSubmit: (savedRegister: Register) => void
 }
 
-export default function UpsertRegisterModal({ title, isOpened, selectedRegister, onClose, onSubmit }: Props) {
+export default function UpsertRegisterModal({ title, size = "md", isOpened, selectedRegister, onClose, onSubmit }: Props) {
     const [isSubmitting, setSubmitting] = useState(false)
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
@@ -50,20 +51,23 @@ export default function UpsertRegisterModal({ title, isOpened, selectedRegister,
             observation: data.observation
         }
 
+        let savedRegister: Register;
 
         try {
             setSubmitting(true)
             await wait(2000)
             if (selectedRegister) {
-                await registersService.updateRegister(selectedRegister.id, upsertRegisterDto)
+                const res = await registersService.updateRegister(selectedRegister.id, upsertRegisterDto)
+                savedRegister = res.data
                 alertSuccess("Register updated successfully!")
             } else {
-                await registersService.createRegister(upsertRegisterDto)
+                const res = await registersService.createRegister(upsertRegisterDto)
+                savedRegister = res.data
                 alertSuccess("New register added successfully!")
                 form.reset()
             }
 
-            onSubmit()
+            onSubmit(savedRegister)
             onClose()
         } catch (error) {
             console.log(error);
@@ -73,7 +77,7 @@ export default function UpsertRegisterModal({ title, isOpened, selectedRegister,
     }
 
     return (
-        <Modal title={title} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
+        <Modal title={title} size={size} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>
                     <TextInput
