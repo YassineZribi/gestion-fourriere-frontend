@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Anchor, Button, Group, Modal, Stack, TextInput } from "@mantine/core";
+import { Anchor, Button, Group, Modal, ModalBaseProps, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -20,13 +20,14 @@ export type UpsertMeasurementUnitDto = FormData
 
 interface Props {
     title: string
+    size?: ModalBaseProps['size']
     isOpened: boolean
     selectedMeasurementUnit?: MeasurementUnit
     onClose: () => void
-    onSubmit: () => void
+    onSubmit: (savedMeasurementUnit: MeasurementUnit) => void
 }
 
-export default function UpsertMeasurementUnitModal({ title, isOpened, selectedMeasurementUnit, onClose, onSubmit }: Props) {
+export default function UpsertMeasurementUnitModal({ title, size = "md", isOpened, selectedMeasurementUnit, onClose, onSubmit }: Props) {
     const [isSubmitting, setSubmitting] = useState(false)
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
@@ -50,20 +51,23 @@ export default function UpsertMeasurementUnitModal({ title, isOpened, selectedMe
             symbol: data.symbol
         }
 
+        let savedMeasurementUnit: MeasurementUnit;
 
         try {
             setSubmitting(true)
             await wait(2000)
             if (selectedMeasurementUnit) {
-                await measurementUnitsService.updateMeasurementUnit(selectedMeasurementUnit.id, upsertMeasurementUnitDto)
+                const res = await measurementUnitsService.updateMeasurementUnit(selectedMeasurementUnit.id, upsertMeasurementUnitDto)
+                savedMeasurementUnit = res.data
                 alertSuccess("Measurement unit updated successfully!")
             } else {
-                await measurementUnitsService.createMeasurementUnit(upsertMeasurementUnitDto)
+                const res = await measurementUnitsService.createMeasurementUnit(upsertMeasurementUnitDto)
+                savedMeasurementUnit = res.data
                 alertSuccess("New measurement unit created successfully!")
                 form.reset()
             }
 
-            onSubmit()
+            onSubmit(savedMeasurementUnit)
             onClose()
         } catch (error) {
             console.log(error);
@@ -73,7 +77,7 @@ export default function UpsertMeasurementUnitModal({ title, isOpened, selectedMe
     }
 
     return (
-        <Modal title={title} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
+        <Modal title={title} size={size} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>
                     <TextInput
