@@ -133,7 +133,7 @@ export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, s
                                     }
                                 </SearchableCombobox>
                             </Box>
-                            <ActionIcon variant="default" aria-label="Add new employee" size="input-sm" onClick={openRegisterModal}>
+                            <ActionIcon variant="default" aria-label="Add new register" size="input-sm" onClick={openRegisterModal}>
                                 <PlusIcon style={{ width: rem(14) }} />
                             </ActionIcon>
                         </Flex>

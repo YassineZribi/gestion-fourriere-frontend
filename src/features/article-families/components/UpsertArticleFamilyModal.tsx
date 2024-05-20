@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Anchor, Button, Group, Modal, NumberInput, Radio, SimpleGrid, Stack, TextInput, Textarea } from "@mantine/core";
+import { Anchor, Button, Group, Modal, ModalBaseProps, NumberInput, Radio, SimpleGrid, Stack, TextInput, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -36,13 +36,14 @@ export type UpsertArticleFamilyDto = Omit<FormData, 'unitCalculation'> & { unitC
 
 interface Props {
     title: string
+    size?: ModalBaseProps['size']
     isOpened: boolean
     selectedArticlefamily?: ArticleFamily
     onClose: () => void
-    onSubmit: () => void
+    onSubmit: (savedArticleFamily: ArticleFamily) => void
 }
 
-export default function UpsertArticleFamilyModal({ title, isOpened, selectedArticlefamily, onClose, onSubmit }: Props) {
+export default function UpsertArticleFamilyModal({ title, size = "lg", isOpened, selectedArticlefamily, onClose, onSubmit }: Props) {
     const [isSubmitting, setSubmitting] = useState(false)
     const [register, setRegister] = useState(selectedArticlefamily?.register ?? null)
     const [photoFile, setPhotoFile] = useState<FileWithPath | null>(null);
@@ -71,17 +72,19 @@ export default function UpsertArticleFamilyModal({ title, isOpened, selectedArti
             registerId: data.registerId,
             measurementUnitId: data.measurementUnitId
         }
-        console.log(upsertArticleFamilyDto);
 
+        let savedArticleFamily: ArticleFamily;
 
         try {
             setSubmitting(true)
             await wait(2000)
             if (selectedArticlefamily) {
-                await articleFamiliesService.updateArticleFamily(selectedArticlefamily.id, upsertArticleFamilyDto, photoFile)
+                const res = await articleFamiliesService.updateArticleFamily(selectedArticlefamily.id, upsertArticleFamilyDto, photoFile)
+                savedArticleFamily = res.data
                 alertSuccess("Article family updated successfully!")
             } else {
-                await articleFamiliesService.createArticleFamily(upsertArticleFamilyDto, photoFile)
+                const res = await articleFamiliesService.createArticleFamily(upsertArticleFamilyDto, photoFile)
+                savedArticleFamily = res.data
                 alertSuccess("New articlefamily created successfully!")
                 form.reset()
                 setRegister(null)
@@ -89,7 +92,7 @@ export default function UpsertArticleFamilyModal({ title, isOpened, selectedArti
             }
             setPhotoFile(null)
 
-            onSubmit()
+            onSubmit(savedArticleFamily)
             onClose()
         } catch (error) {
             console.log(error);
@@ -99,7 +102,7 @@ export default function UpsertArticleFamilyModal({ title, isOpened, selectedArti
     }
 
     return (
-        <Modal size={"lg"} title={title} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
+        <Modal title={title} size={size} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>
                     <SimpleGrid cols={{ base: 1, sm: 2 }}>
