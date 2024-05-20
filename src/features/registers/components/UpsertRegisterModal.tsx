@@ -102,7 +102,7 @@ export default function UpsertRegisterModal({ title, size = "md", isOpened, sele
                         {t("buttons.cancel")}
                     </Anchor>
                     <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                        {t("buttons.confirm")}
+                        {t("buttons.save")}
                     </Button>
                 </Group>
             </form>

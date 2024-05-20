@@ -183,7 +183,7 @@ export default function UpsertEmployeeModal({ title, size = "md", isOpened, sele
                         {t("buttons.cancel")}
                     </Anchor>
                     <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                        {t("buttons.confirm")}
+                        {t("buttons.save")}
                     </Button>
                 </Group>
             </form>

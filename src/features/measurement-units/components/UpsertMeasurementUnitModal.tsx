@@ -98,7 +98,7 @@ export default function UpsertMeasurementUnitModal({ title, isOpened, selectedMe
                         {t("buttons.cancel")}
                     </Anchor>
                     <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                        {t("buttons.confirm")}
+                        {t("buttons.save")}
                     </Button>
                 </Group>
             </form>

@@ -210,7 +210,7 @@ export default function UpsertArticleFamilyModal({ title, isOpened, selectedArti
                         {t("buttons.cancel")}
                     </Anchor>
                     <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                        Save
+                    {t("buttons.save")}
                     </Button>
                 </Group>
             </form>

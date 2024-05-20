@@ -141,7 +141,7 @@ export default function UpsertArticleModal({ title, isOpened, selectedArticle, o
                         {t("buttons.cancel")}
                     </Anchor>
                     <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                        Save
+                        {t("buttons.save")}
                     </Button>
                 </Group>
             </form>

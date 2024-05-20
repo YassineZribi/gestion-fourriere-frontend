@@ -42,7 +42,7 @@ export default function UpsertWarehouseModal({ title, size = "lg", isOpened, sel
     const [manager, setManager] = useState(selectedWarehouse?.manager ?? null)
 
     const [isEmployeeModalOpen, { open: openEmployeeModal, close: closeEmployeeModal }] = useModal()
-    
+
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
 
@@ -166,7 +166,7 @@ export default function UpsertWarehouseModal({ title, size = "lg", isOpened, sel
                             {t("buttons.cancel")}
                         </Anchor>
                         <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                            Save
+                            {t("buttons.save")}
                         </Button>
                     </Group>
                 </form>
