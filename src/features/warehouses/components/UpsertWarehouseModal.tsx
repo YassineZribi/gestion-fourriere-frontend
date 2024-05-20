@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Anchor, Button, Group, Modal, NumberInput, SimpleGrid, Stack, TextInput } from "@mantine/core";
+import { ActionIcon, Anchor, Box, Button, Flex, Group, Modal, ModalBaseProps, NumberInput, SimpleGrid, Stack, TextInput, rem } from "@mantine/core";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -12,6 +13,8 @@ import Map, { SFAX_COORDS } from "../../../components/Map";
 import { useTranslation } from "react-i18next";
 import SearchableCombobox from "../../../components/SearchableCombobox";
 import EmployeeSelectOption from "../../employees/components/EmployeeSelectOption";
+import UpsertEmployeeModal from "../../employees/components/UpsertEmployeeModal";
+import useModal from "../../../hooks/useModal";
 
 
 const schema = z.object({
@@ -27,15 +30,19 @@ export type UpsertWarehouseDto = FormData & { managerId: number | null }
 
 interface Props {
     title: string
+    size?: ModalBaseProps['size']
     isOpened: boolean
     selectedWarehouse?: Warehouse
     onClose: () => void
     onSubmit: () => void
 }
 
-export default function UpsertWarehouseModal({ title, isOpened, selectedWarehouse, onClose, onSubmit }: Props) {
+export default function UpsertWarehouseModal({ title, size = "lg", isOpened, selectedWarehouse, onClose, onSubmit }: Props) {
     const [isSubmitting, setSubmitting] = useState(false)
     const [manager, setManager] = useState(selectedWarehouse?.manager ?? null)
+
+    const [isEmployeeModalOpen, { open: openEmployeeModal, close: closeEmployeeModal }] = useModal()
+    
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
 
@@ -82,79 +89,97 @@ export default function UpsertWarehouseModal({ title, isOpened, selectedWarehous
     }
 
     return (
-        <Modal size={"lg"} title={title} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
-            <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
-                <Stack>
-                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                        <TextInput
-                            data-autofocus
-                            label={tGlossary("warehouse.name")}
-                            placeholder={tGlossary("warehouse.name")}
-                            name="name"
-                            withAsterisk
-                            {...form.getInputProps('name')}
+        <>
+            <Modal title={title} opened={isOpened} onClose={onClose} closeOnClickOutside={false} size={size}>
+                <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
+                    <Stack>
+                        <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                            <TextInput
+                                data-autofocus
+                                label={tGlossary("warehouse.name")}
+                                placeholder={tGlossary("warehouse.name")}
+                                name="name"
+                                withAsterisk
+                                {...form.getInputProps('name')}
+                            />
+                            <TextInput
+                                label={tGlossary("warehouse.address")}
+                                placeholder={tGlossary("warehouse.address")}
+                                name="address"
+                                withAsterisk
+                                {...form.getInputProps('address')}
+                            />
+                        </SimpleGrid>
+                        <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                            <NumberInput
+                                label={tGlossary("warehouse.latitude")}
+                                placeholder={tGlossary("warehouse.latitude")}
+                                name="latitude"
+                                withAsterisk
+                                {...form.getInputProps('latitude')}
+                            />
+                            <NumberInput
+                                label={tGlossary("warehouse.longitude")}
+                                placeholder={tGlossary("warehouse.longitude")}
+                                name="longitude"
+                                withAsterisk
+                                {...form.getInputProps('longitude')}
+                            />
+                        </SimpleGrid>
+                        <Map
+                            position={{
+                                lat: form.values.latitude,
+                                lng: form.values.longitude
+                            }}
+                            onPositionChange={(coords) => {
+                                form.setFieldValue("latitude", coords.lat)
+                                form.setFieldValue("longitude", coords.lng)
+                            }}
                         />
-                        <TextInput
-                            label={tGlossary("warehouse.address")}
-                            placeholder={tGlossary("warehouse.address")}
-                            name="address"
-                            withAsterisk
-                            {...form.getInputProps('address')}
-                        />
-                    </SimpleGrid>
-                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                        <NumberInput
-                            label={tGlossary("warehouse.latitude")}
-                            placeholder={tGlossary("warehouse.latitude")}
-                            name="latitude"
-                            withAsterisk
-                            {...form.getInputProps('latitude')}
-                        />
-                        <NumberInput
-                            label={tGlossary("warehouse.longitude")}
-                            placeholder={tGlossary("warehouse.longitude")}
-                            name="longitude"
-                            withAsterisk
-                            {...form.getInputProps('longitude')}
-                        />
-                    </SimpleGrid>
-                    <Map
-                        position={{
-                            lat: form.values.latitude,
-                            lng: form.values.longitude
-                        }}
-                        onPositionChange={(coords) => {
-                            form.setFieldValue("latitude", coords.lat)
-                            form.setFieldValue("longitude", coords.lng)
-                        }}
-                    />
-                    <SearchableCombobox
-                        selectedEntity={manager}
-                        placeholder={tGlossary("warehouse.manager")}
-                        label={tGlossary("warehouse.manager")}
-                        onFetch={employeesService.getAllEmployeesByFullName}
-                        onSelectOption={newEmployee => {
-                            setManager(newEmployee)
-                        }}
-                        onClear={() => {
-                            setManager(null)
-                        }}
-                    >
-                        {
-                            (employee) => <EmployeeSelectOption employee={employee} />
-                        }
-                    </SearchableCombobox>
-                </Stack>
+                        <Flex align="flex-end" gap="5">
+                            <Box style={{ flexGrow: 1 }}>
+                                <SearchableCombobox
+                                    selectedEntity={manager}
+                                    placeholder={tGlossary("warehouse.manager")}
+                                    label={tGlossary("warehouse.manager")}
+                                    onFetch={employeesService.getAllEmployeesByFullName}
+                                    onSelectOption={newEmployee => {
+                                        setManager(newEmployee)
+                                    }}
+                                    onClear={() => {
+                                        setManager(null)
+                                    }}
+                                >
+                                    {
+                                        (employee) => <EmployeeSelectOption employee={employee} />
+                                    }
+                                </SearchableCombobox>
+                            </Box>
+                            <ActionIcon variant="default" aria-label="Add new employee" size="input-sm" onClick={openEmployeeModal}>
+                                <PlusIcon style={{ width: rem(14) }} />
+                            </ActionIcon>
+                        </Flex>
+                    </Stack>
 
-                <Group justify="space-between" mt="xl">
-                    <Anchor component="button" type="button" variant="gradient" onClick={onClose} size="sm">
-                        {t("buttons.cancel")}
-                    </Anchor>
-                    <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                        Save
-                    </Button>
-                </Group>
-            </form>
-        </Modal>
+                    <Group justify="space-between" mt="xl">
+                        <Anchor component="button" type="button" variant="gradient" onClick={onClose} size="sm">
+                            {t("buttons.cancel")}
+                        </Anchor>
+                        <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
+                            Save
+                        </Button>
+                    </Group>
+                </form>
+            </Modal>
+
+            <UpsertEmployeeModal
+                title={t("components.upsertEmployeeModal.title.onInsert")}
+                isOpened={isEmployeeModalOpen}
+                onClose={closeEmployeeModal}
+                onSubmit={(savedEmployee) => {
+                    setManager(savedEmployee)
+                }}
+            />
+        </>
     )
 }

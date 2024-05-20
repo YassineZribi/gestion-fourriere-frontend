@@ -23,6 +23,13 @@ export default function SearchableCombobox<T extends { id: number }>({ children,
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T[]>([]);
 
+  useEffect(() => {
+    if (selectedEntity)
+      setValue(selectedEntity.id.toString())
+    // else
+    //   setValue(null)
+  }, [selectedEntity])
+
 
   const combobox = useCombobox({
     onDropdownClose: () => {

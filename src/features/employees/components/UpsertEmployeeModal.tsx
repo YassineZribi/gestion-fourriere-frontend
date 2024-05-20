@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Anchor, Avatar, Button, Center, FileInput, Group, InputLabel, Modal, SimpleGrid, Stack, TextInput, Tooltip, rem } from "@mantine/core";
+import { Anchor, Avatar, Button, Center, FileInput, Group, InputLabel, Modal, ModalBaseProps, SimpleGrid, Stack, TextInput, Tooltip, rem } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -26,13 +26,14 @@ export type UpsertEmployeeDto = FormData & { managerId: number | null }
 
 interface Props {
     title: string
+    size?: ModalBaseProps['size']
     isOpened: boolean
     selectedEmployee?: Employee
     onClose: () => void
-    onSubmit: () => void
+    onSubmit: (savedEmployee: Employee) => void
 }
 
-export default function UpsertEmployeeModal({ title, isOpened, selectedEmployee, onClose, onSubmit }: Props) {
+export default function UpsertEmployeeModal({ title, size = "md", isOpened, selectedEmployee, onClose, onSubmit }: Props) {
     const [isSubmitting, setSubmitting] = useState(false)
     const [photoFile, setPhotoFile] = useState<File | null>(null)
     const [manager, setManager] = useState(selectedEmployee?.manager ?? null)
@@ -61,22 +62,25 @@ export default function UpsertEmployeeModal({ title, isOpened, selectedEmployee,
             managerId: manager?.id ?? null
         }
 
+        let savedEmployee: Employee;
 
         try {
             setSubmitting(true)
             await wait(2000)
             if (selectedEmployee) {
-                await employeesService.updateEmployee(selectedEmployee.id, upsertEmployeeDto, photoFile)
+                const res = await employeesService.updateEmployee(selectedEmployee.id, upsertEmployeeDto, photoFile)
+                savedEmployee = res.data
                 alertSuccess("Employee updated successfully!")
             } else {
-                await employeesService.createEmployee(upsertEmployeeDto, photoFile)
+                const res = await employeesService.createEmployee(upsertEmployeeDto, photoFile)
+                savedEmployee = res.data
                 alertSuccess("New employee added successfully!")
                 form.reset()
                 setManager(null)
             }
             setPhotoFile(null)
-
-            onSubmit()
+            
+            onSubmit(savedEmployee)
             onClose()
         } catch (error) {
             console.log(error);
@@ -86,7 +90,7 @@ export default function UpsertEmployeeModal({ title, isOpened, selectedEmployee,
     }
 
     return (
-        <Modal title={title} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
+        <Modal title={title} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false} size={size}>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
                 <Center mb={'xl'}>
                     <div style={{ position: 'relative' }}>
