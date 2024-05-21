@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ActionIcon, Anchor, Box, Button, Flex, Group, Modal, ModalBaseProps, NumberInput, Radio, SimpleGrid, Stack, TextInput, Textarea, rem } from "@mantine/core";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { Anchor, Box, Button, Flex, Group, Modal, ModalBaseProps, NumberInput, Radio, SimpleGrid, Stack, TextInput, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -22,6 +21,7 @@ import { FileWithPath } from "@mantine/dropzone";
 import UpsertMeasurementUnitModal from "../../measurement-units/components/UpsertMeasurementUnitModal";
 import UpsertRegisterModal from "../../registers/components/UpsertRegisterModal";
 import useModal from "../../../hooks/useModal";
+import PlusIconButton from "../../../components/PlusIconButton";
 
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -141,7 +141,7 @@ export default function UpsertArticleFamilyModal({ title, size = "lg", isOpened,
                                 withAsterisk
                                 {...form.getInputProps('name')}
                             />
-                            <Flex align="flex-end" gap="5">
+                            <Flex gap="5">
                                 <Box style={{ flexGrow: 1 }}>
                                     <SearchableCombobox
                                         selectedEntity={register}
@@ -162,9 +162,10 @@ export default function UpsertArticleFamilyModal({ title, size = "lg", isOpened,
                                         }
                                     </SearchableCombobox>
                                 </Box>
-                                <ActionIcon variant="default" aria-label="Add new register" size="input-sm" onClick={openRegisterModal}>
-                                    <PlusIcon style={{ width: rem(14) }} />
-                                </ActionIcon>
+                                <PlusIconButton
+                                    aria-label="Add new register"
+                                    onClick={openRegisterModal}
+                                />
                             </Flex>
                         </SimpleGrid>
                         <SimpleGrid cols={{ base: 1, sm: 2 }}>
@@ -175,7 +176,7 @@ export default function UpsertArticleFamilyModal({ title, size = "lg", isOpened,
                                 withAsterisk
                                 {...form.getInputProps('nightlyAmount')}
                             />
-                            <Flex align="flex-end" gap="5">
+                            <Flex gap="5">
                                 <Box style={{ flexGrow: 1 }}>
                                     <SearchableCombobox
                                         selectedEntity={measurementUnit}
@@ -196,9 +197,10 @@ export default function UpsertArticleFamilyModal({ title, size = "lg", isOpened,
                                         }
                                     </SearchableCombobox>
                                 </Box>
-                                <ActionIcon variant="default" aria-label="Add new measurement unit" size="input-sm" onClick={openMeasurementUnitModal}>
-                                    <PlusIcon style={{ width: rem(14) }} />
-                                </ActionIcon>
+                                <PlusIconButton
+                                    aria-label="Add new measurement unit"
+                                    onClick={openMeasurementUnitModal}
+                                />
                             </Flex>
                         </SimpleGrid>
                         <Radio.Group

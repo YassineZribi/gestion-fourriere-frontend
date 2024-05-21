@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { ActionIcon, Anchor, Box, Button, Flex, Group, Modal, ModalBaseProps, NumberInput, SimpleGrid, Stack, TextInput, rem } from "@mantine/core";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { Anchor, Box, Button, Flex, Group, Modal, ModalBaseProps, NumberInput, SimpleGrid, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { capitalize, wait } from "../../../utils/helpers";
+import { wait } from "../../../utils/helpers";
 import warehousesService from "../services"
 import employeesService from '../../employees/services'
 import { alertSuccess } from "../../../utils/feedback";
@@ -15,6 +14,7 @@ import SearchableCombobox from "../../../components/SearchableCombobox";
 import EmployeeSelectOption from "../../employees/components/EmployeeSelectOption";
 import UpsertEmployeeModal from "../../employees/components/UpsertEmployeeModal";
 import useModal from "../../../hooks/useModal";
+import PlusIconButton from "../../../components/PlusIconButton";
 
 
 const schema = z.object({
@@ -136,7 +136,7 @@ export default function UpsertWarehouseModal({ title, size = "lg", isOpened, sel
                                 form.setFieldValue("longitude", coords.lng)
                             }}
                         />
-                        <Flex align="flex-end" gap="5">
+                        <Flex gap="5">
                             <Box style={{ flexGrow: 1 }}>
                                 <SearchableCombobox
                                     selectedEntity={manager}
@@ -155,9 +155,10 @@ export default function UpsertWarehouseModal({ title, size = "lg", isOpened, sel
                                     }
                                 </SearchableCombobox>
                             </Box>
-                            <ActionIcon variant="default" aria-label="Add new employee" size="input-sm" onClick={openEmployeeModal}>
-                                <PlusIcon style={{ width: rem(14) }} />
-                            </ActionIcon>
+                            <PlusIconButton
+                                aria-label="Add new employee"
+                                onClick={openEmployeeModal}
+                            />
                         </Flex>
                     </Stack>
 

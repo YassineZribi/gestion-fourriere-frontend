@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { ActionIcon, Anchor, Box, Button, Flex, Group, Modal, NumberInput, SimpleGrid, Stack, TextInput, rem } from "@mantine/core";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { Anchor, Box, Button, Flex, Group, Modal, NumberInput, SimpleGrid, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { capitalize, wait } from "../../../utils/helpers";
+import { wait } from "../../../utils/helpers";
 import articlesService from "../services"
 import articleFamiliesService from '../../article-families/services'
 import { alertSuccess } from "../../../utils/feedback";
@@ -17,6 +16,7 @@ import FileDropzone from "../../../components/FileDropzone";
 import { FileWithPath } from "@mantine/dropzone";
 import UpsertArticleFamilyModal from "../../article-families/components/UpsertArticleFamilyModal";
 import useModal from "../../../hooks/useModal";
+import PlusIconButton from "../../../components/PlusIconButton";
 
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -119,7 +119,7 @@ export default function UpsertArticleModal({ title, isOpened, selectedArticle, o
                                 {...form.getInputProps('transportFee')}
                             />
                         </SimpleGrid>
-                        <Flex align="flex-end" gap="5">
+                        <Flex gap="5">
                             <Box style={{ flexGrow: 1 }}>
                                 <SearchableCombobox
                                     selectedEntity={articleFamily}
@@ -140,9 +140,10 @@ export default function UpsertArticleModal({ title, isOpened, selectedArticle, o
                                     }
                                 </SearchableCombobox>
                             </Box>
-                            <ActionIcon variant="default" aria-label="Add new article family" size="input-sm" onClick={openArticleFamilyModal}>
-                                <PlusIcon style={{ width: rem(14) }} />
-                            </ActionIcon>
+                            <PlusIconButton
+                                aria-label="Add new article family"
+                                onClick={openArticleFamilyModal}
+                            />
                         </Flex>
                         <FileDropzone
                             label={tGlossary("article.photo")}

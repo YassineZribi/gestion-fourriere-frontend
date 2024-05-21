@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ActionIcon, Anchor, Box, Button, Flex, Group, Modal, ModalBaseProps, Stack, TextInput, Textarea, rem } from "@mantine/core";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { Anchor, Box, Button, Flex, Group, Modal, ModalBaseProps, Stack, TextInput, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -14,6 +13,8 @@ import SubRegister from "../../../types/SubRegister";
 import RegisterSelectOption from "../../registers/components/RegisterSelectOption";
 import UpsertRegisterModal from "../../registers/components/UpsertRegisterModal";
 import useModal from "../../../hooks/useModal";
+import Register from "../../../types/Register";
+import PlusIconButton from "../../../components/PlusIconButton";
 
 
 const schema = z.object({
@@ -86,6 +87,14 @@ export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, s
         }
     }
 
+    const updateRegister = (newRegister: Register | null) => {
+        setRegister(newRegister)
+        if (newRegister) {
+            form.setFieldValue("registerId", newRegister.id)
+        }
+        form.clearFieldError("registerId")
+    }
+
     return (
         <>
             <Modal size={size} title={title} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
@@ -106,7 +115,7 @@ export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, s
                             withAsterisk
                             {...form.getInputProps('description')}
                         />
-                        <Flex align="flex-end" gap="5">
+                        <Flex gap="5">
                             <Box style={{ flexGrow: 1 }}>
                                 <SearchableCombobox
                                     selectedEntity={register}
@@ -115,13 +124,7 @@ export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, s
                                     error={form.errors.registerId?.toString()}
                                     withAsterisk
                                     onFetch={registersService.getAllRegistersByName}
-                                    onSelectOption={newRegister => {
-                                        setRegister(newRegister)
-                                        if (newRegister) {
-                                            form.setFieldValue("registerId", newRegister.id)
-                                        }
-                                        form.clearFieldError("registerId")
-                                    }}
+                                    onSelectOption={updateRegister}
                                     onClear={() => {
                                         setRegister(null)
                                         form.setFieldValue("registerId", -1)
@@ -133,9 +136,10 @@ export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, s
                                     }
                                 </SearchableCombobox>
                             </Box>
-                            <ActionIcon variant="default" aria-label="Add new register" size="input-sm" onClick={openRegisterModal}>
-                                <PlusIcon style={{ width: rem(14) }} />
-                            </ActionIcon>
+                            <PlusIconButton 
+                                aria-label="Add new register"
+                                onClick={openRegisterModal}
+                            />
                         </Flex>
                     </Stack>
 
@@ -154,13 +158,7 @@ export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, s
                 title={t("components.upsertRegisterModal.title.onInsert")}
                 isOpened={isRegisterModalOpen}
                 onClose={closeRegisterModal}
-                onSubmit={(newRegister) => {
-                    setRegister(newRegister)
-                    if (newRegister) {
-                        form.setFieldValue("registerId", newRegister.id)
-                    }
-                    form.clearFieldError("registerId")
-                }}
+                onSubmit={updateRegister}
             />
         </>
     )

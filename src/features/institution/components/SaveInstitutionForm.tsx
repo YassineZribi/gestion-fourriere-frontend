@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
-import { TextInput, SimpleGrid, Group, Button, Center, Tooltip, InputLabel, Avatar, FileInput, rem, Flex, Box, ActionIcon } from '@mantine/core';
-import { BuildingLibraryIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { TextInput, SimpleGrid, Group, Button, Center, Tooltip, InputLabel, Avatar, FileInput, rem, Flex, Box } from '@mantine/core';
+import { BuildingLibraryIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useForm } from '@mantine/form';
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -18,6 +18,7 @@ import SearchableCombobox from '../../../components/SearchableCombobox';
 import EmployeeSelectOption from '../../employees/components/EmployeeSelectOption';
 import UpsertEmployeeModal from '../../employees/components/UpsertEmployeeModal';
 import useModal from '../../../hooks/useModal';
+import PlusIconButton from '../../../components/PlusIconButton';
 
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -165,7 +166,7 @@ export default function SaveInstitutionForm({ institution, onSaveInstitution }: 
                         }}
                     />
                 </SimpleGrid>
-                <Flex align="flex-end" gap="5" mt="xl">
+                <Flex gap="5" mt="xl">
                     <Box style={{ flexGrow: 1 }}>
                         <SearchableCombobox
                             selectedEntity={chiefExecutive}
@@ -184,9 +185,10 @@ export default function SaveInstitutionForm({ institution, onSaveInstitution }: 
                             }
                         </SearchableCombobox>
                     </Box>
-                    <ActionIcon variant="default" aria-label="Add new employee" size="input-sm" onClick={openEmployeeModal}>
-                        <PlusIcon style={{ width: rem(14) }} />
-                    </ActionIcon>
+                    <PlusIconButton
+                        aria-label="Add new employee"
+                        onClick={openEmployeeModal}
+                    />
                 </Flex>
                 <Group justify="end" mt="xl">
                     <Button type="submit" size="md" disabled={isSubmitting} loading={isSubmitting}>
