@@ -6,7 +6,8 @@ import InstitutionEmployees from '../../features/employees/components/Institutio
 import InstitutionChart from '../../features/employees/components/InstitutionChart';
 import { useTranslation } from 'react-i18next';
 
-const schema = z.enum(["profile", "employees", "chart"])
+export const institutionTabs = ["profile", "employees", "chart"] as const
+const schema = z.enum(institutionTabs)
 const { profile, employees, chart } = schema.Values
 
 export default function Institution() {

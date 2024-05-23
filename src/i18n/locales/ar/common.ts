@@ -84,6 +84,18 @@ const common: Common = {
                 onUpdate: "تحديث بيانات السُّلطة الحاجزة"
             }
         },
+        upsertCompanyModal: {
+            title: {
+                onInsert: "إضافة مالك محجوزات جديد (شخص معنوي)",
+                onUpdate: "تحديث بيانات مالك محجوزات (شخص معنوي)"
+            }
+        },
+        upsertIndividualModal: {
+            title: {
+                onInsert: "إضافة مالك محجوزات جديد (شخص طبيعي)",
+                onUpdate: "تحديث بيانات مالك محجوزات (شخص طبيعي)"
+            }
+        },
         confirmationModal: {
             title: "التأكيد",
             text: "هذا الإجراء مدمر وسيتعين عليك الاتصال بالدعم لاستعادة بياناتك."
@@ -131,6 +143,16 @@ const common: Common = {
         sourcesActions: {
             confirmationModal: {
                 message: "هل أنت متأكد أنك تريد حذف السُّلطة الحاجزة هذه ؟"
+            }
+        },
+        companiesActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف مالك المحجوزات هذا ؟"
+            }
+        },
+        individualsActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف مالك المحجوزات هذا ؟"
             }
         },
         dataTablePagination: {

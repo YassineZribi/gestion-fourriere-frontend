@@ -84,6 +84,18 @@ const common: Common = {
                 onUpdate: "Modifier les données de la source"
             }
         },
+        upsertCompanyModal: {
+            title: {
+                onInsert: "Ajouter un nouveau propriétaire d'articles (Personne morale)",
+                onUpdate: "Modifier les données du propriétaire d'articles (Personne morale)"
+            }
+        },
+        upsertIndividualModal: {
+            title: {
+                onInsert: "Ajouter un nouveau propriétaire d'articles (Personne physique)",
+                onUpdate: "Modifier les données du propriétaire d'articles (Personne physique)"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "Cette action est destructrice et vous devrez contacter l'assistance pour restaurer vos données."
@@ -131,6 +143,16 @@ const common: Common = {
         sourcesActions: {
             confirmationModal: {
                 message: "Êtes-vous sûr de vouloir supprimer cette source ?"
+            }
+        },
+        companiesActions: {
+            confirmationModal: {
+                message: "Êtes-vous sûr de vouloir supprimer ce propriétaire d'articles ?"
+            }
+        },
+        individualsActions: {
+            confirmationModal: {
+                message: "Êtes-vous sûr de vouloir supprimer ce propriétaire d'articles ?"
             }
         },
         dataTablePagination: {

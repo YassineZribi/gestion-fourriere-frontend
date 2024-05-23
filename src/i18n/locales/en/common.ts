@@ -84,6 +84,18 @@ const common: Common = {
                 onUpdate: "Update source"
             }
         },
+        upsertCompanyModal: {
+            title: {
+                onInsert: "Add new articles owner (Company)",
+                onUpdate: "Update articles owner (Company)"
+            }
+        },
+        upsertIndividualModal: {
+            title: {
+                onInsert: "Add new articles owner (Individual)",
+                onUpdate: "Update articles owner (Individual)"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "This action is destructive and you will have to contact support to restore your data.",
@@ -131,6 +143,16 @@ const common: Common = {
         sourcesActions: {
             confirmationModal: {
                 message: "Are you sure you want to delete this source?"
+            }
+        },
+        companiesActions: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this owner?"
+            }
+        },
+        individualsActions: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this owner?"
             }
         },
         dataTablePagination: {

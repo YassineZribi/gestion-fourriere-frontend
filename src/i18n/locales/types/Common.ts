@@ -82,6 +82,18 @@ type Common = {
                 onUpdate: string
             }
         },
+        upsertCompanyModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
+        upsertIndividualModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
         confirmationModal: {
             title: string,
             text: string
@@ -127,6 +139,16 @@ type Common = {
             }
         },
         sourcesActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        companiesActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        individualsActions: {
             confirmationModal: {
                 message: string
             }

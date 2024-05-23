@@ -61,6 +61,21 @@ const glossary: Glossary = {
         name: "Name",
         description: "Description"
     },
+    company: {
+        address: "Address",
+        phoneNumber: "Phone Number",
+        email: "Email",
+        name: "Name",
+        taxId: "Tax Id"
+    },
+    individual: {
+        address: "Address",
+        phoneNumber: "Phone Number",
+        email: "Email",
+        firstName: "First Name",
+        lastName: "Last Name",
+        nationalId: "National Id"
+    },
     roles: {
         admin: "Admin",
         manager: "Manager",
@@ -69,6 +84,10 @@ const glossary: Glossary = {
     calculationMethods: {
         perUnit: "Per unit",
         perBatch: "Per batch"
+    },
+    owners: {
+        companies: "Companies",
+        individuals: "Individuals"
     }
 } as const;
 

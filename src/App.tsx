@@ -19,6 +19,7 @@ import MeasurementUnitsManagement from "./pages/MeasurementUnitsManagement"
 import ArticleFamiliesManagement from "./pages/ArticleFamiliesManagement"
 import ArticlesManagement from "./pages/ArticlesManagement"
 import SourcesManagement from "./pages/SourcesManagement"
+import OwnersManagement from "./pages/OwnersManagement"
 
 function App() {
   useAppDirection()
@@ -42,6 +43,9 @@ function App() {
           <Route path="/article-families-management" element={<ArticleFamiliesManagement />} />
           <Route path="/articles-management" element={<ArticlesManagement />} />
           <Route path="/sources-management" element={<SourcesManagement />} />
+          {["/owners-management", "/owners-management/:tab"].map(path => (
+            <Route key={path} path={path} element={<OwnersManagement />} />
+          ))}
           {["/institution", "/institution/:tab"].map(path => (
             <Route key={path} path={path} element={<Institution />} />
           ))}

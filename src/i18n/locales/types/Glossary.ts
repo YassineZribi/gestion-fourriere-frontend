@@ -59,6 +59,21 @@ type Glossary = {
         name: string,
         description: string
     },
+    company: {
+        address: string,
+        phoneNumber: string,
+        email: string,
+        name: string,
+        taxId: string
+    },
+    individual: {
+        address: string,
+        phoneNumber: string,
+        email: string,
+        firstName: string,
+        lastName: string,
+        nationalId: string
+    },
     roles: {
         admin: string,
         manager: string,
@@ -67,6 +82,10 @@ type Glossary = {
     calculationMethods: { // or paymentCalculationMethods
         perUnit: string,
         perBatch: string
+    },
+    owners: {
+        companies: string,
+        individuals: string
     }
 };
 

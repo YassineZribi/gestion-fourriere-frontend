@@ -41,6 +41,9 @@ const root: Root = {
     sourcesManagement: {
         title: "Gestion des sources"
     },
+    ownersManagement: {
+        title: "Gestion des propriétaires des articles"
+    },
     notFound: {
         title: "Quelque chose ne va pas...",
         description: "La page que vous essayez d'ouvrir n'existe pas. Il se peut que vous ayez mal saisi l'adresse ou que la page ait été déplacée vers une autre URL. Si vous pensez qu'il s'agit d'une erreur, contactez l'assistance.",

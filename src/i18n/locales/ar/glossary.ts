@@ -61,6 +61,21 @@ const glossary: Glossary = {
         name: "الإسم",
         description: "الوصف"
     },
+    company: {
+        address: "العنوان",
+        phoneNumber: "رقم الهاتف",
+        email: "البريد الإلكتروني",
+        name: "اسم الشركة",
+        taxId: "المُعرٍف الجبائي"
+    },
+    individual: {
+        address: "العنوان",
+        phoneNumber: "رقم الهاتف",
+        email: "البريد الإلكتروني",
+        firstName: "الإسم",
+        lastName: "اللّقب",
+        nationalId: "رقم ب.ت.و"
+    },
     roles: {
         admin: "مشرف إداري",
         manager: "مدير",
@@ -69,6 +84,10 @@ const glossary: Glossary = {
     calculationMethods: {
         perUnit: "لكل وحدة",
         perBatch: "لكل دفعة"
+    },
+    owners: {
+        companies: "أشخاص معنوية",
+        individuals: "أشخاص طبيعية"
     }
 } as const;
 

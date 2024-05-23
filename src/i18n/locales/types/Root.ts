@@ -39,6 +39,9 @@ type Root = {
     sourcesManagement: {
         title: string
     },
+    ownersManagement: {
+        title: string
+    },
     notFound: {
         title: string,
         description: string,
