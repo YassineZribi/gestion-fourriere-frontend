@@ -44,6 +44,15 @@ const root: Root = {
     ownersManagement: {
         title: "Article owners management"
     },
+    inputsManagement: {
+        title: "Inputs management"
+    },
+    upsertInput: {
+        title: {
+            onInsert: "Add new input",
+            onUpdate: "Update input"
+        }
+    },
     notFound: {
         title: "Something is not right...",
         description: "Page you are trying to open does not exist. You may have mistyped the address, or the page has been moved to another URL. If you think this is an error contact support.",

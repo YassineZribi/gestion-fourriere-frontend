@@ -76,6 +76,15 @@ const glossary: Glossary = {
         lastName: "Last Name",
         nationalId: "National Id"
     },
+    input: {
+        dateTime: "Date",
+        number: "Number",
+        year: "Year",
+        register: "Register",
+        subRegister: "Sub-register",
+        source: "Source",
+        owner: "Owner"
+    },
     roles: {
         admin: "Admin",
         manager: "Manager",

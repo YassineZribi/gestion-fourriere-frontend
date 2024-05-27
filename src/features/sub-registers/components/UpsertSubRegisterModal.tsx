@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Anchor, Box, Button, Flex, Group, Modal, ModalBaseProps, Stack, TextInput, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
@@ -34,18 +34,26 @@ interface Props {
     size?: ModalBaseProps['size']
     isOpened: boolean
     selectedSubRegister?: SubRegister
+    selectedRegister?: Register | null
+    disableRegister?: boolean
     onClose: () => void
-    onSubmit: () => void
+    onSubmit: (savedSubRegister: SubRegister) => void
 }
 
-export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, selectedSubRegister, onClose, onSubmit }: Props) {
+export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, selectedSubRegister, selectedRegister, disableRegister = false, onClose, onSubmit }: Props) {
+    
     const [isSubmitting, setSubmitting] = useState(false)
-    const [register, setRegister] = useState(selectedSubRegister?.register ?? null)
+    const [register, setRegister] = useState(selectedSubRegister?.register || selectedRegister || null)
 
     const [isRegisterModalOpen, { open: openRegisterModal, close: closeRegisterModal }] = useModal()
 
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
+
+    useEffect(() => {
+        if (selectedRegister)
+            updateRegister(selectedRegister)
+    }, [selectedRegister])
 
     const form = useForm<FormData>({
         initialValues: {
@@ -62,23 +70,25 @@ export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, s
             description: data.description,
             registerId: data.registerId
         }
-        console.log(upsertSubRegisterDto);
 
+        let savedSubRegister: SubRegister;
 
         try {
             setSubmitting(true)
             await wait(2000)
             if (selectedSubRegister) {
-                await subRegistersService.updateSubRegister(selectedSubRegister.id, upsertSubRegisterDto)
+                const res = await subRegistersService.updateSubRegister(selectedSubRegister.id, upsertSubRegisterDto)
+                savedSubRegister = res.data
                 alertSuccess("Sub-register updated successfully!")
             } else {
-                await subRegistersService.createSubRegister(upsertSubRegisterDto)
+                const res = await subRegistersService.createSubRegister(upsertSubRegisterDto)
+                savedSubRegister = res.data
                 alertSuccess("New sub-register created successfully!")
                 form.reset()
                 setRegister(null)
             }
 
-            onSubmit()
+            onSubmit(savedSubRegister)
             onClose()
         } catch (error) {
             console.log(error);
@@ -122,6 +132,7 @@ export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, s
                                     placeholder={tGlossary("subRegister.register")}
                                     label={tGlossary("subRegister.register")}
                                     error={form.errors.registerId?.toString()}
+                                    disabled={disableRegister}
                                     withAsterisk
                                     onFetch={registersService.getAllRegistersByName}
                                     onSelectOption={updateRegister}
@@ -138,6 +149,7 @@ export default function UpsertSubRegisterModal({ title, size = "lg", isOpened, s
                             </Box>
                             <PlusIconButton 
                                 aria-label="Add new register"
+                                disabled={disableRegister}
                                 onClick={openRegisterModal}
                             />
                         </Flex>

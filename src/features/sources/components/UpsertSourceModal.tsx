@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Anchor, Button, Group, Modal, Stack, TextInput, Textarea } from "@mantine/core";
+import { Anchor, Button, Group, Modal, ModalBaseProps, Stack, TextInput, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -20,13 +20,14 @@ export type UpsertSourceDto = FormData
 
 interface Props {
     title: string
+    size?: ModalBaseProps['size']
     isOpened: boolean
     selectedSource?: Source
     onClose: () => void
-    onSubmit: () => void
+    onSubmit: (savedSource: Source) => void
 }
 
-export default function UpsertSourceModal({ title, isOpened, selectedSource, onClose, onSubmit }: Props) {
+export default function UpsertSourceModal({ title, size = "md", isOpened, selectedSource, onClose, onSubmit }: Props) {
     const [isSubmitting, setSubmitting] = useState(false)
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
@@ -50,20 +51,24 @@ export default function UpsertSourceModal({ title, isOpened, selectedSource, onC
             description: data.description
         }
 
+        let savedSource: Source;
+
 
         try {
             setSubmitting(true)
             await wait(2000)
             if (selectedSource) {
-                await sourcesService.updateSource(selectedSource.id, upsertSourceDto)
+                const res = await sourcesService.updateSource(selectedSource.id, upsertSourceDto)
+                savedSource = res.data
                 alertSuccess("Source updated successfully!")
             } else {
-                await sourcesService.createSource(upsertSourceDto)
+                const res = await sourcesService.createSource(upsertSourceDto)
+                savedSource = res.data
                 alertSuccess("New source added successfully!")
                 form.reset()
             }
 
-            onSubmit()
+            onSubmit(savedSource)
             onClose()
         } catch (error) {
             console.log(error);
@@ -73,7 +78,7 @@ export default function UpsertSourceModal({ title, isOpened, selectedSource, onC
     }
 
     return (
-        <Modal title={title} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
+        <Modal title={title} size={size} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>
                     <TextInput

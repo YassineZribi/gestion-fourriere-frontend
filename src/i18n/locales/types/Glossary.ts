@@ -74,6 +74,15 @@ type Glossary = {
         lastName: string,
         nationalId: string
     },
+    input: {
+        dateTime: string,
+        number: string,
+        year: string,
+        register: string,
+        subRegister: string,
+        source: string,
+        owner: string
+    },
     roles: {
         admin: string,
         manager: string,

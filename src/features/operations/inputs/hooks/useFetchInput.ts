@@ -1,19 +1,19 @@
 import { useState } from "react";
-import useEffectOnce from "../../../hooks/useEffectOnce";
-import registersService from "../services"
-import Register from "../../../types/Register";
+import useEffectOnce from "../../../../hooks/useEffectOnce";
+import inputsService from "../services"
+import Input from "../../../../types/Input";
 
-export default function useFetchRegister(id?: string | number | null) {
-    const [register, setRegister] = useState<Register | null>(null)
+export default function useFetchInput(id?: string | number | null) {
+    const [input, setinput] = useState<Input | null>(null)
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState('');
 
     useEffectOnce(() => {
         if (!id) return;
         setLoading(true)
-        registersService.getRegisterById(id)
+        inputsService.getInputById(id)
             .then(res => {
-                setRegister(res.data)
+                setinput(res.data)
             })
             .catch(err => {
                 setError(err.message)
@@ -23,5 +23,5 @@ export default function useFetchRegister(id?: string | number | null) {
             })
     })
 
-    return {register, isLoading, error}
+    return {input, isLoading, error}
 }

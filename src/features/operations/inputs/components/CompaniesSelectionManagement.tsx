@@ -1,48 +1,41 @@
 
 import { Center, Loader } from '@mantine/core';
-import companiesService from '../../features/owners/companies/services'
-import DataTablePagination from '../../components/DataTable/DataTablePagination';
-import DataTableControlPanel from '../../components/DataTable/DataTableControlPanel';
-import useFetchWithPagination from '../../hooks/useFetchWithPagination';
-import THead, { type Th } from '../../components/DataTable/THead';
-import TBody from '../../components/DataTable/TBody';
-import DataTable from '../../components/DataTable';
-import useModal from '../../hooks/useModal';
+import companiesService from '../../../owners/companies/services'
+import DataTablePagination from '../../../../components/DataTable/DataTablePagination';
+import DataTableControlPanel from '../../../../components/DataTable/DataTableControlPanel';
+import THead, { type Th } from '../../../../components/DataTable/THead';
+import TBody from '../../../../components/DataTable/TBody';
+import DataTable from '../../../../components/DataTable';
+import useModal from '../../../../hooks/useModal';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-import UpsertCompanyModal from '../../features/owners/companies/components/UpsertCompanyModal';
-import CompaniesFilterTRow from '../../features/owners/companies/components/CompaniesFilterTRow';
-import CompanyTRow from '../../features/owners/companies/components/CompanyTRow';
-import Company from '../../types/Company';
+import UpsertCompanyModal from '../../../owners/companies/components/UpsertCompanyModal';
+import CompaniesFilterTRow from '../../../owners/companies/components/CompaniesFilterTRow';
+import CompanyTRow from '../../../owners/companies/components/CompanyTRow';
+import Company from '../../../../types/Company';
+import { thColumns as inheritedThColumns } from '../../../../pages/OwnersManagement/CompaniesManagement';
+import { LINE_SELECTION_COLUMN_WIDTH } from '../../../../utils/constants';
+import useFetchWithPaginationUsingState from '../../../../hooks/useFetchWithPaginationUsingState';
 
-export const thColumns = [
+const thColumns = [
     {
-        name: "name",
-        label: "name"
+        style: { width: LINE_SELECTION_COLUMN_WIDTH },
+        label: ""
     },
-    {
-        name: "taxId",
-        label: "taxId"
-    },
-    {
-        name: "email",
-        label: "email"
-    },
-    {
-        name: "phoneNumber",
-        label: "phoneNumber"
-    },
-    // {
-    //     label: "address"
-    // }
+    ...inheritedThColumns
 ] as const
 
-export default function CompaniesManagement() {
+interface Props {
+    selectedCompany: Company | null
+    onSelect: (company: Company | null) => void
+}
+
+export default function CompaniesSelectionManagement({onSelect, selectedCompany}: Props) {
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
 
     const thColumnsWithTranslation: Th[] = useMemo(() => thColumns.map(c => (
-        { ...c, label: tGlossary(`company.${c.label}`) }
+        { ...c, label: c.label ? tGlossary(`company.${c.label}`) : c.label }
     )), [tGlossary])
 
     const {
@@ -64,7 +57,7 @@ export default function CompaniesManagement() {
         onUpdateEntity: onUpdateCompany,
         onDeleteEntity: onDeleteCompany
 
-    } = useFetchWithPagination<Company>(companiesService.getAllCompaniesByCriteria);
+    } = useFetchWithPaginationUsingState<Company>(companiesService.getAllCompaniesByCriteria);
 
     const [isOpen, { open, close }] = useModal()
 
@@ -98,6 +91,7 @@ export default function CompaniesManagement() {
                                 <CompaniesFilterTRow
                                     filters={getFilterParams()}
                                     hasFilters={hasFilters()}
+                                    withSelectionColumn
                                     onFilter={handleFilter}
                                     onClearFilters={handleClearFilters}
                                 />
@@ -108,6 +102,10 @@ export default function CompaniesManagement() {
                                     <CompanyTRow
                                         key={company.id}
                                         company={company}
+                                        onSelect={onSelect}
+                                        isSelected={selectedCompany?.id === company.id}
+                                        hideDeleteBtn
+                                        hideUpdateBtn
                                         onUpdateCompany={onUpdateCompany}
                                         onDeleteCompany={onDeleteCompany}
                                     />

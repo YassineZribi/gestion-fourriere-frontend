@@ -20,6 +20,7 @@ import ArticleFamiliesManagement from "./pages/ArticleFamiliesManagement"
 import ArticlesManagement from "./pages/ArticlesManagement"
 import SourcesManagement from "./pages/SourcesManagement"
 import OwnersManagement from "./pages/OwnersManagement"
+import UpsertInput from "./pages/UpsertInput"
 
 function App() {
   useAppDirection()
@@ -48,6 +49,9 @@ function App() {
           ))}
           {["/institution", "/institution/:tab"].map(path => (
             <Route key={path} path={path} element={<Institution />} />
+          ))}
+          {["/create-input", "/update-input/:id"].map(path => (
+            <Route key={path} path={path} element={<UpsertInput />} />
           ))}
         </Route>
         {/* <Route path="/dashboard" element={

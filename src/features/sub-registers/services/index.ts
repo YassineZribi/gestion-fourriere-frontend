@@ -15,6 +15,11 @@ class SubRegistersService {
         return PRIVATE_API.get<SubRegister[]>("/sub-registers/search?name=" + search)
     }
 
+    getAllSubRegistersByNameAndRegisterId(name: string, registerId: number) {
+        
+        return PRIVATE_API.get<SubRegister[]>("/sub-registers/search?name=" + name + "&registerId=" + registerId)
+    }
+
     getSubRegisterById(id: string | number) {
         
         return PRIVATE_API.get<SubRegister>("/sub-registers/" + id)

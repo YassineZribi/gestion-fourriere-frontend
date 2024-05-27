@@ -14,18 +14,20 @@ import Individual from "../../../../types/Individual";
 
 interface Props {
     selectedIndividual: Individual
+    hideUpdateBtn?: boolean
+    hideDeleteBtn?: boolean
     onUpdateIndividual: () => void
     onDeleteIndividual: () => void
 }
 
-export default function IndividualsActions({ selectedIndividual, onDeleteIndividual, onUpdateIndividual }: Props) {
-    const {t} = useTranslation()
+export default function IndividualsActions({ selectedIndividual, hideUpdateBtn, hideDeleteBtn, onDeleteIndividual, onUpdateIndividual }: Props) {
+    const { t } = useTranslation()
 
-    const [isUpdateIndividualModalOpen, {open: openUpdateIndividualModal, close: closeUpdateIndividualModal}] = useModal()
+    const [isUpdateIndividualModalOpen, { open: openUpdateIndividualModal, close: closeUpdateIndividualModal }] = useModal()
 
-    const [isIndividualDetailsModalOpen, {open: openIndividualDetailsModal, close: closeIndividualDetailsModal}] = useModal()
+    const [isIndividualDetailsModalOpen, { open: openIndividualDetailsModal, close: closeIndividualDetailsModal }] = useModal()
 
-    const [isConfirmationModalOpen, {open: openConfirmationModal, close: closeConfirmationModal}] = useModal()
+    const [isConfirmationModalOpen, { open: openConfirmationModal, close: closeConfirmationModal }] = useModal()
     const [isDeletingIndividualLoading, setDeletingIndividualLoading] = useState(false)
 
     const confirmDeletingIndividual = async () => {
@@ -46,6 +48,8 @@ export default function IndividualsActions({ selectedIndividual, onDeleteIndivid
     return (
         <>
             <TRowActions
+                hideUpdateBtn={hideUpdateBtn}
+                hideDeleteBtn={hideDeleteBtn}
                 onShowDetailsBtnClick={openIndividualDetailsModal}
                 onUpdateBtnClick={openUpdateIndividualModal}
                 onConfirmBtnClick={openConfirmationModal}
@@ -60,24 +64,33 @@ export default function IndividualsActions({ selectedIndividual, onDeleteIndivid
                 />
             </InfoDetailsModal>
 
-            <UpsertIndividualModal
-                title={t("components.upsertIndividualModal.title.onUpdate")}
-                isOpened={isUpdateIndividualModalOpen}
-                selectedIndividual={selectedIndividual}
-                onClose={closeUpdateIndividualModal}
-                onSubmit={onUpdateIndividual}
-            />
+            {
+                !hideUpdateBtn && (
+                    <UpsertIndividualModal
+                        title={t("components.upsertIndividualModal.title.onUpdate")}
+                        isOpened={isUpdateIndividualModalOpen}
+                        selectedIndividual={selectedIndividual}
+                        onClose={closeUpdateIndividualModal}
+                        onSubmit={onUpdateIndividual}
+                    />
+                )
+            }
 
-            <ConfirmationModal
-                isLoading={isDeletingIndividualLoading}
-                isOpened={isConfirmationModalOpen}
-                onCancel={closeConfirmationModal}
-                onConfirm={confirmDeletingIndividual}
-            >
-                <Text size="md" fw={"bold"}>
-                    {t("components.individualsActions.confirmationModal.message")}
-                </Text>
-            </ConfirmationModal>
+            {
+                !hideDeleteBtn && (
+                    <ConfirmationModal
+                        isLoading={isDeletingIndividualLoading}
+                        isOpened={isConfirmationModalOpen}
+                        onCancel={closeConfirmationModal}
+                        onConfirm={confirmDeletingIndividual}
+                    >
+                        <Text size="md" fw={"bold"}>
+                            {t("components.individualsActions.confirmationModal.message")}
+                        </Text>
+                    </ConfirmationModal>
+                )
+            }
+
         </>
     )
 }

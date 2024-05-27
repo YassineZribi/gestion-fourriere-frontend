@@ -1,52 +1,41 @@
 
 import { Center, Loader } from '@mantine/core';
-import individualsService from '../../features/owners/individuals/services'
-import DataTablePagination from '../../components/DataTable/DataTablePagination';
-import DataTableControlPanel from '../../components/DataTable/DataTableControlPanel';
-import useFetchWithPagination from '../../hooks/useFetchWithPagination';
-import THead, { type Th } from '../../components/DataTable/THead';
-import TBody from '../../components/DataTable/TBody';
-import DataTable from '../../components/DataTable';
-import useModal from '../../hooks/useModal';
+import individualsService from '../../../../features/owners/individuals/services'
+import DataTablePagination from '../../../../components/DataTable/DataTablePagination';
+import DataTableControlPanel from '../../../../components/DataTable/DataTableControlPanel';
+import THead, { type Th } from '../../../../components/DataTable/THead';
+import TBody from '../../../../components/DataTable/TBody';
+import DataTable from '../../../../components/DataTable';
+import useModal from '../../../../hooks/useModal';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-import UpsertIndividualModal from '../../features/owners/individuals/components/UpsertIndividualModal';
-import IndividualsFilterTRow from '../../features/owners/individuals/components/IndividualsFilterTRow';
-import IndividualTRow from '../../features/owners/individuals/components/IndividualTRow';
-import Individual from '../../types/Individual';
+import UpsertIndividualModal from '../../../../features/owners/individuals/components/UpsertIndividualModal';
+import IndividualsFilterTRow from '../../../../features/owners/individuals/components/IndividualsFilterTRow';
+import IndividualTRow from '../../../../features/owners/individuals/components/IndividualTRow';
+import Individual from '../../../../types/Individual';
+import { thColumns as inheritedThColumns } from '../../../../pages/OwnersManagement/IndividualsManagement';
+import { LINE_SELECTION_COLUMN_WIDTH } from '../../../../utils/constants';
+import useFetchWithPaginationUsingState from '../../../../hooks/useFetchWithPaginationUsingState';
 
-export const thColumns = [
+const thColumns = [
     {
-        name: "firstName",
-        label: "firstName"
+        style: { width: LINE_SELECTION_COLUMN_WIDTH },
+        label: ""
     },
-    {
-        name: "lastName",
-        label: "lastName"
-    },
-    {
-        name: "nationalId",
-        label: "nationalId"
-    },
-    {
-        name: "email",
-        label: "email"
-    },
-    {
-        name: "phoneNumber",
-        label: "phoneNumber"
-    },
-    // {
-    //     label: "address"
-    // }
+    ...inheritedThColumns
 ] as const
 
-export default function IndividualsManagement() {
+interface Props {
+    selectedIndividual: Individual | null
+    onSelect: (individual: Individual | null) => void
+}
+
+export default function IndividualsSelectionManagement({onSelect, selectedIndividual}: Props) {
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
 
     const thColumnsWithTranslation: Th[] = useMemo(() => thColumns.map(c => (
-        { ...c, label: tGlossary(`individual.${c.label}`) }
+        { ...c, label: c.label ? tGlossary(`individual.${c.label}`) : c.label }
     )), [tGlossary])
 
     const {
@@ -68,7 +57,7 @@ export default function IndividualsManagement() {
         onUpdateEntity: onUpdateIndividual,
         onDeleteEntity: onDeleteIndividual
 
-    } = useFetchWithPagination<Individual>(individualsService.getAllIndividualsByCriteria);
+    } = useFetchWithPaginationUsingState<Individual>(individualsService.getAllIndividualsByCriteria);
 
     const [isOpen, { open, close }] = useModal()
 
@@ -102,6 +91,7 @@ export default function IndividualsManagement() {
                                 <IndividualsFilterTRow
                                     filters={getFilterParams()}
                                     hasFilters={hasFilters()}
+                                    withSelectionColumn
                                     onFilter={handleFilter}
                                     onClearFilters={handleClearFilters}
                                 />
@@ -112,6 +102,10 @@ export default function IndividualsManagement() {
                                     <IndividualTRow
                                         key={individual.id}
                                         individual={individual}
+                                        onSelect={onSelect}
+                                        isSelected={selectedIndividual?.id === individual.id}
+                                        hideDeleteBtn
+                                        hideUpdateBtn
                                         onUpdateIndividual={onUpdateIndividual}
                                         onDeleteIndividual={onDeleteIndividual}
                                     />

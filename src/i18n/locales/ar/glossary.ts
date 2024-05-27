@@ -76,6 +76,15 @@ const glossary: Glossary = {
         lastName: "اللّقب",
         nationalId: "رقم ب.ت.و"
     },
+    input: {
+        dateTime: "التاريخ",
+        number: "الرقم",
+        year: "السَّنة",
+        register: "السِّجل",
+        subRegister: "السِّجل الفرعي",
+        source: "السُّلطة الحاجزة",
+        owner: "المخالف"
+    },
     roles: {
         admin: "مشرف إداري",
         manager: "مدير",

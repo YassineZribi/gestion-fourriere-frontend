@@ -8,6 +8,7 @@ interface Props<T> {
   placeholder?: string
   label?: string
   error?: string
+  disabled?: boolean
   withAsterisk?: boolean
   variant?: 'default' | 'filled' | 'unstyled'
   shouldClearOption?: boolean
@@ -16,7 +17,7 @@ interface Props<T> {
   onClear: () => void
 }
 
-export default function SearchableCombobox<T extends { id: number }>({ children, selectedEntity, placeholder, label, error, withAsterisk = false, variant = "default", shouldClearOption, onFetch, onSelectOption, onClear }: Props<T>) {
+export default function SearchableCombobox<T extends { id: number }>({ children, selectedEntity, placeholder, label, error, disabled = false, withAsterisk = false, variant = "default", shouldClearOption, onFetch, onSelectOption, onClear }: Props<T>) {
   const [search, setSearch] = useState('');
 
   const [value, setValue] = useState<string | null>(selectedEntity ? selectedEntity.id.toString() : null);
@@ -86,6 +87,7 @@ export default function SearchableCombobox<T extends { id: number }>({ children,
           error={error}
           withAsterisk={withAsterisk}
           variant={variant}
+          disabled={disabled}
           component="button"
           type="button"
           pointer
@@ -94,6 +96,7 @@ export default function SearchableCombobox<T extends { id: number }>({ children,
               value !== null ? (
                 <CloseButton
                   size="sm"
+                  disabled={disabled}
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={handleClearOption}
                   aria-label="Clear value"
@@ -103,7 +106,7 @@ export default function SearchableCombobox<T extends { id: number }>({ children,
               )
           }
           onClick={() => combobox.toggleDropdown()}
-          rightSectionPointerEvents={(value === null || loading) ? 'none' : 'all'}
+          rightSectionPointerEvents={(value === null || loading || disabled) ? 'none' : 'all'}
           // multiline
         >
           {selectedOption ? (

@@ -44,6 +44,15 @@ const root: Root = {
     ownersManagement: {
         title: "Gestion des propriétaires des articles"
     },
+    inputsManagement: {
+        title: "Gestion des entrées"
+    },
+    upsertInput: {
+        title: {
+            onInsert: "Ajouter une nouvelle entrée",
+            onUpdate: "Modifier les données de l'entrée"
+        }
+    },
     notFound: {
         title: "Quelque chose ne va pas...",
         description: "La page que vous essayez d'ouvrir n'existe pas. Il se peut que vous ayez mal saisi l'adresse ou que la page ait été déplacée vers une autre URL. Si vous pensez qu'il s'agit d'une erreur, contactez l'assistance.",

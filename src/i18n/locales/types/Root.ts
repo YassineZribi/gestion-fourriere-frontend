@@ -42,6 +42,15 @@ type Root = {
     ownersManagement: {
         title: string
     },
+    inputsManagement: {
+        title: string
+    },
+    upsertInput: {
+        title: {
+            onInsert: string,
+            onUpdate: string
+        }
+    },
     notFound: {
         title: string,
         description: string,

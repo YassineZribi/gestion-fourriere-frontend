@@ -9,7 +9,8 @@ import CompaniesManagement from './CompaniesManagement';
 
 export const ownerTabs = ["individuals", "companies"] as const
 const schema = z.enum(ownerTabs)
-const { individuals, companies } = schema.Values
+export type OwnerSchemaType = z.infer<typeof schema>
+export const { individuals, companies } = schema.Values
 
 export default function OwnersManagement() {
     const navigate = useNavigate();
