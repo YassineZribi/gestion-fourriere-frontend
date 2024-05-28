@@ -14,18 +14,20 @@ import Article from "../../../types/Article";
 
 interface Props {
     selectedArticle: Article
+    hideUpdateBtn?: boolean
+    hideDeleteBtn?: boolean
     onUpdateArticle: () => void
     onDeleteArticle: () => void
 }
 
-export default function ArticlesActions({ selectedArticle, onDeleteArticle, onUpdateArticle }: Props) {
+export default function ArticlesActions({ selectedArticle, hideUpdateBtn, hideDeleteBtn, onDeleteArticle, onUpdateArticle }: Props) {
     const { t } = useTranslation()
 
-    const [isUpdateArticleModalOpen, {open: openUpdateArticleModal, close: closeUpdateArticleModal}] = useModal()
+    const [isUpdateArticleModalOpen, { open: openUpdateArticleModal, close: closeUpdateArticleModal }] = useModal()
 
-    const [isArticleDetailsModalOpen, {open: openArticleDetailsModal, close: closeArticleDetailsModal}] = useModal()
+    const [isArticleDetailsModalOpen, { open: openArticleDetailsModal, close: closeArticleDetailsModal }] = useModal()
 
-    const [isConfirmationModalOpen, {open: openConfirmationModal, close: closeConfirmationModal}] = useModal()
+    const [isConfirmationModalOpen, { open: openConfirmationModal, close: closeConfirmationModal }] = useModal()
     const [isDeletingArticleLoading, setDeletingArticleLoading] = useState(false)
 
     const confirmDeletingEmployee = async () => {
@@ -46,6 +48,8 @@ export default function ArticlesActions({ selectedArticle, onDeleteArticle, onUp
     return (
         <>
             <TRowActions
+                hideUpdateBtn={hideUpdateBtn}
+                hideDeleteBtn={hideDeleteBtn}
                 onShowDetailsBtnClick={openArticleDetailsModal}
                 onUpdateBtnClick={openUpdateArticleModal}
                 onConfirmBtnClick={openConfirmationModal}
@@ -60,24 +64,33 @@ export default function ArticlesActions({ selectedArticle, onDeleteArticle, onUp
                 />
             </InfoDetailsModal>
 
-            <UpsertArticleModal
-                title={t("components.upsertArticleModal.title.onUpdate")}
-                isOpened={isUpdateArticleModalOpen}
-                selectedArticle={selectedArticle}
-                onClose={closeUpdateArticleModal}
-                onSubmit={onUpdateArticle}
-            />
+            {
+                !hideUpdateBtn && (
+                    <UpsertArticleModal
+                        title={t("components.upsertArticleModal.title.onUpdate")}
+                        isOpened={isUpdateArticleModalOpen}
+                        selectedArticle={selectedArticle}
+                        onClose={closeUpdateArticleModal}
+                        onSubmit={onUpdateArticle}
+                    />
+                )
+            }
 
-            <ConfirmationModal
-                isLoading={isDeletingArticleLoading}
-                isOpened={isConfirmationModalOpen}
-                onCancel={closeConfirmationModal}
-                onConfirm={confirmDeletingEmployee}
-            >
-                <Text size="md" fw={"bold"}>
-                    {t("components.articlesActions.confirmationModal.message")}
-                </Text>
-            </ConfirmationModal>
+            {
+                !hideDeleteBtn && (
+                    <ConfirmationModal
+                        isLoading={isDeletingArticleLoading}
+                        isOpened={isConfirmationModalOpen}
+                        onCancel={closeConfirmationModal}
+                        onConfirm={confirmDeletingEmployee}
+                    >
+                        <Text size="md" fw={"bold"}>
+                            {t("components.articlesActions.confirmationModal.message")}
+                        </Text>
+                    </ConfirmationModal>
+                )
+            }
+
         </>
     )
 }

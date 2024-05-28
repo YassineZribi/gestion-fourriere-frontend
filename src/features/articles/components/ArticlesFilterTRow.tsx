@@ -6,20 +6,25 @@ import SearchableCombobox from "../../../components/SearchableCombobox";
 import articleFamiliessService from '../../article-families/services'
 import ArticleFamily from "../../../types/ArticleFamily";
 import ArticleFamilySelectOption from "../../article-families/components/ArticleFamilySelectOption";
+import { LINE_SELECTION_COLUMN_WIDTH } from "../../../utils/constants";
 
 interface Props {
     selectedArticleFamily: ArticleFamily | null
     filters: { [key: string]: string | undefined }
     hasFilters: boolean
+    withSelectionColumn?: boolean
     onFilter: (property: string, value: string) => void
     onClearFilters: () => void
 }
 
-export default function ArticlesFilterTRow({ selectedArticleFamily, filters, hasFilters, onFilter, onClearFilters }: Props) {
+export default function ArticlesFilterTRow({ selectedArticleFamily, filters, hasFilters, withSelectionColumn = false, onFilter, onClearFilters }: Props) {
     const { t } = useTranslation()
 
     return (
         <Table.Tr>
+            {withSelectionColumn && (
+                <Table.Td style={{ width: LINE_SELECTION_COLUMN_WIDTH }}></Table.Td>
+            )}
             <Table.Td>
                 <ClearableInput
                     onChange={(newValue) => onFilter("name", newValue)}

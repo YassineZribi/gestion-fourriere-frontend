@@ -1,43 +1,44 @@
 
 import { Center, Loader, Space } from '@mantine/core';
-import Title from '../../components/Title';
-import articlesService from '../../features/articles/services'
-import DataTablePagination from '../../components/DataTable/DataTablePagination';
-import DataTableControlPanel from '../../components/DataTable/DataTableControlPanel';
-import useFetchWithPagination from '../../hooks/useFetchWithPagination';
-import THead, { type Th } from '../../components/DataTable/THead';
-import TBody from '../../components/DataTable/TBody';
-import DataTable from '../../components/DataTable';
-import useModal from '../../hooks/useModal';
-import UpsertArticleModal from '../../features/articles/components/UpsertArticleModal';
-import ArticleTRow from '../../features/articles/components/ArticleTRow';
-import ArticlesFilterTRow from '../../features/articles/components/ArticlesFilterTRow';
+import Title from '../../../../components/Title';
+import articlesService from '../../../../features/articles/services'
+import DataTablePagination from '../../../../components/DataTable/DataTablePagination';
+import DataTableControlPanel from '../../../../components/DataTable/DataTableControlPanel';
+import THead, { type Th } from '../../../../components/DataTable/THead';
+import TBody from '../../../../components/DataTable/TBody';
+import DataTable from '../../../../components/DataTable';
+import useModal from '../../../../hooks/useModal';
+import UpsertArticleModal from '../../../../features/articles/components/UpsertArticleModal';
+import ArticleTRow from '../../../../features/articles/components/ArticleTRow';
+import ArticlesFilterTRow from '../../../../features/articles/components/ArticlesFilterTRow';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-import useFetchArticleFamily from '../../features/article-families/hooks/useFetchArticleFamily';
-import Article from '../../types/Article';
+import useFetchArticleFamily from '../../../../features/article-families/hooks/useFetchArticleFamily';
+import Article from '../../../../types/Article';
+import { thColumns as inheritedThColumns } from '../../../../pages/ArticlesManagement';
+import { LINE_SELECTION_COLUMN_WIDTH } from '../../../../utils/constants';
+import useFetchWithPaginationUsingState from '../../../../hooks/useFetchWithPaginationUsingState';
 
-export const thColumns = [
+const thColumns = [
     {
-        name: "name",
-        label: "name"
+        style: { width: LINE_SELECTION_COLUMN_WIDTH },
+        label: ""
     },
-    {
-        name: "transportFee",
-        label: "transportFee"
-    },
-    {
-        label: "articleFamily"
-    }
+    ...inheritedThColumns
 ] as const
 
-export default function ArticlesManagement() {
+interface Props {
+    selectedArticle: Article | null
+    onSelect: (article: Article | null) => void
+}
+
+export default function ArticlesSelectionManagement({onSelect, selectedArticle}: Props) {
     const { t } = useTranslation()
     const { t: tRoot } = useTranslation("root")
     const { t: tGlossary } = useTranslation("glossary")
 
     const thColumnsWithTranslation: Th[] = useMemo(() => thColumns.map(c => (
-        { ...c, label: tGlossary(`article.${c.label}`) }
+        { ...c, label: c.label ? tGlossary(`article.${c.label}`) : c.label }
     )), [tGlossary])
 
     const {
@@ -59,7 +60,7 @@ export default function ArticlesManagement() {
         onUpdateEntity: onUpdateArticle,
         onDeleteEntity: onDeleteArticle
 
-    } = useFetchWithPagination<Article>(articlesService.getAllArticlesByCriteria);
+    } = useFetchWithPaginationUsingState<Article>(articlesService.getAllArticlesByCriteria);
 
     const { articleFamily: selectedArticleFamily } = useFetchArticleFamily(getSearchParam('articleFamilyId'))
 
@@ -98,6 +99,7 @@ export default function ArticlesManagement() {
                                     selectedArticleFamily={selectedArticleFamily}
                                     filters={getFilterParams()}
                                     hasFilters={hasFilters()}
+                                    withSelectionColumn
                                     onFilter={handleFilter}
                                     onClearFilters={handleClearFilters}
                                 />
@@ -108,6 +110,10 @@ export default function ArticlesManagement() {
                                     <ArticleTRow
                                         key={article.id}
                                         article={article}
+                                        onSelect={onSelect}
+                                        isSelected={selectedArticle?.id === article.id}
+                                        hideDeleteBtn
+                                        hideUpdateBtn
                                         onUpdateArticle={onUpdateArticle}
                                         onDeleteArticle={onDeleteArticle}
                                     />

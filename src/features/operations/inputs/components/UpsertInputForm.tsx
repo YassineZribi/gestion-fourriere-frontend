@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Anchor, Box, Button, Flex, Group, Modal, NumberInput, SimpleGrid, Stack, TextInput, Textarea, rem } from "@mantine/core";
+import { ActionIcon, Anchor, Avatar, Box, Button, Flex, Group, Modal, NumberInput, SimpleGrid, Stack, Table, TableTfoot, Text, TextInput, Textarea, Title, rem } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -8,7 +8,7 @@ import inputsService from "../services"
 import registersService from '../../../registers/services'
 import sourcesService from '../../../sources/services'
 import subRegistersService from '../../../sub-registers/services'
-import { alertSuccess } from "../../../../utils/feedback";
+import { alertError, alertSuccess } from "../../../../utils/feedback";
 import { useTranslation } from "react-i18next";
 import SearchableCombobox from "../../../../components/SearchableCombobox";
 import SubRegister from "../../../../types/SubRegister";
@@ -21,7 +21,7 @@ import Input from "../../../../types/Input";
 import SubRegisterSelectOption from "../../../sub-registers/components/SubRegisterSelectOption";
 import UpsertSubRegisterModal from "../../../sub-registers/components/UpsertSubRegisterModal";
 import { DateTimePicker } from "@mantine/dates";
-import { MinusIcon } from "@heroicons/react/24/outline";
+import { MinusIcon, PhotoIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Source from "../../../../types/Source";
 import SourceSelectOption from "../../../sources/components/SourceSelectOption";
 import UpsertSourceModal from "../../../sources/components/UpsertSourceModal";
@@ -29,6 +29,8 @@ import OwnerSelectionModal from "./OwnerSelectionModal";
 import Owner from "../../../../types/Owner";
 import ReadOnlyCombobox from "../../../../components/ReadOnlyCombobox";
 import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOption";
+import ArticleSelectionModal from "./ArticleSelectionModal";
+import { getFullResourcePath } from "../../../../lib/axios/api";
 
 
 const schema = z.object({
@@ -47,14 +49,38 @@ const schema = z.object({
     ownerId: z.number().refine((value) => value !== -1, {
         message: 'Owner is required',
     }),
+    operationLines: z.array(
+        z.object({
+            article: z.object({
+                id: z.number().refine((value) => value !== -1, {
+                    message: 'Article is required',
+                }),
+                name: z.string(),
+                photoPath: z.string().nullable(),
+                articleFamily: z.object({
+                    unitCalculation: z.boolean()
+                })
+            }),
+            unitPrice: z.number({ invalid_type_error: "Unit price is required" }).gt(0, "Unit price should be greather than 0"),
+            quantity: z.number({ invalid_type_error: "Quantity is required" }).gt(0, "Quantity should be greather than 0"),
+        })
+    ).min(1, "List is empty!")
 });
 
 export type FormData = z.infer<typeof schema>
 
-export type UpsertInputDto = FormData
+export type UpsertInputDto = Omit<FormData, "operationLines" | "dateTime">
+    & {
+        operationLines: {
+            articleId: number;
+            unitPrice: number;
+            quantity: number;
+        }[]
+    }
+    & { dateTime: string };
 
 interface Props {
-    selectedInput?: Input
+    selectedInput: Input | null
 }
 
 export default function UpsertInputForm({ selectedInput }: Props) {
@@ -63,11 +89,13 @@ export default function UpsertInputForm({ selectedInput }: Props) {
     const [subRegister, setSubRegister] = useState(selectedInput?.subRegister ?? null)
     const [source, setSource] = useState(selectedInput?.source ?? null)
     const [owner, setOwner] = useState(selectedInput?.owner ?? null)
+    // const [operationLines, setOperationLines] = useState<OperationLine[]>(selectedInput?.operationLines ?? [])
 
     const [isRegisterModalOpen, { open: openRegisterModal, close: closeRegisterModal }] = useModal()
     const [isSubRegisterModalOpen, { open: openSubRegisterModal, close: closeSubRegisterModal }] = useModal()
     const [isSourceModalOpen, { open: openSourceModal, close: closeSourceModal }] = useModal()
     const [isOwnerSelectionModalOpen, { open: openOwnerSelectionModal, close: closeOwnerSelectionModal }] = useModal()
+    const [isArticleSelectionModalOpen, { open: openArticleSelectionModal, close: closeArticleSelectionModal }] = useModal()
 
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
@@ -81,19 +109,38 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             subRegisterId: selectedInput?.subRegister.id || -1,
             sourceId: selectedInput?.source.id || -1,
             ownerId: selectedInput?.owner.id || -1,
+            operationLines: selectedInput
+                ? selectedInput.operationLines.map(line => ({
+                    article: {
+                        id: line.article.id,
+                        name: line.article.name,
+                        photoPath: line.article.photoPath,
+                        articleFamily: {
+                            unitCalculation: line.article.articleFamily?.unitCalculation!
+                        }
+                    },
+                    unitPrice: line.unitPrice,
+                    quantity: line.quantity
+                }))
+                : []
         },
         validate: zodResolver(schema),
     });
 
     const handleSubmit = async (data: FormData) => {
         const upsertInputDto: UpsertInputDto = {
-            dateTime: data.dateTime,
+            dateTime: data.dateTime.toISOString(),
             number: data.number,
             year: data.year,
             registerId: data.registerId,
             subRegisterId: data.subRegisterId,
             sourceId: data.sourceId,
-            ownerId: data.ownerId
+            ownerId: data.ownerId,
+            operationLines: data.operationLines.map(line => ({
+                articleId: line.article.id,
+                quantity: line.quantity,
+                unitPrice: line.unitPrice
+            }))
         }
         console.log(upsertInputDto);
 
@@ -107,8 +154,8 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             } else {
                 await inputsService.createInput(upsertInputDto)
                 alertSuccess("New input created successfully!")
-                form.reset()
-                setRegister(null)
+                //form.reset()
+                //setRegister(null)
             }
 
             // onSubmit()
@@ -123,6 +170,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
     const updateRegister = (newRegister: Register | null) => {
         setRegister(newRegister)
         if (newRegister) {
+            setSubRegister(null)
             form.setFieldValue("registerId", newRegister.id)
         }
         form.clearFieldError("registerId")
@@ -153,6 +201,9 @@ export default function UpsertInputForm({ selectedInput }: Props) {
         form.clearFieldError("ownerId")
     }
 
+    console.log(form.values);
+
+
     return (
         <>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
@@ -170,6 +221,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                     onSelectOption={updateRegister}
                                     onClear={() => {
                                         setRegister(null)
+                                        setSubRegister(null)
                                         form.setFieldValue("registerId", -1)
                                         form.clearFieldError("registerId")
                                     }}
@@ -225,13 +277,6 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                             withAsterisk
                             {...form.getInputProps('dateTime')}
                             valueFormat="DD/MM/YYYY - HH:mm"
-                        // value={date}
-                        // onChange={newDate => {
-                        //     if (newDate !== null)
-                        //         setDate(newDate)
-                        //     console.log(newDate?.toISOString());
-
-                        // }}
                         />
                         <Flex gap="5">
                             <Box style={{ flexGrow: 1 }}>
@@ -303,29 +348,107 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                         </ReadOnlyCombobox>
                     </Box>
 
-                    <TextInput
-                        label={tGlossary("subRegister.name")}
-                        placeholder={tGlossary("subRegister.name")}
-                        name="name"
-                        withAsterisk
-                        {...form.getInputProps('name')}
-                    />
+                    <Title mt={"xl"} order={3} fs="italic">Details about what was seized</Title>
 
-                    <NumberInput
-                        label={tGlossary("articleFamily.nightlyAmount")}
-                        placeholder={tGlossary("articleFamily.nightlyAmount")}
-                        name="number"
-                        withAsterisk
-                        {...form.getInputProps('number')}
-                    />
-                <Group justify="space-between" mt="md">
-                    <Anchor component="button" type="button" variant="gradient" /* onClick={onClose} */ size="sm">
-                        {t("buttons.cancel")}
-                    </Anchor>
-                    <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                        {t("buttons.save")}
-                    </Button>
-                </Group>
+                    <Table>
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th style={{ width: 250 }}>Article</Table.Th>
+                                <Table.Th>Unit price</Table.Th>
+                                <Table.Th>Quantity</Table.Th>
+                                <Table.Th>Subtotal</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody style={{ verticalAlign: 'top' }}>
+                            {
+                                form.getValues().operationLines.map((line, index) => {
+                                    return (
+                                        <Table.Tr key={index}>
+                                            <Table.Td style={{ width: 250 }}>
+                                                <Box style={{ flex: 1 }}>
+                                                    <Group
+                                                        wrap='nowrap' title={`${line.article.name}`}>
+                                                        <Avatar
+                                                            styles={{ root: { width: 36, height: 36, minWidth: 36 } }}
+                                                            // style={{ border: "1px solid" }}
+                                                            src={line.article.photoPath ? getFullResourcePath(line.article.photoPath) : ""}
+                                                            radius={"sm"}
+                                                        ><PhotoIcon style={{ width: rem(25) }} /></Avatar>
+                                                        <Group gap={"5px"} wrap='nowrap' className='text-truncate'>
+                                                            <Text fz="xs" fw={700}>
+                                                                {line.article.name}
+                                                            </Text>
+                                                        </Group>
+                                                    </Group>
+                                                </Box>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <NumberInput
+                                                    placeholder="Unit price"
+                                                    withAsterisk
+                                                    key={form.key(`operationLines.${index}.unitPrice`)}
+                                                    {...form.getInputProps(`operationLines.${index}.unitPrice`)}
+                                                />
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <NumberInput
+                                                    placeholder="Quantity"
+                                                    disabled={line.article.articleFamily.unitCalculation}
+                                                    withAsterisk
+                                                    key={form.key(`operationLines.${index}.quantity`)}
+                                                    {...form.getInputProps(`operationLines.${index}.quantity`)}
+                                                />
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Flex h={36} align="center" justify="center">
+                                                    <Text>{line.unitPrice * line.quantity}</Text>
+                                                </Flex>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <ActionIcon variant="subtle" color="red" size="input-sm" onClick={() => form.removeListItem('operationLines', index)}>
+                                                    <TrashIcon width="1rem" height="1rem" />
+                                                </ActionIcon>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    )
+                                })
+                            }
+                            <Table.Tr>
+                                <Table.Td>
+                                    <ActionIcon onClick={openArticleSelectionModal} size={"input-sm"} variant="light" aria-label="ActionIcon with size as a number">
+                                        <PlusIcon style={{ width: rem(20), height: rem(20) }} />
+                                    </ActionIcon>
+                                </Table.Td>
+                            </Table.Tr>
+                            {
+                                form.getValues().operationLines.length > 0 && (
+                                    <Table.Tr>
+                                        <Table.Td></Table.Td>
+                                        <Table.Td></Table.Td>
+                                        <Table.Td><Text fw="700">Total</Text></Table.Td>
+                                        <Table.Td>
+                                            <Text fw="700" ta={"center"}>{form.getValues().operationLines.reduce(
+                                                (accumulator, currentLine) => accumulator + currentLine.quantity * currentLine.unitPrice,
+                                                0,
+                                            )}</Text>
+                                        </Table.Td>
+                                        <Table.Td></Table.Td>
+                                    </Table.Tr>
+                                )
+                            }
+                        </Table.Tbody>
+                    </Table>
+                    <Text fz={"sm"} ta="center" style={{ color: 'var(--mantine-color-error)' }}>{form.getInputProps(`operationLines`).error}</Text>
+
+
+                    <Group justify="space-between" mt="md">
+                        <Anchor component="button" type="button" variant="gradient" /* onClick={onClose} */ size="sm">
+                            {t("buttons.cancel")}
+                        </Anchor>
+                        <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
+                            {t("buttons.save")}
+                        </Button>
+                    </Group>
                 </Stack>
 
             </form>
@@ -358,6 +481,36 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                 isOpened={isOwnerSelectionModalOpen}
                 onClose={closeOwnerSelectionModal}
                 onSubmit={updateOwner}
+            />
+
+            <ArticleSelectionModal
+                title={"Select article"}
+                isOpened={isArticleSelectionModalOpen}
+                onClose={closeArticleSelectionModal}
+                onSubmit={(art) => {
+                    console.log(art);
+                    if (art) {
+                        const articleExists = !!form.getValues().operationLines.find(line => line.article.id === art.id)
+                        if (articleExists) {
+                            alertError("the item is already selected!")
+                            return;
+                        }
+                        form.clearFieldError("operationLines")
+                        const value = { 
+                            article: { 
+                                id: art.id, 
+                                name: art.name, 
+                                photoPath: art.photoPath,
+                                articleFamily: {
+                                    unitCalculation: art.articleFamily?.unitCalculation!
+                                }
+                            }, 
+                            unitPrice: 1, 
+                            quantity: 1 
+                        }
+                        form.insertListItem("operationLines", value)
+                    }
+                }}
             />
         </>
     )

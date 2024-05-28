@@ -21,7 +21,7 @@ export default function UpsertInput() {
                     ? <Center><Loader size={50} /></Center>
                     : error
                         ? <p>{error}</p>
-                        : <UpsertInputForm />
+                        : <UpsertInputForm selectedInput={input} />
             }
         </div>
     );

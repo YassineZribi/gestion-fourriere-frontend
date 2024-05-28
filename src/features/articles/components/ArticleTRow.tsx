@@ -1,17 +1,34 @@
-import { Badge, Table, Text } from "@mantine/core"
-import ArticleFamiliesActions from "./ArticleFamiliesActions"
-import { ACTIONS_COLUMN_WIDTH } from "../../../utils/constants"
+import { Badge, Checkbox, Table, Text } from "@mantine/core"
+import ArticlesActions from "./ArticlesActions"
+import { ACTIONS_COLUMN_WIDTH, LINE_SELECTION_COLUMN_WIDTH } from "../../../utils/constants"
 import Article from "../../../types/Article"
 
 interface Props {
     article: Article
+    isSelected?: boolean
+    hideUpdateBtn?: boolean
+    hideDeleteBtn?: boolean
+    onSelect?: (article: Article | null) => void
     onUpdateArticle: () => void
     onDeleteArticle: () => void
 }
 
-export default function ArticleTRow({ article, onUpdateArticle, onDeleteArticle }: Props) {
+export default function ArticleTRow({ article, isSelected, hideDeleteBtn, hideUpdateBtn, onSelect, onUpdateArticle, onDeleteArticle }: Props) {
     return (
-        <Table.Tr>
+        <Table.Tr
+            bg={isSelected ? 'var(--mantine-color-blue-light)' : undefined}
+        >
+            {
+                onSelect && (
+                    <Table.Td style={{ width: LINE_SELECTION_COLUMN_WIDTH }}>
+                        <Checkbox
+                            aria-label="Select article"
+                            checked={isSelected}
+                            onChange={(event) => onSelect(event.currentTarget.checked ? article : null)}
+                        />
+                    </Table.Td>
+                )
+            }
             <Table.Td>
                 <Text fz="sm" fw={500} truncate="end" title={article.name}>
                     {article.name}
@@ -32,8 +49,10 @@ export default function ArticleTRow({ article, onUpdateArticle, onDeleteArticle 
                 }
             </Table.Td>
             <Table.Td style={{ width: ACTIONS_COLUMN_WIDTH }}>
-                <ArticleFamiliesActions
+                <ArticlesActions
                     selectedArticle={article}
+                    hideUpdateBtn={hideUpdateBtn}
+                    hideDeleteBtn={hideDeleteBtn}
                     onUpdateArticle={onUpdateArticle}
                     onDeleteArticle={onDeleteArticle}
                 />
