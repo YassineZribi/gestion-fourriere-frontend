@@ -81,7 +81,17 @@ type Glossary = {
         register: string,
         subRegister: string,
         source: string,
-        owner: string
+        owner: string,
+        total: string
+    },
+    operationLine: {
+        article: string,
+        quantity: string,
+        unitPrice: string,
+        lineTotalAmount: string
+    },
+    currency: {
+        tn: string
     },
     roles: {
         admin: string,

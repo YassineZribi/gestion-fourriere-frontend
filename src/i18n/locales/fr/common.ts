@@ -155,6 +155,16 @@ const common: Common = {
                 message: "Êtes-vous sûr de vouloir supprimer ce propriétaire d'articles ?"
             }
         },
+        inputsActions: {
+            confirmationModal: {
+                message: "Êtes-vous sûr de vouloir supprimer cette entrée ?"
+            }
+        },
+        upsertInputForm: {
+            operationLinesTable: {
+                title: "Détails sur les articles saisis"
+            }
+        },
         dataTablePagination: {
             summary: "{{start}} - {{end}} de {{total}}"
         },

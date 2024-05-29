@@ -9,11 +9,11 @@ interface Props {
 export default function OwnerSelectOption({ owner }: Props) {
   return (
     <Group
-      wrap='nowrap' gap={"5px"} title={`${getName(owner)} (${getIdentity(owner)})`} className='text-truncate'>
-      <Text fz="xs" fw={400}>
+      wrap='nowrap' gap={"5px"} title={`${getName(owner)} (${getIdentity(owner)})`}>
+      <Text fz="xs" fw={500} truncate="end">
         {getName(owner)}
       </Text>
-      <Text fz="xs" opacity={0.6} className='text-truncate'>
+      <Text fz="xs" opacity={0.6} truncate="end">
         ({getIdentity(owner)})
       </Text>
     </Group>

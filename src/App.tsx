@@ -21,6 +21,7 @@ import ArticlesManagement from "./pages/ArticlesManagement"
 import SourcesManagement from "./pages/SourcesManagement"
 import OwnersManagement from "./pages/OwnersManagement"
 import UpsertInput from "./pages/UpsertInput"
+import InputsManagement from "./pages/InputsManagement"
 
 function App() {
   useAppDirection()
@@ -44,6 +45,7 @@ function App() {
           <Route path="/article-families-management" element={<ArticleFamiliesManagement />} />
           <Route path="/articles-management" element={<ArticlesManagement />} />
           <Route path="/sources-management" element={<SourcesManagement />} />
+          <Route path="/inputs-management" element={<InputsManagement />} />
           {["/owners-management", "/owners-management/:tab"].map(path => (
             <Route key={path} path={path} element={<OwnersManagement />} />
           ))}

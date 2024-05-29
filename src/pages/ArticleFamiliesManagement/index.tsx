@@ -17,8 +17,13 @@ import { useMemo } from 'react';
 import useFetchRegister from '../../features/registers/hooks/useFetchRegister';
 import ArticleFamily from '../../types/ArticleFamily';
 import useFetchMeasurementUnit from '../../features/measurement-units/hooks/useFetchMeasurementUnit';
+import { AVATAR_COLUMN_WIDTH } from '../../utils/constants';
 
 const thColumns = [
+    {
+        style: { width: AVATAR_COLUMN_WIDTH },
+        label: "photo"
+    },
     {
         name: "name",
         label: "name"

@@ -33,6 +33,7 @@ export default function ArticleFamiliesFilterTRow({ selectedRegister, selectedMe
 
     return (
         <Table.Tr>
+            <Table.Td></Table.Td>
             <Table.Td>
                 <ClearableInput
                     onChange={(newValue) => onFilter("name", newValue)}

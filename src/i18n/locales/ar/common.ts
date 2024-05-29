@@ -155,6 +155,16 @@ const common: Common = {
                 message: "هل أنت متأكد أنك تريد حذف مالك المحجوزات هذا ؟"
             }
         },
+        inputsActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف هذا الحجز ؟"
+            }
+        },
+        upsertInputForm: {
+            operationLinesTable: {
+                title: "تفاصيل حول المحجوز"
+            }
+        },
         dataTablePagination: {
             summary: "{{start}} - {{end}} من {{total}}",
         },

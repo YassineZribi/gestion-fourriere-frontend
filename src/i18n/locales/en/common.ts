@@ -155,6 +155,16 @@ const common: Common = {
                 message: "Are you sure you want to delete this owner?"
             }
         },
+        inputsActions: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this input?"
+            }
+        },
+        upsertInputForm: {
+            operationLinesTable: {
+                title: "Details about what was seized"
+            }
+        },
         dataTablePagination: {
             summary: "{{start}} - {{end}} of {{total}}"
         },

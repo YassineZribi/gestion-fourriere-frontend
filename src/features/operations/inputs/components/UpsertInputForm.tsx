@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActionIcon, Anchor, Avatar, Box, Button, Flex, Group, Modal, NumberInput, SimpleGrid, Stack, Table, TableTfoot, Text, TextInput, Textarea, Title, rem } from "@mantine/core";
+import { ActionIcon, Anchor, Avatar, Box, Button, Flex, Group, NumberInput, SimpleGrid, Stack, Table, Text, Title, rem } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -31,6 +31,7 @@ import ReadOnlyCombobox from "../../../../components/ReadOnlyCombobox";
 import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOption";
 import ArticleSelectionModal from "./ArticleSelectionModal";
 import { getFullResourcePath } from "../../../../lib/axios/api";
+import { useNavigate } from "react-router-dom";
 
 
 const schema = z.object({
@@ -84,6 +85,7 @@ interface Props {
 }
 
 export default function UpsertInputForm({ selectedInput }: Props) {
+    const navigate = useNavigate()
     const [isSubmitting, setSubmitting] = useState(false)
     const [register, setRegister] = useState(selectedInput?.register ?? null)
     const [subRegister, setSubRegister] = useState(selectedInput?.subRegister ?? null)
@@ -154,6 +156,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             } else {
                 await inputsService.createInput(upsertInputDto)
                 alertSuccess("New input created successfully!")
+                navigate('/inputs-management')
                 //form.reset()
                 //setRegister(null)
             }
@@ -348,103 +351,105 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                         </ReadOnlyCombobox>
                     </Box>
 
-                    <Title mt={"xl"} order={3} fs="italic">Details about what was seized</Title>
-
-                    <Table>
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th style={{ width: 250 }}>Article</Table.Th>
-                                <Table.Th>Unit price</Table.Th>
-                                <Table.Th>Quantity</Table.Th>
-                                <Table.Th>Subtotal</Table.Th>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody style={{ verticalAlign: 'top' }}>
-                            {
-                                form.getValues().operationLines.map((line, index) => {
-                                    return (
-                                        <Table.Tr key={index}>
-                                            <Table.Td style={{ width: 250 }}>
-                                                <Box style={{ flex: 1 }}>
-                                                    <Group
-                                                        wrap='nowrap' title={`${line.article.name}`}>
-                                                        <Avatar
-                                                            styles={{ root: { width: 36, height: 36, minWidth: 36 } }}
-                                                            // style={{ border: "1px solid" }}
-                                                            src={line.article.photoPath ? getFullResourcePath(line.article.photoPath) : ""}
-                                                            radius={"sm"}
-                                                        ><PhotoIcon style={{ width: rem(25) }} /></Avatar>
-                                                        <Group gap={"5px"} wrap='nowrap' className='text-truncate'>
-                                                            <Text fz="xs" fw={700}>
-                                                                {line.article.name}
-                                                            </Text>
+                    <Title mt={"xl"} order={3} fs="italic">{t("components.upsertInputForm.operationLinesTable.title")}</Title>
+                    <Table.ScrollContainer minWidth={700}>
+                        <Table styles={{ table: { tableLayout: 'fixed' } }}>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th style={{ width: 250 }}>{tGlossary("operationLine.article")}</Table.Th>
+                                    <Table.Th>{tGlossary("operationLine.unitPrice")}</Table.Th>
+                                    <Table.Th>{tGlossary("operationLine.quantity")}</Table.Th>
+                                    <Table.Th ta="center">{tGlossary("operationLine.lineTotalAmount")}</Table.Th>
+                                    <Table.Th style={{ width: 50 }}></Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody style={{ verticalAlign: 'top' }}>
+                                {
+                                    form.getValues().operationLines.map((line, index) => {
+                                        return (
+                                            <Table.Tr key={index}>
+                                                <Table.Td style={{ width: 250 }}>
+                                                    <Box style={{ flex: 1 }}>
+                                                        <Group
+                                                            wrap='nowrap' title={`${line.article.name}`}>
+                                                            <Avatar
+                                                                styles={{ root: { width: 36, height: 36, minWidth: 36 } }}
+                                                                // style={{ border: "1px solid" }}
+                                                                src={line.article.photoPath ? getFullResourcePath(line.article.photoPath) : ""}
+                                                                radius={"sm"}
+                                                            ><PhotoIcon style={{ width: rem(25) }} /></Avatar>
+                                                            <Group gap={"5px"} wrap='nowrap' className='text-truncate'>
+                                                                <Text fz="xs" fw={700}>
+                                                                    {line.article.name}
+                                                                </Text>
+                                                            </Group>
                                                         </Group>
-                                                    </Group>
-                                                </Box>
-                                            </Table.Td>
+                                                    </Box>
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <NumberInput
+                                                        placeholder="Unit price"
+                                                        withAsterisk
+                                                        key={form.key(`operationLines.${index}.unitPrice`)}
+                                                        {...form.getInputProps(`operationLines.${index}.unitPrice`)}
+                                                    />
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <NumberInput
+                                                        placeholder="Quantity"
+                                                        disabled={line.article.articleFamily.unitCalculation}
+                                                        withAsterisk
+                                                        key={form.key(`operationLines.${index}.quantity`)}
+                                                        {...form.getInputProps(`operationLines.${index}.quantity`)}
+                                                    />
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Flex h={36} align="center" justify="center">
+                                                        <Text>{line.unitPrice * line.quantity}</Text>
+                                                    </Flex>
+                                                </Table.Td>
+                                                <Table.Td style={{ width: 50 }}>
+                                                    <ActionIcon variant="subtle" color="red" size="input-sm" onClick={() => form.removeListItem('operationLines', index)}>
+                                                        <TrashIcon width="1rem" height="1rem" />
+                                                    </ActionIcon>
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        )
+                                    })
+                                }
+                                <Table.Tr>
+                                    <Table.Td>
+                                        <ActionIcon onClick={openArticleSelectionModal} size={"input-sm"} variant="light" aria-label="ActionIcon with size as a number">
+                                            <PlusIcon style={{ width: rem(20), height: rem(20) }} />
+                                        </ActionIcon>
+                                    </Table.Td>
+                                </Table.Tr>
+                                {
+                                    form.getValues().operationLines.length > 0 && (
+                                        <Table.Tr>
+                                            <Table.Td></Table.Td>
+                                            <Table.Td></Table.Td>
+                                            <Table.Td><Text fw="700">{tGlossary("input.total")}</Text></Table.Td>
                                             <Table.Td>
-                                                <NumberInput
-                                                    placeholder="Unit price"
-                                                    withAsterisk
-                                                    key={form.key(`operationLines.${index}.unitPrice`)}
-                                                    {...form.getInputProps(`operationLines.${index}.unitPrice`)}
-                                                />
+                                                <Text fw="700" ta={"center"}>{form.getValues().operationLines.reduce(
+                                                    (accumulator, currentLine) => accumulator + currentLine.quantity * currentLine.unitPrice,
+                                                    0,
+                                                )}</Text>
                                             </Table.Td>
-                                            <Table.Td>
-                                                <NumberInput
-                                                    placeholder="Quantity"
-                                                    disabled={line.article.articleFamily.unitCalculation}
-                                                    withAsterisk
-                                                    key={form.key(`operationLines.${index}.quantity`)}
-                                                    {...form.getInputProps(`operationLines.${index}.quantity`)}
-                                                />
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <Flex h={36} align="center" justify="center">
-                                                    <Text>{line.unitPrice * line.quantity}</Text>
-                                                </Flex>
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <ActionIcon variant="subtle" color="red" size="input-sm" onClick={() => form.removeListItem('operationLines', index)}>
-                                                    <TrashIcon width="1rem" height="1rem" />
-                                                </ActionIcon>
-                                            </Table.Td>
+                                            <Table.Td></Table.Td>
                                         </Table.Tr>
                                     )
-                                })
-                            }
-                            <Table.Tr>
-                                <Table.Td>
-                                    <ActionIcon onClick={openArticleSelectionModal} size={"input-sm"} variant="light" aria-label="ActionIcon with size as a number">
-                                        <PlusIcon style={{ width: rem(20), height: rem(20) }} />
-                                    </ActionIcon>
-                                </Table.Td>
-                            </Table.Tr>
-                            {
-                                form.getValues().operationLines.length > 0 && (
-                                    <Table.Tr>
-                                        <Table.Td></Table.Td>
-                                        <Table.Td></Table.Td>
-                                        <Table.Td><Text fw="700">Total</Text></Table.Td>
-                                        <Table.Td>
-                                            <Text fw="700" ta={"center"}>{form.getValues().operationLines.reduce(
-                                                (accumulator, currentLine) => accumulator + currentLine.quantity * currentLine.unitPrice,
-                                                0,
-                                            )}</Text>
-                                        </Table.Td>
-                                        <Table.Td></Table.Td>
-                                    </Table.Tr>
-                                )
-                            }
-                        </Table.Tbody>
-                    </Table>
+                                }
+                            </Table.Tbody>
+                        </Table>
+                    </Table.ScrollContainer>
                     <Text fz={"sm"} ta="center" style={{ color: 'var(--mantine-color-error)' }}>{form.getInputProps(`operationLines`).error}</Text>
 
 
-                    <Group justify="space-between" mt="md">
-                        <Anchor component="button" type="button" variant="gradient" /* onClick={onClose} */ size="sm">
+                    <Group justify="flex-end" mt="md">
+                        {/* <Anchor component="button" type="button" variant="gradient" size="sm">
                             {t("buttons.cancel")}
-                        </Anchor>
+                        </Anchor> */}
                         <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
                             {t("buttons.save")}
                         </Button>
@@ -496,17 +501,17 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                             return;
                         }
                         form.clearFieldError("operationLines")
-                        const value = { 
-                            article: { 
-                                id: art.id, 
-                                name: art.name, 
+                        const value = {
+                            article: {
+                                id: art.id,
+                                name: art.name,
                                 photoPath: art.photoPath,
                                 articleFamily: {
                                     unitCalculation: art.articleFamily?.unitCalculation!
                                 }
-                            }, 
-                            unitPrice: 1, 
-                            quantity: 1 
+                            },
+                            unitPrice: 1,
+                            quantity: 1
                         }
                         form.insertListItem("operationLines", value)
                     }

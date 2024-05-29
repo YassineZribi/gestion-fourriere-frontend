@@ -153,6 +153,16 @@ type Common = {
                 message: string
             }
         },
+        inputsActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        upsertInputForm: {
+            operationLinesTable: {
+                title: string
+            }
+        },
         dataTablePagination: {
             summary: string
         },

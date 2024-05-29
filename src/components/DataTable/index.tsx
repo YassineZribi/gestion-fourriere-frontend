@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 
 interface Props {
     children: ReactNode
-    minWidth?: number
+    minWidth?: React.CSSProperties['minWidth']
 }
 
 export default function DataTable({ children, minWidth = 1000 }: Props) {

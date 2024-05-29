@@ -45,7 +45,7 @@ const glossary: Glossary = {
     articleFamily: {
         name: "Nom",
         description: "Description",
-        nightlyAmount: "Montant / nuit (TND)",
+        nightlyAmount: "Montant / nuit",
         calculationMethod: "Méthode de calcul",
         photo: "Photo",
         register: "Registre",
@@ -53,7 +53,7 @@ const glossary: Glossary = {
     },
     article: {
         name: "Nom",
-        transportFee: "Frais de transport (TND)",
+        transportFee: "Frais de transport",
         photo: "Photo",
         articleFamily: "Famille d'articles",
     },
@@ -83,7 +83,17 @@ const glossary: Glossary = {
         register: "Registre",
         subRegister: "Sous-registre",
         source: "Source",
-        owner: "Propriétaire"
+        owner: "Propriétaire",
+        total: "Total"
+    },
+    operationLine: {
+        article: "Article",
+        quantity: "Quantité",
+        unitPrice: "Prix unitaire",
+        lineTotalAmount: "Sous-total"
+    },
+    currency: {
+        tn: "TND"
     },
     roles: {
         admin: "Admin",

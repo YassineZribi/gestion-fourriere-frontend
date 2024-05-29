@@ -21,7 +21,7 @@ export default function FileDropzone({ label, required = false, file, savedFileP
             ? URL.createObjectURL(file)
             : savedFilePath ? getFullResourcePath(savedFilePath) : null
         if (imageUrl == null) return null
-        return <Image src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} maw={"100%"} w={'fit-content'} mx={"auto"} display={"inline-block"} radius={4} />;
+        return <Image src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} maw={150} w={'100%'} mx={"auto"} display={"inline-block"} radius={4} />;
     }, [file]);
     return (
         <Box>
@@ -63,7 +63,7 @@ export default function FileDropzone({ label, required = false, file, savedFileP
                     </div>
                 </Group>
             </Dropzone>
-            <Flex justify={"center"}>
+            <Flex>
                 <Box mt={"sm"} pos={"relative"} style={{display:"inline-block"}}>
                     {preview}
                     {

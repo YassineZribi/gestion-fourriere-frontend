@@ -25,6 +25,7 @@ export default function ArticlesFilterTRow({ selectedArticleFamily, filters, has
             {withSelectionColumn && (
                 <Table.Td style={{ width: LINE_SELECTION_COLUMN_WIDTH }}></Table.Td>
             )}
+            <Table.Td></Table.Td>
             <Table.Td>
                 <ClearableInput
                     onChange={(newValue) => onFilter("name", newValue)}

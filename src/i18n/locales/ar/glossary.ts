@@ -45,7 +45,7 @@ const glossary: Glossary = {
     articleFamily: {
         name: "الإسم",
         description: "الوصف",
-        nightlyAmount: "المبلغ / الليلة (د.ت)",
+        nightlyAmount: "المبلغ / الليلة",
         calculationMethod: "طريقة الاحتساب",
         photo: "الصورة",
         register: "السِّجل",
@@ -53,7 +53,7 @@ const glossary: Glossary = {
     },
     article: {
         name: "الإسم",
-        transportFee: "(د.ت) تكاليف النقل",
+        transportFee: "تكاليف النقل",
         photo: "الصورة",
         articleFamily: "صنف المحجوزات",
     },
@@ -83,7 +83,17 @@ const glossary: Glossary = {
         register: "السِّجل",
         subRegister: "السِّجل الفرعي",
         source: "السُّلطة الحاجزة",
-        owner: "المخالف"
+        owner: "المخالف",
+        total: "الإجمالي"
+    },
+    operationLine: {
+        article: "المحجوز",
+        quantity: "الكمية",
+        unitPrice: "سعر الوحدة",
+        lineTotalAmount: "الإجمالي الفرعي"
+    },
+    currency: {
+        tn: "د.ت"
     },
     roles: {
         admin: "مشرف إداري",

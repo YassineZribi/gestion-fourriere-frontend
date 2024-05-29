@@ -1,55 +1,60 @@
 
 import { Center, Loader, Space } from '@mantine/core';
 import Title from '../../components/Title';
-import articlesService from '../../features/articles/services'
+import inputsService from '../../features/operations/inputs/services'
 import DataTablePagination from '../../components/DataTable/DataTablePagination';
 import DataTableControlPanel from '../../components/DataTable/DataTableControlPanel';
 import useFetchWithPagination from '../../hooks/useFetchWithPagination';
 import THead, { type Th } from '../../components/DataTable/THead';
 import TBody from '../../components/DataTable/TBody';
 import DataTable from '../../components/DataTable';
-import useModal from '../../hooks/useModal';
-import UpsertArticleModal from '../../features/articles/components/UpsertArticleModal';
-import ArticleTRow from '../../features/articles/components/ArticleTRow';
-import ArticlesFilterTRow from '../../features/articles/components/ArticlesFilterTRow';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-import useFetchArticleFamily from '../../features/article-families/hooks/useFetchArticleFamily';
-import Article from '../../types/Article';
-import { AVATAR_COLUMN_WIDTH } from '../../utils/constants';
+import Input from '../../types/Input';
+import useFetchSource from '../../features/sources/hooks/useFetchSource';
+import useFetchOwner from '../../features/owners/shared/hooks/useFetchOwner';
+import { useNavigate } from 'react-router-dom';
+import InputsFilterTRow from '../../features/operations/inputs/components/InputsFilterTRow';
+import InputTRow from '../../features/operations/inputs/components/InputTRow';
+import { columnsWidth } from '../../features/operations/inputs/components/helpers';
 
-export const thColumns = [
+const thColumns = [
     {
-        style: { width: AVATAR_COLUMN_WIDTH },
-        label: "photo"
+        style: { width: columnsWidth.number },
+        name: "number",
+        label: "number"
     },
     {
-        name: "name",
-        label: "name"
+        style: { width: columnsWidth.year },
+        name: "year",
+        label: "year"
     },
     {
-        name: "transportFee",
-        label: "transportFee"
+        name: "dateTime",
+        label: "dateTime"
     },
     {
-        label: "articleFamily"
-    }
+        label: "source"
+    },
+    {
+        label: "owner"
+    },
 ] as const
 
-export default function ArticlesManagement() {
-    const { t } = useTranslation()
+export default function InputsManagement() {
+    const navigate = useNavigate()
     const { t: tRoot } = useTranslation("root")
     const { t: tGlossary } = useTranslation("glossary")
 
     const thColumnsWithTranslation: Th[] = useMemo(() => thColumns.map(c => (
-        { ...c, label: tGlossary(`article.${c.label}`) }
+        { ...c, label: tGlossary(`input.${c.label}`) }
     )), [tGlossary])
 
     const {
         responseData,
         isLoading,
         error,
-        fetchData: fetchArticles,
+        fetchData: fetchInputs,
         handleSort,
         handleFilter,
         showFilters,
@@ -60,35 +65,28 @@ export default function ArticlesManagement() {
         getSearchParam,
         getFilterParams,
         getSortList,
-        onCreateEntity: onCreateArticle,
-        onUpdateEntity: onUpdateArticle,
-        onDeleteEntity: onDeleteArticle
+        onCreateEntity: onCreateInput,
+        onUpdateEntity: onUpdateInput,
+        onDeleteEntity: onDeleteInput
 
-    } = useFetchWithPagination<Article>(articlesService.getAllArticlesByCriteria);
+    } = useFetchWithPagination<Input>(inputsService.getAllInputsByCriteria);
 
-    const { articleFamily: selectedArticleFamily } = useFetchArticleFamily(getSearchParam('articleFamilyId'))
+    const { source: selectedSource } = useFetchSource(getSearchParam('sourceId'))
+    const { owner: selectedOwner } = useFetchOwner(getSearchParam('ownerId'))
 
-    const [isOpen, { open, close }] = useModal()
 
     return (
         <div>
-            <Title>{tRoot("articlesManagement.title")}</Title>
+            <Title>{tRoot("inputsManagement.title")}</Title>
             <Space my={'xl'} />
             {error && <p>{error}</p>}
             {!responseData && isLoading && <Center><Loader size={50} /></Center>}
             {responseData && (
                 <>
                     <DataTableControlPanel
-                        onAddBtnClick={open}
-                    >
-                        <UpsertArticleModal
-                            title={t("components.upsertArticleModal.title.onInsert")}
-                            isOpened={isOpen}
-                            onClose={close}
-                            onSubmit={onCreateArticle}
-                        />
-                    </DataTableControlPanel>
-                    <DataTable minWidth={1200}>
+                        onAddBtnClick={() => navigate('/create-input')}
+                    />
+                    <DataTable>
                         <THead
                             columns={thColumnsWithTranslation}
                             sortList={getSortList()}
@@ -99,8 +97,9 @@ export default function ArticlesManagement() {
                         <TBody
                             showFilters={showFilters}
                             filterRow={
-                                <ArticlesFilterTRow
-                                    selectedArticleFamily={selectedArticleFamily}
+                                <InputsFilterTRow
+                                    selectedSource={selectedSource}
+                                    selectedOwner={selectedOwner}
                                     filters={getFilterParams()}
                                     hasFilters={hasFilters()}
                                     onFilter={handleFilter}
@@ -109,12 +108,11 @@ export default function ArticlesManagement() {
                             }
                         >
                             {
-                                responseData.content.map((article) => (
-                                    <ArticleTRow
-                                        key={article.id}
-                                        article={article}
-                                        onUpdateArticle={onUpdateArticle}
-                                        onDeleteArticle={onDeleteArticle}
+                                responseData.content.map((input) => (
+                                    <InputTRow
+                                        key={input.id}
+                                        input={input}
+                                        onDeleteInput={onDeleteInput}
                                     />
                                 ))
                             }
