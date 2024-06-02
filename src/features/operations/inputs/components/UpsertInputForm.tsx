@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { ActionIcon, Anchor, Avatar, Box, Button, Flex, Group, NumberInput, SimpleGrid, Stack, Table, Text, Title, rem } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
@@ -29,9 +29,10 @@ import OwnerSelectionModal from "./OwnerSelectionModal";
 import Owner from "../../../../types/Owner";
 import ReadOnlyCombobox from "../../../../components/ReadOnlyCombobox";
 import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOption";
-import ArticleSelectionModal from "./ArticleSelectionModal";
 import { getFullResourcePath } from "../../../../lib/axios/api";
 import { useNavigate } from "react-router-dom";
+import OperationLineSelectionModal from "./OperationLineSelectionModal";
+import Sup from "../../../../components/Sup";
 
 
 const schema = z.object({
@@ -62,7 +63,8 @@ const schema = z.object({
                     unitCalculation: z.boolean()
                 })
             }),
-            unitPrice: z.number({ invalid_type_error: "Unit price is required" }).gt(0, "Unit price should be greather than 0"),
+            nightlyAmount: z.number({ invalid_type_error: "Nightly amount is required" }).gt(0, "Nightly amount should be greather than 0"),
+            transportFee: z.number({ invalid_type_error: "Transport fee is required" }),
             quantity: z.number({ invalid_type_error: "Quantity is required" }).gt(0, "Quantity should be greather than 0"),
         })
     ).min(1, "List is empty!")
@@ -74,7 +76,8 @@ export type UpsertInputDto = Omit<FormData, "operationLines" | "dateTime">
     & {
         operationLines: {
             articleId: number;
-            unitPrice: number;
+            nightlyAmount: number;
+            transportFee: number;
             quantity: number;
         }[]
     }
@@ -97,7 +100,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
     const [isSubRegisterModalOpen, { open: openSubRegisterModal, close: closeSubRegisterModal }] = useModal()
     const [isSourceModalOpen, { open: openSourceModal, close: closeSourceModal }] = useModal()
     const [isOwnerSelectionModalOpen, { open: openOwnerSelectionModal, close: closeOwnerSelectionModal }] = useModal()
-    const [isArticleSelectionModalOpen, { open: openArticleSelectionModal, close: closeArticleSelectionModal }] = useModal()
+    const [isOperationLineSelectionModalOpen, { open: openOperationLineSelectionModal, close: closeOperationLineSelectionModal }] = useModal()
 
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
@@ -121,7 +124,8 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                             unitCalculation: line.article.articleFamily?.unitCalculation!
                         }
                     },
-                    unitPrice: line.unitPrice,
+                    nightlyAmount: line.nightlyAmount,
+                    transportFee: line.transportFee,
                     quantity: line.quantity
                 }))
                 : []
@@ -141,7 +145,8 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             operationLines: data.operationLines.map(line => ({
                 articleId: line.article.id,
                 quantity: line.quantity,
-                unitPrice: line.unitPrice
+                nightlyAmount: line.nightlyAmount,
+                transportFee: line.transportFee,
             }))
         }
         console.log(upsertInputDto);
@@ -210,7 +215,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
     return (
         <>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
-                <Stack maw={700} mx="auto">
+                <Stack maw={850} mx="auto">
                     <SimpleGrid cols={{ base: 1, sm: 2 }}>
                         <Flex gap="5">
                             <Box style={{ flexGrow: 1 }}>
@@ -304,61 +309,89 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                         </Flex>
                     </SimpleGrid>
 
-                    <Flex gap="5">
+                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                        <Flex gap="5">
+                            <Box style={{ flexGrow: 1 }}>
+                                <SearchableCombobox
+                                    selectedEntity={source}
+                                    placeholder={tGlossary("input.source")}
+                                    label={tGlossary("input.source")}
+                                    error={form.errors.sourceId?.toString()}
+                                    withAsterisk
+                                    onFetch={sourcesService.getAllSourcesByName}
+                                    onSelectOption={updateSource}
+                                    onClear={() => {
+                                        setSource(null)
+                                        form.setFieldValue("sourceId", -1)
+                                        form.clearFieldError("sourceId")
+                                    }}
+                                >
+                                    {
+                                        (source) => <SourceSelectOption source={source} />
+                                    }
+                                </SearchableCombobox>
+                            </Box>
+                            <PlusIconButton
+                                aria-label="Add new source"
+                                onClick={openSourceModal}
+                            />
+                        </Flex>
+                        <SummaryTable title={t("components.upsertInputForm.totalQuantity")}>
+                            {
+                                form.getValues().operationLines.reduce(
+                                    (accumulator, currentLine) => accumulator + currentLine.quantity,
+                                    0,
+                                )
+                            }
+                        </SummaryTable>
+                    </SimpleGrid>
+
+                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
                         <Box style={{ flexGrow: 1 }}>
-                            <SearchableCombobox
-                                selectedEntity={source}
-                                placeholder={tGlossary("input.source")}
-                                label={tGlossary("input.source")}
-                                error={form.errors.sourceId?.toString()}
+                            <ReadOnlyCombobox
+                                selectedEntity={owner}
+                                placeholder={tGlossary("input.owner")}
+                                label={tGlossary("input.owner")}
+                                error={form.errors.ownerId?.toString()}
                                 withAsterisk
-                                onFetch={sourcesService.getAllSourcesByName}
-                                onSelectOption={updateSource}
                                 onClear={() => {
-                                    setSource(null)
-                                    form.setFieldValue("sourceId", -1)
-                                    form.clearFieldError("sourceId")
+                                    setOwner(null)
+                                    form.setFieldValue("ownerId", -1)
+                                    form.clearFieldError("ownerId")
                                 }}
+                                onClick={openOwnerSelectionModal}
                             >
                                 {
-                                    (source) => <SourceSelectOption source={source} />
+                                    (owner) => <OwnerSelectOption owner={owner} />
                                 }
-                            </SearchableCombobox>
+                            </ReadOnlyCombobox>
                         </Box>
-                        <PlusIconButton
-                            aria-label="Add new source"
-                            onClick={openSourceModal}
-                        />
-                    </Flex>
-
-                    <Box style={{ flexGrow: 1 }}>
-                        <ReadOnlyCombobox
-                            selectedEntity={owner}
-                            placeholder={tGlossary("input.owner")}
-                            label={tGlossary("input.owner")}
-                            error={form.errors.ownerId?.toString()}
-                            withAsterisk
-                            onClear={() => {
-                                setOwner(null)
-                                form.setFieldValue("ownerId", -1)
-                                form.clearFieldError("ownerId")
-                            }}
-                            onClick={openOwnerSelectionModal}
-                        >
+                        <SummaryTable title={t("components.upsertInputForm.totalAmount")}>
                             {
-                                (owner) => <OwnerSelectOption owner={owner} />
+                                form.getValues().operationLines.reduce(
+                                    (accumulator, currentLine) => accumulator + currentLine.quantity * currentLine.nightlyAmount + currentLine.transportFee,
+                                    0,
+                                )
                             }
-                        </ReadOnlyCombobox>
-                    </Box>
+                            {' '}<Sup style={{ fontWeight: 500 }}>{tGlossary(`currency.tn`)}</Sup>
+                        </SummaryTable>
+                    </SimpleGrid>
 
-                    <Title mt={"xl"} order={3} fs="italic">{t("components.upsertInputForm.operationLinesTable.title")}</Title>
-                    <Table.ScrollContainer minWidth={700}>
+                    <Group align="center" mt={"xl"} justify="space-between">
+                        <Title order={3} fs="italic">{t("components.upsertInputForm.operationLinesTable.title")}</Title>
+                        <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
+                            {t("buttons.save")}
+                        </Button>
+                    </Group>
+
+                    <Table.ScrollContainer minWidth={850}>
                         <Table styles={{ table: { tableLayout: 'fixed' } }}>
                             <Table.Thead>
                                 <Table.Tr>
                                     <Table.Th style={{ width: 250 }}>{tGlossary("operationLine.article")}</Table.Th>
-                                    <Table.Th>{tGlossary("operationLine.unitPrice")}</Table.Th>
+                                    <Table.Th>{tGlossary("operationLine.nightlyAmount")}</Table.Th>
                                     <Table.Th>{tGlossary("operationLine.quantity")}</Table.Th>
+                                    <Table.Th>{tGlossary("operationLine.transportFee")}</Table.Th>
                                     <Table.Th ta="center">{tGlossary("operationLine.lineTotalAmount")}</Table.Th>
                                     <Table.Th style={{ width: 50 }}></Table.Th>
                                 </Table.Tr>
@@ -377,7 +410,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                                                 // style={{ border: "1px solid" }}
                                                                 src={line.article.photoPath ? getFullResourcePath(line.article.photoPath) : ""}
                                                                 radius={"sm"}
-                                                            ><PhotoIcon style={{ width: rem(25) }} /></Avatar>
+                                                            ><PhotoIcon style={{ width: "80%" }} /></Avatar>
                                                             <Group gap={"5px"} wrap='nowrap' className='text-truncate'>
                                                                 <Text fz="xs" fw={700}>
                                                                     {line.article.name}
@@ -390,22 +423,29 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                                     <NumberInput
                                                         placeholder="Unit price"
                                                         withAsterisk
-                                                        key={form.key(`operationLines.${index}.unitPrice`)}
-                                                        {...form.getInputProps(`operationLines.${index}.unitPrice`)}
+                                                        key={form.key(`operationLines.${index}.nightlyAmount`)}
+                                                        {...form.getInputProps(`operationLines.${index}.nightlyAmount`)}
                                                     />
                                                 </Table.Td>
                                                 <Table.Td>
                                                     <NumberInput
                                                         placeholder="Quantity"
-                                                        disabled={line.article.articleFamily.unitCalculation}
                                                         withAsterisk
                                                         key={form.key(`operationLines.${index}.quantity`)}
                                                         {...form.getInputProps(`operationLines.${index}.quantity`)}
                                                     />
                                                 </Table.Td>
                                                 <Table.Td>
+                                                    <NumberInput
+                                                        placeholder="Transport fee"
+                                                        withAsterisk
+                                                        key={form.key(`operationLines.${index}.transportFee`)}
+                                                        {...form.getInputProps(`operationLines.${index}.transportFee`)}
+                                                    />
+                                                </Table.Td>
+                                                <Table.Td>
                                                     <Flex h={36} align="center" justify="center">
-                                                        <Text>{line.unitPrice * line.quantity}</Text>
+                                                        <Text>{line.nightlyAmount * line.quantity + line.transportFee}</Text>
                                                     </Flex>
                                                 </Table.Td>
                                                 <Table.Td style={{ width: 50 }}>
@@ -419,41 +459,25 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                 }
                                 <Table.Tr>
                                     <Table.Td>
-                                        <ActionIcon onClick={openArticleSelectionModal} size={"input-sm"} variant="light" aria-label="ActionIcon with size as a number">
+                                        <ActionIcon onClick={openOperationLineSelectionModal} size={"input-sm"} variant="light" aria-label="Add operation line">
                                             <PlusIcon style={{ width: rem(20), height: rem(20) }} />
                                         </ActionIcon>
                                     </Table.Td>
                                 </Table.Tr>
-                                {
-                                    form.getValues().operationLines.length > 0 && (
-                                        <Table.Tr>
-                                            <Table.Td></Table.Td>
-                                            <Table.Td></Table.Td>
-                                            <Table.Td><Text fw="700">{tGlossary("input.total")}</Text></Table.Td>
-                                            <Table.Td>
-                                                <Text fw="700" ta={"center"}>{form.getValues().operationLines.reduce(
-                                                    (accumulator, currentLine) => accumulator + currentLine.quantity * currentLine.unitPrice,
-                                                    0,
-                                                )}</Text>
-                                            </Table.Td>
-                                            <Table.Td></Table.Td>
-                                        </Table.Tr>
-                                    )
-                                }
                             </Table.Tbody>
                         </Table>
                     </Table.ScrollContainer>
                     <Text fz={"sm"} ta="center" style={{ color: 'var(--mantine-color-error)' }}>{form.getInputProps(`operationLines`).error}</Text>
 
 
-                    <Group justify="flex-end" mt="md">
-                        {/* <Anchor component="button" type="button" variant="gradient" size="sm">
+                    {/* <Group justify="flex-end" mt="md">
+                        <Anchor component="button" type="button" variant="gradient" size="sm">
                             {t("buttons.cancel")}
-                        </Anchor> */}
+                        </Anchor>
                         <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
                             {t("buttons.save")}
                         </Button>
-                    </Group>
+                    </Group> */}
                 </Stack>
 
             </form>
@@ -488,35 +512,45 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                 onSubmit={updateOwner}
             />
 
-            <ArticleSelectionModal
-                title={"Select article"}
-                isOpened={isArticleSelectionModalOpen}
-                onClose={closeArticleSelectionModal}
-                onSubmit={(art) => {
-                    console.log(art);
-                    if (art) {
-                        const articleExists = !!form.getValues().operationLines.find(line => line.article.id === art.id)
+            <OperationLineSelectionModal
+                title={"Select operation line"}
+                isOpened={isOperationLineSelectionModalOpen}
+                onClose={closeOperationLineSelectionModal}
+                onSubmit={(operationLineDto) => {
+                    console.log(operationLineDto);
+                    if (operationLineDto.article) {
+                        const articleExists = !!form.getValues().operationLines.find(line => line.article.id === operationLineDto.article.id)
                         if (articleExists) {
                             alertError("the item is already selected!")
                             return;
                         }
                         form.clearFieldError("operationLines")
-                        const value = {
-                            article: {
-                                id: art.id,
-                                name: art.name,
-                                photoPath: art.photoPath,
-                                articleFamily: {
-                                    unitCalculation: art.articleFamily?.unitCalculation!
-                                }
-                            },
-                            unitPrice: 1,
-                            quantity: 1
-                        }
-                        form.insertListItem("operationLines", value)
+                        form.insertListItem("operationLines", operationLineDto)
                     }
                 }}
             />
         </>
+    )
+}
+
+interface SummaryTableProps {
+    title: string
+    children: ReactNode
+}
+
+function SummaryTable({ title, children }: SummaryTableProps) {
+    return (
+        <div>
+            <table style={{ tableLayout: 'fixed', width: "100%", maxWidth: 280, margin: '25px auto 0' }}>
+                <tbody>
+                    <tr>
+                        <td style={{ width: "50%" }}><Text fw="700">{title}</Text></td>
+                        <td style={{ width: "50%", paddingLeft: 40 }}>
+                            <Text fw="700">{children}</Text>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     )
 }

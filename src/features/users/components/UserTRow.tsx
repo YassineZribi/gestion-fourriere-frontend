@@ -45,7 +45,7 @@ export default function UserTRow({ user, onUpdateUser, onDeleteUser }: Props) {
             </Table.Td>
 
             <Table.Td>
-                <Badge key={user.role.id} color={jobColors[user.role.name]} variant="light">
+                <Badge color={jobColors[user.role.name]} variant="light">
                     {tGlossary(`roles.${user.role.name.toLowerCase() as RoleNameLowercase}`)}
                 </Badge>
             </Table.Td>

@@ -11,12 +11,13 @@ interface Props<T> {
   disabled?: boolean
   withAsterisk?: boolean
   variant?: 'default' | 'filled' | 'unstyled'
+  height?: React.CSSProperties['height']
   shouldClearOption?: boolean
-  onClear: () => void
+  onClear?: () => void
   onClick?: () => void
 }
 
-export default function ReadOnlyCombobox<T extends { id: number }>({ children, selectedEntity, placeholder, label, error, disabled = false, withAsterisk = false, variant = "default", shouldClearOption, onClear, onClick }: Props<T>) {
+export default function ReadOnlyCombobox<T extends { id: number }>({ children, selectedEntity, placeholder, label, error, disabled = false, withAsterisk = false, variant = "default", height, shouldClearOption, onClear, onClick }: Props<T>) {
   const [value, setValue] = useState<string | null>(selectedEntity ? selectedEntity.id.toString() : null);
 
   useEffect(() => {
@@ -33,16 +34,16 @@ export default function ReadOnlyCombobox<T extends { id: number }>({ children, s
 
   const selectedOption = value === null ? null : selectedEntity;
 
-    const handleClearOption = () => {
-      setValue(null)
-      onClear()
-    }
+  const handleClearOption = () => {
+    setValue(null)
+    onClear?.()
+  }
 
-    useEffect(() => {
-      if (shouldClearOption) {
-        handleClearOption()
-      }
-    }, [shouldClearOption])
+  useEffect(() => {
+    if (shouldClearOption) {
+      handleClearOption()
+    }
+  }, [shouldClearOption])
 
   return (
     <Combobox
@@ -56,11 +57,13 @@ export default function ReadOnlyCombobox<T extends { id: number }>({ children, s
           withAsterisk={withAsterisk}
           variant={variant}
           disabled={disabled}
+          styles={{input: {height: height}}}
           component="button"
           type="button"
           pointer
           rightSection={
-              value !== null ? (
+            disabled ? null
+              : value !== null ? (
                 <CloseButton
                   size="sm"
                   onMouseDown={(event) => event.preventDefault()}
@@ -68,7 +71,7 @@ export default function ReadOnlyCombobox<T extends { id: number }>({ children, s
                   aria-label="Clear value"
                 />
               ) : (
-                <MagnifyingGlassIcon style={{ width: rem(22), height: rem(22) }} /> 
+                <MagnifyingGlassIcon style={{ width: rem(22), height: rem(22) }} />
                 // <Combobox.Chevron />
               )
           }

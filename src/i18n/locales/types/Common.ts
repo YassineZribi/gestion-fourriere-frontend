@@ -161,7 +161,9 @@ type Common = {
         upsertInputForm: {
             operationLinesTable: {
                 title: string
-            }
+            },
+            totalAmount: string,
+            totalQuantity: string
         },
         dataTablePagination: {
             summary: string

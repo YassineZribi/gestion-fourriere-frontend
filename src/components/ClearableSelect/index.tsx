@@ -5,10 +5,11 @@ import { useTranslation } from 'react-i18next';
 interface Props {
     data: ComboboxData
     defaultValue: ComboboxItem | undefined
+    title?: string
     onChange: (newValue: string) => void;
 }
 
-export default function ClearableSelect({ data, defaultValue, onChange }: Props) {
+export default function ClearableSelect({ data, defaultValue, title, onChange }: Props) {
     const [value, setValue] = useState<ComboboxItem | null>(defaultValue || null);
     const { t } = useTranslation()
 
@@ -33,6 +34,8 @@ export default function ClearableSelect({ data, defaultValue, onChange }: Props)
             variant='filled'
             placeholder={t("labels.noFilter")}
             data={data}
+            classNames={{input: "text-truncate"}}
+            title={title ? title : undefined}
             value={value ? value.value : null}
             onChange={(_value, option) => handleChange(option)}
             clearable

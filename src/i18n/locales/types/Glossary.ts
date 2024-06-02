@@ -82,12 +82,19 @@ type Glossary = {
         subRegister: string,
         source: string,
         owner: string,
+        status: string,
         total: string
+    },
+    inputStatuses: {
+        fullyOut: string,
+        partiallyOut: string,
+        fullyIn: string
     },
     operationLine: {
         article: string,
         quantity: string,
-        unitPrice: string,
+        nightlyAmount: string,
+        transportFee: string,
         lineTotalAmount: string
     },
     currency: {

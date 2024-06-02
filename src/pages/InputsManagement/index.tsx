@@ -39,6 +39,9 @@ const thColumns = [
     {
         label: "owner"
     },
+    {
+        label: "status"
+    },
 ] as const
 
 export default function InputsManagement() {

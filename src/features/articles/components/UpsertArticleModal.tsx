@@ -20,7 +20,7 @@ import PlusIconButton from "../../../components/PlusIconButton";
 
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),
-    transportFee: z.number({ invalid_type_error: "Transport fee is required" }).gt(0, "Transport fee should be greather than 0"),
+    transportFee: z.number({ invalid_type_error: "Transport fee is required" }).gte(0, "Transport fee should be greather than or equal to 0"),
     articleFamilyId: z.number().refine((value) => value !== -1, {
         message: 'Article family is required',
     })

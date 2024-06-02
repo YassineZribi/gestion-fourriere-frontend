@@ -40,7 +40,7 @@ export default function ArticleTRow({ article, isSelected, hideDeleteBtn, hideUp
                     size={30}
                     src={article.photoPath ? getFullResourcePath(article.photoPath) : ""}
                     radius={"sm"}
-                ><PhotoIcon style={{ width: rem(25) }} /></Avatar>
+                ><PhotoIcon style={{ width: "80%" }} /></Avatar>
             </Table.Td>
 
             <Table.Td>

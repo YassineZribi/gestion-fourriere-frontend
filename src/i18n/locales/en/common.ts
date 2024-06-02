@@ -163,7 +163,9 @@ const common: Common = {
         upsertInputForm: {
             operationLinesTable: {
                 title: "Details about what was seized"
-            }
+            },
+            totalAmount: "Total amount",
+            totalQuantity: "Total quantity"
         },
         dataTablePagination: {
             summary: "{{start}} - {{end}} of {{total}}"

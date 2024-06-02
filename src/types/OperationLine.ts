@@ -9,6 +9,7 @@ export default interface OperationLine {
     id: OperationLineKey
     article: Article
     quantity: number
-    unitPrice: number
+    nightlyAmount: number
+    transportFee: number
     lineTotalAmount: number
 }

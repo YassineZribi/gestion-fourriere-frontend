@@ -84,12 +84,19 @@ const glossary: Glossary = {
         subRegister: "Sous-registre",
         source: "Source",
         owner: "Propriétaire",
+        status: "Statut",
         total: "Total"
+    },
+    inputStatuses: {
+        fullyOut: "Entièrement sortie",
+        partiallyOut: "Partiellement sortie",
+        fullyIn: "Entièrement entrée"
     },
     operationLine: {
         article: "Article",
         quantity: "Quantité",
-        unitPrice: "Prix unitaire",
+        nightlyAmount: "Montant / nuit",
+        transportFee: "Frais de transport",
         lineTotalAmount: "Sous-total"
     },
     currency: {

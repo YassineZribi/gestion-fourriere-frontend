@@ -84,12 +84,19 @@ const glossary: Glossary = {
         subRegister: "السِّجل الفرعي",
         source: "السُّلطة الحاجزة",
         owner: "المخالف",
+        status: "الحالة",
         total: "الإجمالي"
+    },
+    inputStatuses: {
+        fullyOut: "خروج كامل",
+        partiallyOut: "خروج جزئي",
+        fullyIn: "في الداخل"
     },
     operationLine: {
         article: "المحجوز",
         quantity: "الكمية",
-        unitPrice: "سعر الوحدة",
+        nightlyAmount: "المبلغ / الليلة",
+        transportFee: "تكاليف النقل",
         lineTotalAmount: "الإجمالي الفرعي"
     },
     currency: {
