@@ -25,7 +25,7 @@ const schema = z.object({
 
 export type FormData = z.infer<typeof schema>
 
-export type OperationLineDto = Omit<FormData, 'articleId'> & { article: Article; lineTotalAmount: number }
+export type OperationLineDto = Omit<FormData, 'articleId'> & { article: Article; subTotalNightlyAmount: number }
 
 interface Props {
     title: string
@@ -61,8 +61,8 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
             article: article,
             quantity: data.quantity,
             nightlyAmount: data.nightlyAmount,
-            transportFee: data.transportFee,
-            lineTotalAmount: data.nightlyAmount * data.quantity + data.transportFee
+            subTotalNightlyAmount: data.nightlyAmount * data.quantity,
+            transportFee: data.transportFee
         }
 
         form.reset()
@@ -167,7 +167,7 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
                             </SimpleGrid>
                         </Fieldset>
 
-                        <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                        <SimpleGrid cols={{ base: 1, sm: 3 }}>
                             <NumberInput
                                 label={tGlossary("operationLine.quantity")}
                                 placeholder={tGlossary("operationLine.quantity")}
@@ -182,21 +182,22 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
                                 withAsterisk
                                 {...form.getInputProps('nightlyAmount')}
                             />
+                            <NumberInput
+                                label={tGlossary("operationLine.subTotalNightlyAmount")}
+                                placeholder={tGlossary("operationLine.subTotalNightlyAmount")}
+                                disabled
+                                name="subTotalNightlyAmount"
+                                value={form.values.nightlyAmount * form.values.quantity}
+                                readOnly
+                            />
                         </SimpleGrid>
-                        <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                        <SimpleGrid cols={{ base: 1, sm: 1 }}>
                             <NumberInput
                                 label={tGlossary("operationLine.transportFee")}
                                 placeholder={tGlossary("operationLine.transportFee")}
                                 name="transportFee"
                                 withAsterisk
                                 {...form.getInputProps('transportFee')}
-                            />
-                            <NumberInput
-                                label={tGlossary("operationLine.lineTotalAmount")}
-                                placeholder={tGlossary("operationLine.lineTotalAmount")}
-                                name="lineTotalAmount"
-                                value={form.values.nightlyAmount * form.values.quantity + form.values.transportFee}
-                                readOnly
                             />
                         </SimpleGrid>
                     </Stack>

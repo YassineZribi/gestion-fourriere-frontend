@@ -10,6 +10,6 @@ export default interface OperationLine {
     article: Article
     quantity: number
     nightlyAmount: number
+    subTotalNightlyAmount: number
     transportFee: number
-    lineTotalAmount: number
 }

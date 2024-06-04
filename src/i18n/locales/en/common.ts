@@ -164,8 +164,9 @@ const common: Common = {
             operationLinesTable: {
                 title: "Details about what was seized"
             },
-            totalAmount: "Total amount",
-            totalQuantity: "Total quantity"
+            totalQuantity: "Total quantity",
+            totalNightlyAmount: "Total amount / night",
+            totalTransportFee: "Total transport fee / night"
         },
         dataTablePagination: {
             summary: "{{start}} - {{end}} of {{total}}"

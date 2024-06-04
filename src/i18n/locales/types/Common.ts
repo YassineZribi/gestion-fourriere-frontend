@@ -162,8 +162,9 @@ type Common = {
             operationLinesTable: {
                 title: string
             },
-            totalAmount: string,
-            totalQuantity: string
+            totalQuantity: string,
+            totalNightlyAmount: string,
+            totalTransportFee: string
         },
         dataTablePagination: {
             summary: string

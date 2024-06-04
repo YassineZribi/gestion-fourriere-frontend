@@ -164,8 +164,9 @@ const common: Common = {
             operationLinesTable: {
                 title: "تفاصيل حول المحجوز"
             },
-            totalAmount: "المبلغ الإجمالي",
-            totalQuantity: "الكمية الإجمالية"
+            totalQuantity: "الكمية الإجمالية",
+            totalNightlyAmount: "المبلغ الإجمالي / الليلة",
+            totalTransportFee: "إجمالي تكاليف النقل / الليلة"
         },
         dataTablePagination: {
             summary: "{{start}} - {{end}} من {{total}}",

@@ -164,8 +164,9 @@ const common: Common = {
             operationLinesTable: {
                 title: "Détails sur les articles saisis"
             },
-            totalAmount: "Montant total",
-            totalQuantity: "Quantité totale"
+            totalQuantity: "Quantité totale",
+            totalNightlyAmount: "Montant total / nuit",
+            totalTransportFee: "Total des frais de transport / nuit"
         },
         dataTablePagination: {
             summary: "{{start}} - {{end}} de {{total}}"

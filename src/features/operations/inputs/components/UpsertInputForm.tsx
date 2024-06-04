@@ -211,170 +211,179 @@ export default function UpsertInputForm({ selectedInput }: Props) {
 
     console.log(form.values);
 
+    const totalQuantity = form.getValues().operationLines.reduce(
+        (accumulator, currentLine) => accumulator + currentLine.quantity,
+        0,
+    );
+
+    const totalNightlyAmount = form.getValues().operationLines.reduce(
+        (accumulator, currentLine) => accumulator + currentLine.quantity * currentLine.nightlyAmount,
+        0,
+    );
+
+    const totalTransportFee = form.getValues().operationLines.reduce(
+        (accumulator, currentLine) => accumulator + currentLine.transportFee,
+        0,
+    );
+
 
     return (
         <>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
-                <Stack maw={850} mx="auto">
-                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                        <Flex gap="5">
-                            <Box style={{ flexGrow: 1 }}>
-                                <SearchableCombobox
-                                    selectedEntity={register}
-                                    placeholder={tGlossary("input.register")}
-                                    label={tGlossary("input.register")}
-                                    error={form.errors.registerId?.toString()}
+                <Stack maw={950} mx="auto">
+                    <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
+                        <Stack>
+                            <SimpleGrid cols={{ base: 1, lg: 2 }}>
+                                <Flex gap="5">
+                                    <Box style={{ flexGrow: 1 }}>
+                                        <SearchableCombobox
+                                            selectedEntity={register}
+                                            placeholder={tGlossary("input.register")}
+                                            label={tGlossary("input.register")}
+                                            error={form.errors.registerId?.toString()}
+                                            withAsterisk
+                                            onFetch={registersService.getAllRegistersByName}
+                                            onSelectOption={updateRegister}
+                                            onClear={() => {
+                                                setRegister(null)
+                                                setSubRegister(null)
+                                                form.setFieldValue("registerId", -1)
+                                                form.clearFieldError("registerId")
+                                            }}
+                                        >
+                                            {
+                                                (register) => <RegisterSelectOption register={register} />
+                                            }
+                                        </SearchableCombobox>
+                                    </Box>
+                                    <PlusIconButton
+                                        aria-label="Add new register"
+                                        onClick={openRegisterModal}
+                                    />
+                                </Flex>
+                                <Flex gap="5">
+                                    <Box style={{ flexGrow: 1 }}>
+                                        <SearchableCombobox
+                                            selectedEntity={subRegister}
+                                            placeholder={tGlossary("input.subRegister")}
+                                            label={tGlossary("input.subRegister")}
+                                            error={form.errors.subRegisterId?.toString()}
+                                            disabled={!register}
+                                            withAsterisk
+                                            onFetch={(name) => {
+                                                if (register) return subRegistersService.getAllSubRegistersByNameAndRegisterId(name, register.id)
+                                                return subRegistersService.getAllSubRegistersByName(name)
+                                            }}
+                                            onSelectOption={updateSubRegister}
+                                            onClear={() => {
+                                                setSubRegister(null)
+                                                form.setFieldValue("subRegisterId", -1)
+                                                form.clearFieldError("subRegisterId")
+                                            }}
+                                        >
+                                            {
+                                                (subRegister) => <SubRegisterSelectOption subRegister={subRegister} />
+                                            }
+                                        </SearchableCombobox>
+                                    </Box>
+                                    <PlusIconButton
+                                        aria-label="Add new sub-register"
+                                        disabled={!register}
+                                        onClick={openSubRegisterModal}
+                                    />
+                                </Flex>
+                            </SimpleGrid>
+                            <SimpleGrid cols={{ base: 1, lg: 2 }}>
+                                <DateTimePicker
+                                    label={tGlossary("input.dateTime")}
+                                    placeholder={tGlossary("input.dateTime")}
+                                    name="dateTime"
+                                    clearable
                                     withAsterisk
-                                    onFetch={registersService.getAllRegistersByName}
-                                    onSelectOption={updateRegister}
-                                    onClear={() => {
-                                        setRegister(null)
-                                        setSubRegister(null)
-                                        form.setFieldValue("registerId", -1)
-                                        form.clearFieldError("registerId")
-                                    }}
-                                >
-                                    {
-                                        (register) => <RegisterSelectOption register={register} />
-                                    }
-                                </SearchableCombobox>
-                            </Box>
-                            <PlusIconButton
-                                aria-label="Add new register"
-                                onClick={openRegisterModal}
-                            />
-                        </Flex>
-                        <Flex gap="5">
-                            <Box style={{ flexGrow: 1 }}>
-                                <SearchableCombobox
-                                    selectedEntity={subRegister}
-                                    placeholder={tGlossary("input.subRegister")}
-                                    label={tGlossary("input.subRegister")}
-                                    error={form.errors.subRegisterId?.toString()}
-                                    disabled={!register}
-                                    withAsterisk
-                                    onFetch={(name) => {
-                                        if (register) return subRegistersService.getAllSubRegistersByNameAndRegisterId(name, register.id)
-                                        return subRegistersService.getAllSubRegistersByName(name)
-                                    }}
-                                    onSelectOption={updateSubRegister}
-                                    onClear={() => {
-                                        setSubRegister(null)
-                                        form.setFieldValue("subRegisterId", -1)
-                                        form.clearFieldError("subRegisterId")
-                                    }}
-                                >
-                                    {
-                                        (subRegister) => <SubRegisterSelectOption subRegister={subRegister} />
-                                    }
-                                </SearchableCombobox>
-                            </Box>
-                            <PlusIconButton
-                                aria-label="Add new sub-register"
-                                disabled={!register}
-                                onClick={openSubRegisterModal}
-                            />
-                        </Flex>
-                    </SimpleGrid>
-                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                        <DateTimePicker
-                            label={tGlossary("input.dateTime")}
-                            placeholder={tGlossary("input.dateTime")}
-                            name="dateTime"
-                            clearable
-                            withAsterisk
-                            {...form.getInputProps('dateTime')}
-                            valueFormat="DD/MM/YYYY - HH:mm"
-                        />
-                        <Flex gap="5">
-                            <Box style={{ flexGrow: 1 }}>
-                                <NumberInput
-                                    label={tGlossary("input.number")}
-                                    placeholder={tGlossary("input.number")}
-                                    name="number"
-                                    withAsterisk
-                                    {...form.getInputProps('number')}
+                                    {...form.getInputProps('dateTime')}
+                                    valueFormat="DD/MM/YYYY - HH:mm"
                                 />
-                            </Box>
-                            <Box style={{ flexGrow: 1 }}>
-                                <NumberInput
-                                    leftSection={<MinusIcon style={{ width: rem(28), height: rem(28), rotate: "-60deg" }} />}
-                                    label={tGlossary("input.year")}
-                                    placeholder={tGlossary("input.year")}
-                                    name="year"
-                                    withAsterisk
-                                    {...form.getInputProps('year')}
+                                <Flex gap="5">
+                                    <Box style={{ flexGrow: 1 }}>
+                                        <NumberInput
+                                            label={tGlossary("input.number")}
+                                            placeholder={tGlossary("input.number")}
+                                            name="number"
+                                            withAsterisk
+                                            {...form.getInputProps('number')}
+                                        />
+                                    </Box>
+                                    <Box style={{ flexGrow: 1 }}>
+                                        <NumberInput
+                                            leftSection={<MinusIcon style={{ width: rem(28), height: rem(28), rotate: "-60deg" }} />}
+                                            label={tGlossary("input.year")}
+                                            placeholder={tGlossary("input.year")}
+                                            name="year"
+                                            withAsterisk
+                                            {...form.getInputProps('year')}
+                                        />
+                                    </Box>
+                                </Flex>
+                            </SimpleGrid>
+                            <Flex gap="5">
+                                <Box style={{ flexGrow: 1 }}>
+                                    <SearchableCombobox
+                                        selectedEntity={source}
+                                        placeholder={tGlossary("input.source")}
+                                        label={tGlossary("input.source")}
+                                        error={form.errors.sourceId?.toString()}
+                                        withAsterisk
+                                        onFetch={sourcesService.getAllSourcesByName}
+                                        onSelectOption={updateSource}
+                                        onClear={() => {
+                                            setSource(null)
+                                            form.setFieldValue("sourceId", -1)
+                                            form.clearFieldError("sourceId")
+                                        }}
+                                    >
+                                        {
+                                            (source) => <SourceSelectOption source={source} />
+                                        }
+                                    </SearchableCombobox>
+                                </Box>
+                                <PlusIconButton
+                                    aria-label="Add new source"
+                                    onClick={openSourceModal}
                                 />
-                            </Box>
-                        </Flex>
-                    </SimpleGrid>
-
-                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                        <Flex gap="5">
+                            </Flex>
                             <Box style={{ flexGrow: 1 }}>
-                                <SearchableCombobox
-                                    selectedEntity={source}
-                                    placeholder={tGlossary("input.source")}
-                                    label={tGlossary("input.source")}
-                                    error={form.errors.sourceId?.toString()}
+                                <ReadOnlyCombobox
+                                    selectedEntity={owner}
+                                    placeholder={tGlossary("input.owner")}
+                                    label={tGlossary("input.owner")}
+                                    error={form.errors.ownerId?.toString()}
                                     withAsterisk
-                                    onFetch={sourcesService.getAllSourcesByName}
-                                    onSelectOption={updateSource}
                                     onClear={() => {
-                                        setSource(null)
-                                        form.setFieldValue("sourceId", -1)
-                                        form.clearFieldError("sourceId")
+                                        setOwner(null)
+                                        form.setFieldValue("ownerId", -1)
+                                        form.clearFieldError("ownerId")
                                     }}
+                                    onClick={openOwnerSelectionModal}
                                 >
                                     {
-                                        (source) => <SourceSelectOption source={source} />
+                                        (owner) => <OwnerSelectOption owner={owner} />
                                     }
-                                </SearchableCombobox>
+                                </ReadOnlyCombobox>
                             </Box>
-                            <PlusIconButton
-                                aria-label="Add new source"
-                                onClick={openSourceModal}
-                            />
-                        </Flex>
-                        <SummaryTable title={t("components.upsertInputForm.totalQuantity")}>
-                            {
-                                form.getValues().operationLines.reduce(
-                                    (accumulator, currentLine) => accumulator + currentLine.quantity,
-                                    0,
-                                )
-                            }
-                        </SummaryTable>
-                    </SimpleGrid>
-
-                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                        <Box style={{ flexGrow: 1 }}>
-                            <ReadOnlyCombobox
-                                selectedEntity={owner}
-                                placeholder={tGlossary("input.owner")}
-                                label={tGlossary("input.owner")}
-                                error={form.errors.ownerId?.toString()}
-                                withAsterisk
-                                onClear={() => {
-                                    setOwner(null)
-                                    form.setFieldValue("ownerId", -1)
-                                    form.clearFieldError("ownerId")
-                                }}
-                                onClick={openOwnerSelectionModal}
-                            >
-                                {
-                                    (owner) => <OwnerSelectOption owner={owner} />
-                                }
-                            </ReadOnlyCombobox>
-                        </Box>
-                        <SummaryTable title={t("components.upsertInputForm.totalAmount")}>
-                            {
-                                form.getValues().operationLines.reduce(
-                                    (accumulator, currentLine) => accumulator + currentLine.quantity * currentLine.nightlyAmount + currentLine.transportFee,
-                                    0,
-                                )
-                            }
-                            {' '}<Sup style={{ fontWeight: 500 }}>{tGlossary(`currency.tn`)}</Sup>
-                        </SummaryTable>
+                        </Stack>
+                        <Stack justify="center">
+                            <SummaryTable title={t("components.upsertInputForm.totalQuantity")}>
+                                {totalQuantity}
+                            </SummaryTable>
+                            <SummaryTable title={t("components.upsertInputForm.totalNightlyAmount")}>
+                                {totalNightlyAmount}
+                                {' '}<Sup style={{ fontWeight: 500 }}>{tGlossary(`currency.tn`)}</Sup>
+                            </SummaryTable>
+                            <SummaryTable title={t("components.upsertInputForm.totalTransportFee")}>
+                                {totalTransportFee}
+                                {' '}<Sup style={{ fontWeight: 500 }}>{tGlossary(`currency.tn`)}</Sup>
+                            </SummaryTable>
+                        </Stack>
                     </SimpleGrid>
 
                     <Group align="center" mt={"xl"} justify="space-between">
@@ -384,15 +393,15 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                         </Button>
                     </Group>
 
-                    <Table.ScrollContainer minWidth={850}>
+                    <Table.ScrollContainer minWidth={950}>
                         <Table styles={{ table: { tableLayout: 'fixed' } }}>
                             <Table.Thead>
                                 <Table.Tr>
                                     <Table.Th style={{ width: 250 }}>{tGlossary("operationLine.article")}</Table.Th>
                                     <Table.Th>{tGlossary("operationLine.nightlyAmount")}</Table.Th>
                                     <Table.Th>{tGlossary("operationLine.quantity")}</Table.Th>
+                                    <Table.Th ta="center">{tGlossary("operationLine.subTotalNightlyAmount")}</Table.Th>
                                     <Table.Th>{tGlossary("operationLine.transportFee")}</Table.Th>
-                                    <Table.Th ta="center">{tGlossary("operationLine.lineTotalAmount")}</Table.Th>
                                     <Table.Th style={{ width: 50 }}></Table.Th>
                                 </Table.Tr>
                             </Table.Thead>
@@ -436,17 +445,17 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                                     />
                                                 </Table.Td>
                                                 <Table.Td>
+                                                    <Flex h={36} align="center" justify="center">
+                                                        <Text>{line.nightlyAmount * line.quantity}{' '}<Sup>{tGlossary(`currency.tn`)}</Sup></Text>
+                                                    </Flex>
+                                                </Table.Td>
+                                                <Table.Td>
                                                     <NumberInput
                                                         placeholder="Transport fee"
                                                         withAsterisk
                                                         key={form.key(`operationLines.${index}.transportFee`)}
                                                         {...form.getInputProps(`operationLines.${index}.transportFee`)}
                                                     />
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <Flex h={36} align="center" justify="center">
-                                                        <Text>{line.nightlyAmount * line.quantity + line.transportFee}</Text>
-                                                    </Flex>
                                                 </Table.Td>
                                                 <Table.Td style={{ width: 50 }}>
                                                     <ActionIcon variant="subtle" color="red" size="input-sm" onClick={() => form.removeListItem('operationLines', index)}>
@@ -540,17 +549,17 @@ interface SummaryTableProps {
 
 function SummaryTable({ title, children }: SummaryTableProps) {
     return (
-        <div>
-            <table style={{ tableLayout: 'fixed', width: "100%", maxWidth: 280, margin: '25px auto 0' }}>
+        <Box pl={{ base: 0, md: 'xl' }}>
+            <table style={{ tableLayout: 'fixed', width: "100%", margin: '25px auto 0' }}>
                 <tbody>
                     <tr>
-                        <td style={{ width: "50%" }}><Text fw="700">{title}</Text></td>
-                        <td style={{ width: "50%", paddingLeft: 40 }}>
+                        <td style={{ width: "60%" }}><Text fw="700">{title}</Text></td>
+                        <td style={{ width: "40%", paddingLeft: 40 }}>
                             <Text fw="700">{children}</Text>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </Box>
     )
 }

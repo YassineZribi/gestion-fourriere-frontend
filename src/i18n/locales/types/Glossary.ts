@@ -94,8 +94,8 @@ type Glossary = {
         article: string,
         quantity: string,
         nightlyAmount: string,
-        transportFee: string,
-        lineTotalAmount: string
+        subTotalNightlyAmount: string,
+        transportFee: string
     },
     currency: {
         tn: string

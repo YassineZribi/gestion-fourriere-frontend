@@ -96,8 +96,8 @@ const glossary: Glossary = {
         article: "المحجوز",
         quantity: "الكمية",
         nightlyAmount: "المبلغ / الليلة",
-        transportFee: "تكاليف النقل",
-        lineTotalAmount: "الإجمالي الفرعي"
+        subTotalNightlyAmount: "الإجمالي الفرعي / الليلة",
+        transportFee: "تكاليف النقل"
     },
     currency: {
         tn: "د.ت"
