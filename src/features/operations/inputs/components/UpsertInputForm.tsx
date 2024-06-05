@@ -31,7 +31,7 @@ import ReadOnlyCombobox from "../../../../components/ReadOnlyCombobox";
 import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOption";
 import { getFullResourcePath } from "../../../../lib/axios/api";
 import { useNavigate } from "react-router-dom";
-import OperationLineSelectionModal from "./OperationLineSelectionModal";
+import InputOperationLineSelectionModal from "./InputOperationLineSelectionModal";
 import Sup from "../../../../components/Sup";
 
 
@@ -51,7 +51,7 @@ const schema = z.object({
     ownerId: z.number().refine((value) => value !== -1, {
         message: 'Owner is required',
     }),
-    operationLines: z.array(
+    inputOperationLines: z.array(
         z.object({
             article: z.object({
                 id: z.number().refine((value) => value !== -1, {
@@ -66,19 +66,22 @@ const schema = z.object({
             nightlyAmount: z.number({ invalid_type_error: "Nightly amount is required" }).gt(0, "Nightly amount should be greather than 0"),
             transportFee: z.number({ invalid_type_error: "Transport fee is required" }),
             quantity: z.number({ invalid_type_error: "Quantity is required" }).gt(0, "Quantity should be greather than 0"),
+            photoPath: z.string().nullable(),
+            photoFile: z.union([z.instanceof(File), z.null()])
         })
     ).min(1, "List is empty!")
 });
 
 export type FormData = z.infer<typeof schema>
 
-export type UpsertInputDto = Omit<FormData, "operationLines" | "dateTime">
+export type UpsertInputDto = Omit<FormData, "inputOperationLines" | "dateTime">
     & {
-        operationLines: {
+        inputOperationLines: {
             articleId: number;
             nightlyAmount: number;
             transportFee: number;
             quantity: number;
+            photoFile: File | null
         }[]
     }
     & { dateTime: string };
@@ -94,7 +97,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
     const [subRegister, setSubRegister] = useState(selectedInput?.subRegister ?? null)
     const [source, setSource] = useState(selectedInput?.source ?? null)
     const [owner, setOwner] = useState(selectedInput?.owner ?? null)
-    // const [operationLines, setOperationLines] = useState<OperationLine[]>(selectedInput?.operationLines ?? [])
+    // const [inputOperationLines, setOperationLines] = useState<InputOperationLine[]>(selectedInput?.inputOperationLines ?? [])
 
     const [isRegisterModalOpen, { open: openRegisterModal, close: closeRegisterModal }] = useModal()
     const [isSubRegisterModalOpen, { open: openSubRegisterModal, close: closeSubRegisterModal }] = useModal()
@@ -114,8 +117,8 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             subRegisterId: selectedInput?.subRegister.id || -1,
             sourceId: selectedInput?.source.id || -1,
             ownerId: selectedInput?.owner.id || -1,
-            operationLines: selectedInput
-                ? selectedInput.operationLines.map(line => ({
+            inputOperationLines: selectedInput
+                ? selectedInput.inputOperationLines.map(line => ({
                     article: {
                         id: line.article.id,
                         name: line.article.name,
@@ -126,7 +129,9 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                     },
                     nightlyAmount: line.nightlyAmount,
                     transportFee: line.transportFee,
-                    quantity: line.quantity
+                    quantity: line.quantity,
+                    photoPath: line.photoPath,
+                    photoFile: null
                 }))
                 : []
         },
@@ -142,24 +147,45 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             subRegisterId: data.subRegisterId,
             sourceId: data.sourceId,
             ownerId: data.ownerId,
-            operationLines: data.operationLines.map(line => ({
+            inputOperationLines: data.inputOperationLines.map(line => ({
                 articleId: line.article.id,
                 quantity: line.quantity,
                 nightlyAmount: line.nightlyAmount,
                 transportFee: line.transportFee,
+                photoFile: line.photoFile
             }))
         }
         console.log(upsertInputDto);
+
+        const formData = new FormData()
+
+        formData.append("dateTime", upsertInputDto.dateTime);
+        formData.append("number", String(upsertInputDto.number));
+        formData.append("year", String(upsertInputDto.year));
+        formData.append("registerId", String(upsertInputDto.registerId));
+        formData.append("subRegisterId", String(upsertInputDto.subRegisterId));
+        formData.append("sourceId", String(upsertInputDto.sourceId));
+        formData.append("ownerId", String(upsertInputDto.ownerId));
+
+        upsertInputDto.inputOperationLines.forEach((line, index) => {
+            formData.append(`inputOperationLines[${index}].articleId`, String(line.articleId));
+            formData.append(`inputOperationLines[${index}].quantity`, String(line.quantity));
+            formData.append(`inputOperationLines[${index}].nightlyAmount`, String(line.nightlyAmount));
+            formData.append(`inputOperationLines[${index}].transportFee`, String(line.transportFee));
+            if (line.photoFile !== null) {
+                formData.append(`inputOperationLines[${index}].photoFile`, line.photoFile);
+            }
+        });
 
 
         try {
             setSubmitting(true)
             await wait(2000)
             if (selectedInput) {
-                await inputsService.updateInput(selectedInput.id, upsertInputDto)
+                await inputsService.updateInput(selectedInput.id, formData)
                 alertSuccess("Input updated successfully!")
             } else {
-                await inputsService.createInput(upsertInputDto)
+                await inputsService.createInput(formData)
                 alertSuccess("New input created successfully!")
                 navigate('/inputs-management')
                 //form.reset()
@@ -211,20 +237,22 @@ export default function UpsertInputForm({ selectedInput }: Props) {
 
     console.log(form.values);
 
-    const totalQuantity = form.getValues().operationLines.reduce(
+    const totalQuantity = form.getValues().inputOperationLines.reduce(
         (accumulator, currentLine) => accumulator + currentLine.quantity,
         0,
     );
 
-    const totalNightlyAmount = form.getValues().operationLines.reduce(
+    const totalNightlyAmount = form.getValues().inputOperationLines.reduce(
         (accumulator, currentLine) => accumulator + currentLine.quantity * currentLine.nightlyAmount,
         0,
     );
 
-    const totalTransportFee = form.getValues().operationLines.reduce(
+    const totalTransportFee = form.getValues().inputOperationLines.reduce(
         (accumulator, currentLine) => accumulator + currentLine.transportFee,
         0,
     );
+
+    console.log(form.errors);
 
 
     return (
@@ -397,17 +425,17 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                         <Table styles={{ table: { tableLayout: 'fixed' } }}>
                             <Table.Thead>
                                 <Table.Tr>
-                                    <Table.Th style={{ width: 250 }}>{tGlossary("operationLine.article")}</Table.Th>
-                                    <Table.Th>{tGlossary("operationLine.nightlyAmount")}</Table.Th>
-                                    <Table.Th>{tGlossary("operationLine.quantity")}</Table.Th>
-                                    <Table.Th ta="center">{tGlossary("operationLine.subTotalNightlyAmount")}</Table.Th>
-                                    <Table.Th>{tGlossary("operationLine.transportFee")}</Table.Th>
+                                    <Table.Th style={{ width: 250 }}>{tGlossary("inputOperationLine.article")}</Table.Th>
+                                    <Table.Th>{tGlossary("inputOperationLine.nightlyAmount")}</Table.Th>
+                                    <Table.Th>{tGlossary("inputOperationLine.quantity")}</Table.Th>
+                                    <Table.Th ta="center">{tGlossary("inputOperationLine.subTotalNightlyAmount")}</Table.Th>
+                                    <Table.Th>{tGlossary("inputOperationLine.transportFee")}</Table.Th>
                                     <Table.Th style={{ width: 50 }}></Table.Th>
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody style={{ verticalAlign: 'top' }}>
                                 {
-                                    form.getValues().operationLines.map((line, index) => {
+                                    form.getValues().inputOperationLines.map((line, index) => {
                                         return (
                                             <Table.Tr key={index}>
                                                 <Table.Td style={{ width: 250 }}>
@@ -432,16 +460,16 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                                     <NumberInput
                                                         placeholder="Unit price"
                                                         withAsterisk
-                                                        key={form.key(`operationLines.${index}.nightlyAmount`)}
-                                                        {...form.getInputProps(`operationLines.${index}.nightlyAmount`)}
+                                                        key={form.key(`inputOperationLines.${index}.nightlyAmount`)}
+                                                        {...form.getInputProps(`inputOperationLines.${index}.nightlyAmount`)}
                                                     />
                                                 </Table.Td>
                                                 <Table.Td>
                                                     <NumberInput
                                                         placeholder="Quantity"
                                                         withAsterisk
-                                                        key={form.key(`operationLines.${index}.quantity`)}
-                                                        {...form.getInputProps(`operationLines.${index}.quantity`)}
+                                                        key={form.key(`inputOperationLines.${index}.quantity`)}
+                                                        {...form.getInputProps(`inputOperationLines.${index}.quantity`)}
                                                     />
                                                 </Table.Td>
                                                 <Table.Td>
@@ -453,12 +481,12 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                                     <NumberInput
                                                         placeholder="Transport fee"
                                                         withAsterisk
-                                                        key={form.key(`operationLines.${index}.transportFee`)}
-                                                        {...form.getInputProps(`operationLines.${index}.transportFee`)}
+                                                        key={form.key(`inputOperationLines.${index}.transportFee`)}
+                                                        {...form.getInputProps(`inputOperationLines.${index}.transportFee`)}
                                                     />
                                                 </Table.Td>
                                                 <Table.Td style={{ width: 50 }}>
-                                                    <ActionIcon variant="subtle" color="red" size="input-sm" onClick={() => form.removeListItem('operationLines', index)}>
+                                                    <ActionIcon variant="subtle" color="red" size="input-sm" onClick={() => form.removeListItem('inputOperationLines', index)}>
                                                         <TrashIcon width="1rem" height="1rem" />
                                                     </ActionIcon>
                                                 </Table.Td>
@@ -476,7 +504,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                             </Table.Tbody>
                         </Table>
                     </Table.ScrollContainer>
-                    <Text fz={"sm"} ta="center" style={{ color: 'var(--mantine-color-error)' }}>{form.getInputProps(`operationLines`).error}</Text>
+                    <Text fz={"sm"} ta="center" style={{ color: 'var(--mantine-color-error)' }}>{form.getInputProps(`inputOperationLines`).error}</Text>
 
 
                     {/* <Group justify="flex-end" mt="md">
@@ -521,20 +549,20 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                 onSubmit={updateOwner}
             />
 
-            <OperationLineSelectionModal
-                title={"Select operation line"}
+            <InputOperationLineSelectionModal
+                title={"Add operation line"}
                 isOpened={isOperationLineSelectionModalOpen}
                 onClose={closeOperationLineSelectionModal}
                 onSubmit={(operationLineDto) => {
                     console.log(operationLineDto);
                     if (operationLineDto.article) {
-                        const articleExists = !!form.getValues().operationLines.find(line => line.article.id === operationLineDto.article.id)
+                        const articleExists = !!form.getValues().inputOperationLines.find(line => line.article.id === operationLineDto.article.id)
                         if (articleExists) {
                             alertError("the item is already selected!")
                             return;
                         }
-                        form.clearFieldError("operationLines")
-                        form.insertListItem("operationLines", operationLineDto)
+                        form.clearFieldError("inputOperationLines")
+                        form.insertListItem("inputOperationLines", operationLineDto)
                     }
                 }}
             />

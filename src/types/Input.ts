@@ -1,3 +1,4 @@
+import InputOperationLine from "./InputOperationLine";
 import { InputStatus } from "./InputStatus";
 import Operation from "./Operation";
 import Output from "./Output";
@@ -12,5 +13,6 @@ export default interface Input extends Operation {
     subRegister: SubRegister
     owner: Owner
     source: Source
+    inputOperationLines: InputOperationLine[]
     outputs: Output[]
 }

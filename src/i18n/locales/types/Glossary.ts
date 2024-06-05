@@ -90,12 +90,14 @@ type Glossary = {
         partiallyOut: string,
         fullyIn: string
     },
-    operationLine: {
+    inputOperationLine: {
         article: string,
         quantity: string,
+        remainingQuantity: string,
         nightlyAmount: string,
         subTotalNightlyAmount: string,
-        transportFee: string
+        transportFee: string,
+        photo: string,
     },
     currency: {
         tn: string

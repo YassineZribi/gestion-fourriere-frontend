@@ -1,7 +1,7 @@
 import { PRIVATE_API } from "../../../../lib/axios/api";
 import FetchWithPaginationResponse from "../../../../types/FetchWithPaginationResponse";
 import Input from "../../../../types/Input";
-import { UpsertInputDto } from "../components/UpsertInputForm";
+import { MULTIPART_FORM_DATA } from "../../../../utils/constants";
 
 class InputsService {
     getAllInputsByCriteria(criteria: string) {
@@ -15,12 +15,12 @@ class InputsService {
         return PRIVATE_API.get<Input>("/operations/inputs/" + id)
     }
 
-    createInput(data: UpsertInputDto) {
-        return PRIVATE_API.post<Input>("/operations/inputs", data)
+    createInput(formData: FormData) {
+        return PRIVATE_API.post<Input>("/operations/inputs", formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
     }
 
-    updateInput(id: number, data: UpsertInputDto) {
-        return PRIVATE_API.patch<Input>("/operations/inputs/" + id, data)
+    updateInput(id: number, formData: FormData) {
+        return PRIVATE_API.patch<Input>("/operations/inputs/" + id, formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
     }
 
     deleteInput(id: number) {

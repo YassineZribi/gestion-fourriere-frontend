@@ -92,12 +92,14 @@ const glossary: Glossary = {
         partiallyOut: "Partially out",
         fullyIn: "Fully in"
     },
-    operationLine: {
+    inputOperationLine: {
         article: "Article",
         quantity: "Quantity",
+        remainingQuantity: "Remaining quantity",
         nightlyAmount: "Amount / night",
         subTotalNightlyAmount: "Sub-total / night",
-        transportFee: "Transport fee"
+        transportFee: "Transport fee",
+        photo: "Photo"
     },
     currency: {
         tn: "TND"

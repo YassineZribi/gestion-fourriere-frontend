@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { useTranslation } from "react-i18next";
 import useModal from "../../../../hooks/useModal";
-import OperationLine from "../../../../types/OperationLine";
 import Article from "../../../../types/Article";
 import ReadOnlyCombobox from "../../../../components/ReadOnlyCombobox";
 import ArticleSelectionModal from "./ArticleSelectionModal";
@@ -13,6 +12,10 @@ import ArticleFamilySelectOption from "../../../article-families/components/Arti
 import { calculationMethods } from "../../../article-families/components/helpers";
 import { capitalize } from "../../../../utils/helpers";
 import ArticleSelectOption from "../../../articles/components/ArticleSelectOption";
+import InputOperationLine from "../../../../types/InputOperationLine";
+import { FileWithPath } from "@mantine/dropzone";
+import FileDropzone from "../../../../components/FileDropzone";
+import { getFullResourcePath } from "../../../../lib/axios/api";
 
 const schema = z.object({
     articleId: z.number().refine((value) => value !== -1, {
@@ -25,19 +28,20 @@ const schema = z.object({
 
 export type FormData = z.infer<typeof schema>
 
-export type OperationLineDto = Omit<FormData, 'articleId'> & { article: Article; subTotalNightlyAmount: number }
+export type OperationLineDto = Omit<FormData, 'articleId'> & { article: Article; subTotalNightlyAmount: number; photoFile: FileWithPath | null, photoPath: string | null }
 
 interface Props {
     title: string
     size?: ModalBaseProps['size']
     isOpened: boolean
-    selectedOperationLine?: OperationLine
+    selectedInputOperationLine?: InputOperationLine
     onClose: () => void
     onSubmit: (operationLineDto: OperationLineDto) => void
 }
 
-export default function OperationLineSelectionModal({ title, size = "lg", isOpened, selectedOperationLine, onClose, onSubmit }: Props) {
-    const [article, setArticle] = useState(selectedOperationLine?.article ?? null)
+export default function OperationLineSelectionModal({ title, size = "lg", isOpened, selectedInputOperationLine, onClose, onSubmit }: Props) {
+    const [article, setArticle] = useState(selectedInputOperationLine?.article ?? null)
+    const [photoFile, setPhotoFile] = useState<FileWithPath | null>(null);
 
     const [isArticleSelectionModalOpen, { open: openArticleSelectionModal, close: closeArticleSelectionModal }] = useModal()
 
@@ -46,10 +50,10 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
 
     const form = useForm<FormData>({
         initialValues: {
-            articleId: selectedOperationLine?.article.id || -1,
-            quantity: selectedOperationLine?.quantity || 1,
-            nightlyAmount: selectedOperationLine?.nightlyAmount || 0,
-            transportFee: selectedOperationLine?.transportFee || 0,
+            articleId: selectedInputOperationLine?.article.id || -1,
+            quantity: selectedInputOperationLine?.quantity || 1,
+            nightlyAmount: selectedInputOperationLine?.nightlyAmount || 0,
+            transportFee: selectedInputOperationLine?.transportFee || 0,
         },
         validate: zodResolver(schema),
     });
@@ -62,11 +66,16 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
             quantity: data.quantity,
             nightlyAmount: data.nightlyAmount,
             subTotalNightlyAmount: data.nightlyAmount * data.quantity,
-            transportFee: data.transportFee
+            transportFee: data.transportFee,
+            photoFile,
+            photoPath: photoFile
+            ? URL.createObjectURL(photoFile)
+            : selectedInputOperationLine?.photoPath ? getFullResourcePath(selectedInputOperationLine.photoPath) : null
         }
 
         form.reset()
         setArticle(null)
+        setPhotoFile(null)
 
         onSubmit(operationLineDto)
         onClose()
@@ -93,8 +102,8 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
                     <Stack>
                         <ReadOnlyCombobox
                             selectedEntity={article}
-                            placeholder={tGlossary("operationLine.article")}
-                            label={tGlossary("operationLine.article")}
+                            placeholder={tGlossary("inputOperationLine.article")}
+                            label={tGlossary("inputOperationLine.article")}
                             error={form.errors.articleId?.toString()}
                             withAsterisk
                             height={50}
@@ -169,22 +178,22 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
 
                         <SimpleGrid cols={{ base: 1, sm: 3 }}>
                             <NumberInput
-                                label={tGlossary("operationLine.quantity")}
-                                placeholder={tGlossary("operationLine.quantity")}
+                                label={tGlossary("inputOperationLine.quantity")}
+                                placeholder={tGlossary("inputOperationLine.quantity")}
                                 name="quantity"
                                 withAsterisk
                                 {...form.getInputProps('quantity')}
                             />
                             <NumberInput
-                                label={tGlossary("operationLine.nightlyAmount")}
-                                placeholder={tGlossary("operationLine.nightlyAmount")}
+                                label={tGlossary("inputOperationLine.nightlyAmount")}
+                                placeholder={tGlossary("inputOperationLine.nightlyAmount")}
                                 name="nightlyAmount"
                                 withAsterisk
                                 {...form.getInputProps('nightlyAmount')}
                             />
                             <NumberInput
-                                label={tGlossary("operationLine.subTotalNightlyAmount")}
-                                placeholder={tGlossary("operationLine.subTotalNightlyAmount")}
+                                label={tGlossary("inputOperationLine.subTotalNightlyAmount")}
+                                placeholder={tGlossary("inputOperationLine.subTotalNightlyAmount")}
                                 disabled
                                 name="subTotalNightlyAmount"
                                 value={form.values.nightlyAmount * form.values.quantity}
@@ -193,13 +202,20 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
                         </SimpleGrid>
                         <SimpleGrid cols={{ base: 1, sm: 1 }}>
                             <NumberInput
-                                label={tGlossary("operationLine.transportFee")}
-                                placeholder={tGlossary("operationLine.transportFee")}
+                                label={tGlossary("inputOperationLine.transportFee")}
+                                placeholder={tGlossary("inputOperationLine.transportFee")}
                                 name="transportFee"
                                 withAsterisk
                                 {...form.getInputProps('transportFee')}
                             />
                         </SimpleGrid>
+                        <FileDropzone
+                            label={tGlossary("inputOperationLine.photo")}
+                            file={photoFile}
+                            savedFilePath={selectedInputOperationLine?.photoPath}
+                            onChange={(photoFile) => setPhotoFile(photoFile)}
+                            onClear={() => setPhotoFile(null)}
+                        />
                     </Stack>
 
                     <Group justify="space-between" mt="xl">
