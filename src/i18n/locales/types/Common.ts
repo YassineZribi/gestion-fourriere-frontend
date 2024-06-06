@@ -94,6 +94,12 @@ type Common = {
                 onUpdate: string
             }
         },
+        upsertInputOperationLineModal: {
+            title: {
+                onInsert: string,
+                onUpdate: string
+            }
+        },
         confirmationModal: {
             title: string,
             text: string
@@ -154,6 +160,11 @@ type Common = {
             }
         },
         inputsActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
+        inputOperationLineTRow: {
             confirmationModal: {
                 message: string
             }

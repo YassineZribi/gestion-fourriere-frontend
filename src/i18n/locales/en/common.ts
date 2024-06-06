@@ -96,6 +96,12 @@ const common: Common = {
                 onUpdate: "Update articles owner (Individual)"
             }
         },
+        upsertInputOperationLineModal: {
+            title: {
+                onInsert: "Add new input operation line",
+                onUpdate: "Update input operation line"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "This action is destructive and you will have to contact support to restore your data.",
@@ -158,6 +164,11 @@ const common: Common = {
         inputsActions: {
             confirmationModal: {
                 message: "Are you sure you want to delete this input?"
+            }
+        },
+        inputOperationLineTRow: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this input operation line?"
             }
         },
         upsertInputForm: {

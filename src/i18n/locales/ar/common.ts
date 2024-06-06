@@ -96,6 +96,12 @@ const common: Common = {
                 onUpdate: "تحديث بيانات مالك محجوزات (شخص طبيعي)"
             }
         },
+        upsertInputOperationLineModal: {
+            title: {
+                onInsert: "إضافة عنصر محجوزات جديد",
+                onUpdate: "تحديث بيانات عنصر المحجوزات"
+            }
+        },
         confirmationModal: {
             title: "التأكيد",
             text: "هذا الإجراء مدمر وسيتعين عليك الاتصال بالدعم لاستعادة بياناتك."
@@ -158,6 +164,11 @@ const common: Common = {
         inputsActions: {
             confirmationModal: {
                 message: "هل أنت متأكد أنك تريد حذف هذا الحجز ؟"
+            }
+        },
+        inputOperationLineTRow: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف عنصر المحجوزات هذا ؟"
             }
         },
         upsertInputForm: {

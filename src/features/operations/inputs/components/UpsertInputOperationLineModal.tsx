@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Anchor, Box, Button, Fieldset, Flex, Group, Modal, ModalBaseProps, NumberInput, Radio, SimpleGrid, Stack, TextInput, Textarea } from "@mantine/core";
+import { Anchor, Box, Button, Fieldset, Group, Modal, ModalBaseProps, NumberInput, Radio, SimpleGrid, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -12,7 +12,6 @@ import ArticleFamilySelectOption from "../../../article-families/components/Arti
 import { calculationMethods } from "../../../article-families/components/helpers";
 import { capitalize } from "../../../../utils/helpers";
 import ArticleSelectOption from "../../../articles/components/ArticleSelectOption";
-import InputOperationLine from "../../../../types/InputOperationLine";
 import { FileWithPath } from "@mantine/dropzone";
 import FileDropzone from "../../../../components/FileDropzone";
 import { getFullResourcePath } from "../../../../lib/axios/api";
@@ -28,20 +27,20 @@ const schema = z.object({
 
 export type FormData = z.infer<typeof schema>
 
-export type OperationLineDto = Omit<FormData, 'articleId'> & { article: Article; subTotalNightlyAmount: number; photoFile: FileWithPath | null, photoPath: string | null }
+export type InputOperationLineDto = Omit<FormData, 'articleId'> & { article: Article; subTotalNightlyAmount: number; photoFile: FileWithPath | null, photoPath: string | null }
 
 interface Props {
     title: string
     size?: ModalBaseProps['size']
     isOpened: boolean
-    selectedInputOperationLine?: InputOperationLine
+    selectedInputOperationLine?: InputOperationLineDto
     onClose: () => void
-    onSubmit: (operationLineDto: OperationLineDto) => void
+    onSubmit: (inputOperationLineDto: InputOperationLineDto) => void
 }
 
-export default function OperationLineSelectionModal({ title, size = "lg", isOpened, selectedInputOperationLine, onClose, onSubmit }: Props) {
-    const [article, setArticle] = useState(selectedInputOperationLine?.article ?? null)
-    const [photoFile, setPhotoFile] = useState<FileWithPath | null>(null);
+export default function UpsertInputOperationLineModal({ title, size = "lg", isOpened, selectedInputOperationLine, onClose, onSubmit }: Props) {
+    const [article, setArticle] = useState(selectedInputOperationLine?.article || null)
+    const [photoFile, setPhotoFile] = useState<FileWithPath | null>(selectedInputOperationLine?.photoFile || null);
 
     const [isArticleSelectionModalOpen, { open: openArticleSelectionModal, close: closeArticleSelectionModal }] = useModal()
 
@@ -61,7 +60,7 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
     const handleSubmit = async (data: FormData) => {
         if (!article) return;
 
-        const operationLineDto: OperationLineDto = {
+        const inputOperationLineDto: InputOperationLineDto = {
             article: article,
             quantity: data.quantity,
             nightlyAmount: data.nightlyAmount,
@@ -69,15 +68,17 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
             transportFee: data.transportFee,
             photoFile,
             photoPath: photoFile
-            ? URL.createObjectURL(photoFile)
-            : selectedInputOperationLine?.photoPath ? getFullResourcePath(selectedInputOperationLine.photoPath) : null
+                ? URL.createObjectURL(photoFile)
+                : selectedInputOperationLine?.photoPath ? getFullResourcePath(selectedInputOperationLine.photoPath) : null
         }
 
-        form.reset()
-        setArticle(null)
-        setPhotoFile(null)
+        if (!selectedInputOperationLine) { // not update mode
+            form.reset()
+            setArticle(null)
+            setPhotoFile(null)
+        }
 
-        onSubmit(operationLineDto)
+        onSubmit(inputOperationLineDto)
         onClose()
     }
 
@@ -98,7 +99,13 @@ export default function OperationLineSelectionModal({ title, size = "lg", isOpen
     return (
         <>
             <Modal title={title} size={size} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
-                <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
+                <form autoComplete="off" onSubmit={(event) => {
+                    // this part is for stopping parent forms to trigger their submit
+                    event?.preventDefault?.();
+                    event?.stopPropagation?.();
+
+                    return form.onSubmit(handleSubmit)(event);
+                }}>
                     <Stack>
                         <ReadOnlyCombobox
                             selectedEntity={article}

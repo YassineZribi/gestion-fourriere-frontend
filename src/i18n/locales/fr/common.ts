@@ -96,6 +96,12 @@ const common: Common = {
                 onUpdate: "Modifier les données du propriétaire d'articles (Personne physique)"
             }
         },
+        upsertInputOperationLineModal: {
+            title: {
+                onInsert: "Ajouter une nouevelle ligne d'entrée",
+                onUpdate: "Modifier les données de la ligne d'entrée"
+            }
+        },
         confirmationModal: {
             title: "Confirmation",
             text: "Cette action est destructrice et vous devrez contacter l'assistance pour restaurer vos données."
@@ -158,6 +164,11 @@ const common: Common = {
         inputsActions: {
             confirmationModal: {
                 message: "Êtes-vous sûr de vouloir supprimer cette entrée ?"
+            }
+        },
+        inputOperationLineTRow: {
+            confirmationModal: {
+                message: "Êtes-vous sûr de vouloir supprimer cette ligne d'entrée ?"
             }
         },
         upsertInputForm: {

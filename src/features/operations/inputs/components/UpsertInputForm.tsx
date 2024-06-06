@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { ActionIcon, Anchor, Avatar, Box, Button, Flex, Group, NumberInput, SimpleGrid, Stack, Table, Text, Title, rem } from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, Group, NumberInput, SimpleGrid, Stack, Table, Text, Title, rem } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -21,7 +21,7 @@ import Input from "../../../../types/Input";
 import SubRegisterSelectOption from "../../../sub-registers/components/SubRegisterSelectOption";
 import UpsertSubRegisterModal from "../../../sub-registers/components/UpsertSubRegisterModal";
 import { DateTimePicker } from "@mantine/dates";
-import { MinusIcon, PhotoIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Source from "../../../../types/Source";
 import SourceSelectOption from "../../../sources/components/SourceSelectOption";
 import UpsertSourceModal from "../../../sources/components/UpsertSourceModal";
@@ -29,10 +29,10 @@ import OwnerSelectionModal from "./OwnerSelectionModal";
 import Owner from "../../../../types/Owner";
 import ReadOnlyCombobox from "../../../../components/ReadOnlyCombobox";
 import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOption";
-import { getFullResourcePath } from "../../../../lib/axios/api";
 import { useNavigate } from "react-router-dom";
-import InputOperationLineSelectionModal from "./InputOperationLineSelectionModal";
+import UpsertInputOperationLineModal, { InputOperationLineDto } from "./UpsertInputOperationLineModal";
 import Sup from "../../../../components/Sup";
+import InputOperationLineTRow from "./InputOperationLineTRow";
 
 
 const schema = z.object({
@@ -53,21 +53,9 @@ const schema = z.object({
     }),
     inputOperationLines: z.array(
         z.object({
-            article: z.object({
-                id: z.number().refine((value) => value !== -1, {
-                    message: 'Article is required',
-                }),
-                name: z.string(),
-                photoPath: z.string().nullable(),
-                articleFamily: z.object({
-                    unitCalculation: z.boolean()
-                })
+            articleId: z.number().refine((value) => value !== -1, {
+                message: 'Article is required',
             }),
-            nightlyAmount: z.number({ invalid_type_error: "Nightly amount is required" }).gt(0, "Nightly amount should be greather than 0"),
-            transportFee: z.number({ invalid_type_error: "Transport fee is required" }),
-            quantity: z.number({ invalid_type_error: "Quantity is required" }).gt(0, "Quantity should be greather than 0"),
-            photoPath: z.string().nullable(),
-            photoFile: z.union([z.instanceof(File), z.null()])
         })
     ).min(1, "List is empty!")
 });
@@ -97,7 +85,19 @@ export default function UpsertInputForm({ selectedInput }: Props) {
     const [subRegister, setSubRegister] = useState(selectedInput?.subRegister ?? null)
     const [source, setSource] = useState(selectedInput?.source ?? null)
     const [owner, setOwner] = useState(selectedInput?.owner ?? null)
-    // const [inputOperationLines, setOperationLines] = useState<InputOperationLine[]>(selectedInput?.inputOperationLines ?? [])
+    const [inputOperationLines, setInputOperationLines] = useState<InputOperationLineDto[]>(() => (
+        selectedInput
+            ? selectedInput.inputOperationLines.map(line => ({
+                article: line.article,
+                quantity: line.quantity,
+                nightlyAmount: line.nightlyAmount,
+                subTotalNightlyAmount: line.nightlyAmount * line.quantity,
+                transportFee: line.transportFee,
+                photoFile: null,
+                photoPath: line.photoPath
+            }))
+            : []
+    ))
 
     const [isRegisterModalOpen, { open: openRegisterModal, close: closeRegisterModal }] = useModal()
     const [isSubRegisterModalOpen, { open: openSubRegisterModal, close: closeSubRegisterModal }] = useModal()
@@ -119,19 +119,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             ownerId: selectedInput?.owner.id || -1,
             inputOperationLines: selectedInput
                 ? selectedInput.inputOperationLines.map(line => ({
-                    article: {
-                        id: line.article.id,
-                        name: line.article.name,
-                        photoPath: line.article.photoPath,
-                        articleFamily: {
-                            unitCalculation: line.article.articleFamily?.unitCalculation!
-                        }
-                    },
-                    nightlyAmount: line.nightlyAmount,
-                    transportFee: line.transportFee,
-                    quantity: line.quantity,
-                    photoPath: line.photoPath,
-                    photoFile: null
+                    articleId: line.article.id,
                 }))
                 : []
         },
@@ -147,7 +135,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             subRegisterId: data.subRegisterId,
             sourceId: data.sourceId,
             ownerId: data.ownerId,
-            inputOperationLines: data.inputOperationLines.map(line => ({
+            inputOperationLines: inputOperationLines.map(line => ({
                 articleId: line.article.id,
                 quantity: line.quantity,
                 nightlyAmount: line.nightlyAmount,
@@ -237,23 +225,37 @@ export default function UpsertInputForm({ selectedInput }: Props) {
 
     console.log(form.values);
 
-    const totalQuantity = form.getValues().inputOperationLines.reduce(
+    const totalQuantity = inputOperationLines.reduce(
         (accumulator, currentLine) => accumulator + currentLine.quantity,
         0,
     );
 
-    const totalNightlyAmount = form.getValues().inputOperationLines.reduce(
+    const totalNightlyAmount = inputOperationLines.reduce(
         (accumulator, currentLine) => accumulator + currentLine.quantity * currentLine.nightlyAmount,
         0,
     );
 
-    const totalTransportFee = form.getValues().inputOperationLines.reduce(
+    const totalTransportFee = inputOperationLines.reduce(
         (accumulator, currentLine) => accumulator + currentLine.transportFee,
         0,
     );
 
-    console.log(form.errors);
+    const handleDeleteInputOperationLine = (index: number) => {
+        form.removeListItem('inputOperationLines', index)
+        setInputOperationLines(prev => prev.filter((l, i) => i !== index))
+    }
 
+    const handleUpdateInputOperationLine = (inputOperationLineDto: InputOperationLineDto, index: number) => {
+        const articleExists = !!inputOperationLines.find((line, i) => line.article.id === inputOperationLineDto.article.id && i !== index)
+        if (articleExists) {
+            alertError("the item is already selected!")
+            return;
+        }
+        //form.clearFieldError("inputOperationLines")
+        form.removeListItem("inputOperationLines", index)
+        form.insertListItem("inputOperationLines", { articleId: inputOperationLineDto.article.id }, index)
+        setInputOperationLines(prev => prev.map((l, i) => i === index ? inputOperationLineDto : l))
+    }
 
     return (
         <>
@@ -426,71 +428,23 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                             <Table.Thead>
                                 <Table.Tr>
                                     <Table.Th style={{ width: 250 }}>{tGlossary("inputOperationLine.article")}</Table.Th>
-                                    <Table.Th>{tGlossary("inputOperationLine.nightlyAmount")}</Table.Th>
-                                    <Table.Th>{tGlossary("inputOperationLine.quantity")}</Table.Th>
+                                    <Table.Th ta="center">{tGlossary("inputOperationLine.nightlyAmount")}</Table.Th>
+                                    <Table.Th ta="center">{tGlossary("inputOperationLine.quantity")}</Table.Th>
                                     <Table.Th ta="center">{tGlossary("inputOperationLine.subTotalNightlyAmount")}</Table.Th>
-                                    <Table.Th>{tGlossary("inputOperationLine.transportFee")}</Table.Th>
-                                    <Table.Th style={{ width: 50 }}></Table.Th>
+                                    <Table.Th ta="center">{tGlossary("inputOperationLine.transportFee")}</Table.Th>
+                                    <Table.Th style={{ width: 100 }}></Table.Th>
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody style={{ verticalAlign: 'top' }}>
                                 {
-                                    form.getValues().inputOperationLines.map((line, index) => {
+                                    inputOperationLines.map((line, index) => {
                                         return (
-                                            <Table.Tr key={index}>
-                                                <Table.Td style={{ width: 250 }}>
-                                                    <Box style={{ flex: 1 }}>
-                                                        <Group
-                                                            wrap='nowrap' title={`${line.article.name}`}>
-                                                            <Avatar
-                                                                styles={{ root: { width: 36, height: 36, minWidth: 36 } }}
-                                                                // style={{ border: "1px solid" }}
-                                                                src={line.article.photoPath ? getFullResourcePath(line.article.photoPath) : ""}
-                                                                radius={"sm"}
-                                                            ><PhotoIcon style={{ width: "80%" }} /></Avatar>
-                                                            <Group gap={"5px"} wrap='nowrap' className='text-truncate'>
-                                                                <Text fz="xs" fw={700}>
-                                                                    {line.article.name}
-                                                                </Text>
-                                                            </Group>
-                                                        </Group>
-                                                    </Box>
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <NumberInput
-                                                        placeholder="Unit price"
-                                                        withAsterisk
-                                                        key={form.key(`inputOperationLines.${index}.nightlyAmount`)}
-                                                        {...form.getInputProps(`inputOperationLines.${index}.nightlyAmount`)}
-                                                    />
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <NumberInput
-                                                        placeholder="Quantity"
-                                                        withAsterisk
-                                                        key={form.key(`inputOperationLines.${index}.quantity`)}
-                                                        {...form.getInputProps(`inputOperationLines.${index}.quantity`)}
-                                                    />
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <Flex h={36} align="center" justify="center">
-                                                        <Text>{line.nightlyAmount * line.quantity}{' '}<Sup>{tGlossary(`currency.tn`)}</Sup></Text>
-                                                    </Flex>
-                                                </Table.Td>
-                                                <Table.Td>
-                                                    <NumberInput
-                                                        placeholder="Transport fee"
-                                                        withAsterisk
-                                                        key={form.key(`inputOperationLines.${index}.transportFee`)}
-                                                        {...form.getInputProps(`inputOperationLines.${index}.transportFee`)}
-                                                    />
-                                                </Table.Td>
-                                                <Table.Td style={{ width: 50 }}>
-                                                    <ActionIcon variant="subtle" color="red" size="input-sm" onClick={() => form.removeListItem('inputOperationLines', index)}>
-                                                        <TrashIcon width="1rem" height="1rem" />
-                                                    </ActionIcon>
-                                                </Table.Td>
-                                            </Table.Tr>
+                                            <InputOperationLineTRow
+                                                key={index}
+                                                inputOperationLine={line}
+                                                onDeleteInputOperationLine={() => handleDeleteInputOperationLine(index)}
+                                                onUpdateInputOperationLine={(inputOperationLine) => handleUpdateInputOperationLine(inputOperationLine, index)}
+                                            />
                                         )
                                     })
                                 }
@@ -549,20 +503,21 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                 onSubmit={updateOwner}
             />
 
-            <InputOperationLineSelectionModal
-                title={"Add operation line"}
+            <UpsertInputOperationLineModal
+                title={t("components.upsertInputOperationLineModal.title.onInsert")}
                 isOpened={isOperationLineSelectionModalOpen}
                 onClose={closeOperationLineSelectionModal}
-                onSubmit={(operationLineDto) => {
-                    console.log(operationLineDto);
-                    if (operationLineDto.article) {
-                        const articleExists = !!form.getValues().inputOperationLines.find(line => line.article.id === operationLineDto.article.id)
+                onSubmit={(inputOperationLineDto) => {
+                    console.log(inputOperationLineDto);
+                    if (inputOperationLineDto.article) {
+                        const articleExists = !!inputOperationLines.find(line => line.article.id === inputOperationLineDto.article.id)
                         if (articleExists) {
                             alertError("the item is already selected!")
                             return;
                         }
                         form.clearFieldError("inputOperationLines")
-                        form.insertListItem("inputOperationLines", operationLineDto)
+                        form.insertListItem("inputOperationLines", { articleId: inputOperationLineDto.article.id })
+                        setInputOperationLines(prev => [...prev, inputOperationLineDto])
                     }
                 }}
             />
@@ -577,7 +532,7 @@ interface SummaryTableProps {
 
 function SummaryTable({ title, children }: SummaryTableProps) {
     return (
-        <Box pl={{ base: 0, md: 'xl' }}>
+        <Box ps={{ base: 0, md: 'xl' }}>
             <table style={{ tableLayout: 'fixed', width: "100%", margin: '25px auto 0' }}>
                 <tbody>
                     <tr>
@@ -591,3 +546,4 @@ function SummaryTable({ title, children }: SummaryTableProps) {
         </Box>
     )
 }
+
