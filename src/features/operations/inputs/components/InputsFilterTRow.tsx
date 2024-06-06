@@ -13,7 +13,7 @@ import Source from "../../../../types/Source";
 import SourceSelectOption from "../../../sources/components/SourceSelectOption";
 import { useMemo, useState } from "react";
 import ClearableDatePickerInput from "../../../../components/ClearableDatePickerInput";
-import { inputStatuses, toCamelCaseStatus } from "../../../../types/InputStatus";
+import { processingStatuses as inputStatuses, toCamelCaseStatus } from "../../../../types/ProcessingStatus";
 import ClearableSelect from "../../../../components/ClearableSelect";
 
 interface Props {

@@ -1,5 +1,5 @@
 import InputOperationLine from "./InputOperationLine";
-import { InputStatus } from "./InputStatus";
+import { ProcessingStatus } from "./ProcessingStatus";
 import Operation from "./Operation";
 import Output from "./Output";
 import Owner from "./Owner";
@@ -8,7 +8,7 @@ import Source from "./Source";
 import SubRegister from "./SubRegister";
 
 export default interface Input extends Operation {
-    status: InputStatus
+    status: ProcessingStatus
     register: Register
     subRegister: SubRegister
     owner: Owner

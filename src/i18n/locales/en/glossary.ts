@@ -101,6 +101,11 @@ const glossary: Glossary = {
         transportFee: "Transport fee",
         photo: "Photo"
     },
+    inputOperationLineStatuses: {
+        fullyOut: "Fully out",
+        partiallyOut: "Partially out",
+        fullyIn: "Fully in"
+    },
     currency: {
         tn: "TND"
     },

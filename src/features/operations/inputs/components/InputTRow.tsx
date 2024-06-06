@@ -5,10 +5,10 @@ import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOpti
 import InputsActions from "./InputsActions"
 import { columnsWidth } from "./helpers"
 import { formatDateTime } from "../../../../utils/date"
-import { InputStatusCamelCase, toCamelCaseStatus } from "../../../../types/InputStatus"
+import { ProcessingStatusCamelCase, toCamelCaseStatus } from "../../../../types/ProcessingStatus"
 import { useTranslation } from "react-i18next"
 
-const inputStatusColors: Record<InputStatusCamelCase, DefaultMantineColor> = {
+const inputStatusColors: Record<ProcessingStatusCamelCase, DefaultMantineColor> = {
     fullyOut: 'teal',
     partiallyOut: 'yellow',
     fullyIn: 'red',

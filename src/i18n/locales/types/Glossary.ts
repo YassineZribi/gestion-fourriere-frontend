@@ -99,6 +99,11 @@ type Glossary = {
         transportFee: string,
         photo: string,
     },
+    inputOperationLineStatuses: {
+        fullyOut: string,
+        partiallyOut: string,
+        fullyIn: string
+    },
     currency: {
         tn: string
     },

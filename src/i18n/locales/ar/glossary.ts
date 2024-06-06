@@ -101,6 +101,11 @@ const glossary: Glossary = {
         transportFee: "تكاليف النقل",
         photo: "الصورة"
     },
+    inputOperationLineStatuses: {
+        fullyOut: "خروج كامل",
+        partiallyOut: "خروج جزئي",
+        fullyIn: "في الداخل"
+    },
     currency: {
         tn: "د.ت"
     },
