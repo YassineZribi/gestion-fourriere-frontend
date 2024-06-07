@@ -33,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import UpsertInputOperationLineModal, { InputOperationLineDto } from "./UpsertInputOperationLineModal";
 import Sup from "../../../../components/Sup";
 import InputOperationLineTRow from "./InputOperationLineTRow";
+import { columnsWidth } from "./helpers";
 
 
 const schema = z.object({
@@ -66,10 +67,13 @@ export type UpsertInputDto = Omit<FormData, "inputOperationLines" | "dateTime">
     & {
         inputOperationLines: {
             articleId: number;
+            quantity: number;
             nightlyAmount: number;
             transportFee: number;
-            quantity: number;
-            photoFile: File | null
+            description: string;
+            observation: string | null;
+            note: string | null;
+            photoFile: File | null;
         }[]
     }
     & { dateTime: string };
@@ -93,6 +97,9 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                 nightlyAmount: line.nightlyAmount,
                 subTotalNightlyAmount: line.nightlyAmount * line.quantity,
                 transportFee: line.transportFee,
+                description: line.description,
+                observation: line.observation,
+                note: line.note,
                 photoFile: null,
                 photoPath: line.photoPath
             }))
@@ -140,6 +147,9 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                 quantity: line.quantity,
                 nightlyAmount: line.nightlyAmount,
                 transportFee: line.transportFee,
+                description: line.description,
+                observation: line.observation,
+                note: line.note,
                 photoFile: line.photoFile
             }))
         }
@@ -160,6 +170,9 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             formData.append(`inputOperationLines[${index}].quantity`, String(line.quantity));
             formData.append(`inputOperationLines[${index}].nightlyAmount`, String(line.nightlyAmount));
             formData.append(`inputOperationLines[${index}].transportFee`, String(line.transportFee));
+            formData.append(`inputOperationLines[${index}].description`, String(line.description));
+            formData.append(`inputOperationLines[${index}].observation`, String(line.observation || ''));
+            formData.append(`inputOperationLines[${index}].note`, String(line.note || ''));
             if (line.photoFile !== null) {
                 formData.append(`inputOperationLines[${index}].photoFile`, line.photoFile);
             }
@@ -427,7 +440,8 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                         <Table styles={{ table: { tableLayout: 'fixed' } }}>
                             <Table.Thead>
                                 <Table.Tr>
-                                    <Table.Th style={{ width: 250 }}>{tGlossary("inputOperationLine.article")}</Table.Th>
+                                    <Table.Th style={{ width: columnsWidth.article }}>{tGlossary("inputOperationLine.article")}</Table.Th>
+                                    <Table.Th style={{ width: columnsWidth.description }}>{tGlossary("inputOperationLine.description")}</Table.Th>
                                     <Table.Th ta="center">{tGlossary("inputOperationLine.nightlyAmount")}</Table.Th>
                                     <Table.Th ta="center">{tGlossary("inputOperationLine.quantity")}</Table.Th>
                                     <Table.Th ta="center">{tGlossary("inputOperationLine.subTotalNightlyAmount")}</Table.Th>

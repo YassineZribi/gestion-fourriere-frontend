@@ -95,10 +95,14 @@ const glossary: Glossary = {
     inputOperationLine: {
         article: "Article",
         quantity: "Quantity",
-        remainingQuantity: "Remaining quantity",
         nightlyAmount: "Amount / night",
         subTotalNightlyAmount: "Sub-total / night",
         transportFee: "Transport fee",
+        remainingQuantity: "Remaining quantity",
+        status: "Status",
+        description: "Description",
+        observation: "Observation",
+        note: "Note",
         photo: "Photo"
     },
     inputOperationLineStatuses: {

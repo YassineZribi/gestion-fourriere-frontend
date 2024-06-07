@@ -95,10 +95,14 @@ const glossary: Glossary = {
     inputOperationLine: {
         article: "المحجوز",
         quantity: "الكمية",
-        remainingQuantity: "الكمية المتبقية",
         nightlyAmount: "المبلغ / الليلة",
         subTotalNightlyAmount: "الإجمالي الفرعي / الليلة",
         transportFee: "تكاليف النقل",
+        remainingQuantity: "الكمية المتبقية",
+        status: "الحالة",
+        description: "الوصف",
+        observation: "ملاحظة 1",
+        note: "ملاحظة 2",
         photo: "الصورة"
     },
     inputOperationLineStatuses: {

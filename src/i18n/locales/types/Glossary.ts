@@ -93,10 +93,14 @@ type Glossary = {
     inputOperationLine: {
         article: string,
         quantity: string,
-        remainingQuantity: string,
         nightlyAmount: string,
         subTotalNightlyAmount: string,
         transportFee: string,
+        remainingQuantity: string,
+        status: string,
+        description: string,
+        observation: string,
+        note: string,
         photo: string,
     },
     inputOperationLineStatuses: {

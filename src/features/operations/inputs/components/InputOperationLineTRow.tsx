@@ -6,6 +6,7 @@ import { getFullResourcePath } from "../../../../lib/axios/api"
 import { PencilIcon, PhotoIcon, TrashIcon } from "@heroicons/react/24/outline"
 import Sup from "../../../../components/Sup"
 import ConfirmationModal from "../../../../components/ConfirmationModal"
+import { columnsWidth } from "./helpers"
 
 interface Props {
     inputOperationLine: InputOperationLineDto
@@ -24,7 +25,7 @@ export default function InputOperationLineTRow({ inputOperationLine: line, onDel
     return (
         <>
             <Table.Tr>
-                <Table.Td style={{ width: 250 }}>
+                <Table.Td style={{ width: columnsWidth.article }}>
                     <Box style={{ flex: 1 }}>
                         <Group
                             wrap='nowrap' title={`${line.article.name}`}>
@@ -35,12 +36,19 @@ export default function InputOperationLineTRow({ inputOperationLine: line, onDel
                                 radius={"sm"}
                             ><PhotoIcon style={{ width: "80%" }} /></Avatar>
                             <Group gap={"5px"} wrap='nowrap' className='text-truncate'>
-                                <Text fz="xs" fw={700}>
+                                <Text fz="xs" fw={700} truncate="end">
                                     {line.article.name}
                                 </Text>
                             </Group>
                         </Group>
                     </Box>
+                </Table.Td>
+                <Table.Td style={{ width: columnsWidth.description }}>
+                    <Flex h={36} align="center">
+                        <Text fz="sm" fw={500} truncate="end" title={line.description}>
+                            {line.description}
+                        </Text>
+                    </Flex>
                 </Table.Td>
                 <Table.Td>
                     <Flex h={36} align="center" justify="center">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Anchor, Box, Button, Fieldset, Group, Modal, ModalBaseProps, NumberInput, Radio, SimpleGrid, Stack } from "@mantine/core";
+import { Anchor, Box, Button, Fieldset, Group, Modal, ModalBaseProps, NumberInput, Radio, SimpleGrid, Stack, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -22,7 +22,10 @@ const schema = z.object({
     }),
     quantity: z.number({ invalid_type_error: "Quantity is required" }).gt(0, "Quantity should be greather than 0"),
     nightlyAmount: z.number({ invalid_type_error: "Nightly amount is required" }).gt(0, "Nightly amount should be greather than 0"),
-    transportFee: z.number({ invalid_type_error: "Transport fee is required" })
+    transportFee: z.number({ invalid_type_error: "Transport fee is required" }),
+    description: z.string().min(1, 'Description is required'),
+    observation: z.string().nullable(),
+    note: z.string().nullable()
 });
 
 export type FormData = z.infer<typeof schema>
@@ -53,6 +56,9 @@ export default function UpsertInputOperationLineModal({ title, size = "lg", isOp
             quantity: selectedInputOperationLine?.quantity || 1,
             nightlyAmount: selectedInputOperationLine?.nightlyAmount || 0,
             transportFee: selectedInputOperationLine?.transportFee || 0,
+            description: selectedInputOperationLine?.description || '',
+            observation: selectedInputOperationLine?.observation || '',
+            note: selectedInputOperationLine?.note || ''
         },
         validate: zodResolver(schema),
     });
@@ -66,6 +72,9 @@ export default function UpsertInputOperationLineModal({ title, size = "lg", isOp
             nightlyAmount: data.nightlyAmount,
             subTotalNightlyAmount: data.nightlyAmount * data.quantity,
             transportFee: data.transportFee,
+            description: data.description,
+            observation: data.observation,
+            note: data.note,
             photoFile,
             photoPath: photoFile
                 ? URL.createObjectURL(photoFile)
@@ -222,6 +231,27 @@ export default function UpsertInputOperationLineModal({ title, size = "lg", isOp
                             savedFilePath={selectedInputOperationLine?.photoPath}
                             onChange={(photoFile) => setPhotoFile(photoFile)}
                             onClear={() => setPhotoFile(null)}
+                        />
+                        <Textarea
+                            label={tGlossary("inputOperationLine.description")}
+                            placeholder={tGlossary("inputOperationLine.description")}
+                            name="description"
+                            withAsterisk
+                            {...form.getInputProps('description')}
+                        />
+                        <Textarea
+                            label={tGlossary("inputOperationLine.observation")}
+                            placeholder={tGlossary("inputOperationLine.observation")}
+                            name="observation"
+                            // withAsterisk
+                            {...form.getInputProps('observation')}
+                        />
+                        <Textarea
+                            label={tGlossary("inputOperationLine.note")}
+                            placeholder={tGlossary("inputOperationLine.note")}
+                            name="note"
+                            // withAsterisk
+                            {...form.getInputProps('note')}
                         />
                     </Stack>
 
