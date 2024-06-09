@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Anchor, Box, Button, Fieldset, Group, Modal, ModalBaseProps, NumberInput, Radio, SimpleGrid, Stack, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
@@ -14,7 +14,6 @@ import { capitalize } from "../../../../utils/helpers";
 import ArticleSelectOption from "../../../articles/components/ArticleSelectOption";
 import { FileWithPath } from "@mantine/dropzone";
 import FileDropzone from "../../../../components/FileDropzone";
-import { getFullResourcePath } from "../../../../lib/axios/api";
 
 const schema = z.object({
     articleId: z.number().refine((value) => value !== -1, {
@@ -44,6 +43,14 @@ interface Props {
 export default function UpsertInputOperationLineModal({ title, size = "lg", isOpened, selectedInputOperationLine, onClose, onSubmit }: Props) {
     const [article, setArticle] = useState(selectedInputOperationLine?.article || null)
     const [photoFile, setPhotoFile] = useState<FileWithPath | null>(selectedInputOperationLine?.photoFile || null);
+    const [photoPath, setPhotoPath] = useState<string | null>(selectedInputOperationLine?.photoPath || null);
+
+    useEffect(() => {
+        if (selectedInputOperationLine) {
+            setPhotoFile(selectedInputOperationLine.photoFile)
+            setPhotoPath(selectedInputOperationLine.photoPath)
+        }
+    }, [selectedInputOperationLine])
 
     const [isArticleSelectionModalOpen, { open: openArticleSelectionModal, close: closeArticleSelectionModal }] = useModal()
 
@@ -76,15 +83,14 @@ export default function UpsertInputOperationLineModal({ title, size = "lg", isOp
             observation: data.observation,
             note: data.note,
             photoFile,
-            photoPath: photoFile
-                ? URL.createObjectURL(photoFile)
-                : selectedInputOperationLine?.photoPath ? getFullResourcePath(selectedInputOperationLine.photoPath) : null
+            photoPath
         }
 
         if (!selectedInputOperationLine) { // not update mode
             form.reset()
             setArticle(null)
             setPhotoFile(null)
+            setPhotoPath(null)
         }
 
         onSubmit(inputOperationLineDto)
@@ -228,9 +234,16 @@ export default function UpsertInputOperationLineModal({ title, size = "lg", isOp
                         <FileDropzone
                             label={tGlossary("inputOperationLine.photo")}
                             file={photoFile}
-                            savedFilePath={selectedInputOperationLine?.photoPath}
-                            onChange={(photoFile) => setPhotoFile(photoFile)}
-                            onClear={() => setPhotoFile(null)}
+                            savedFilePath={photoPath}
+                            clearable
+                            onChange={(photoFile) => {
+                                setPhotoFile(photoFile)
+                                setPhotoPath(photoFile ? URL.createObjectURL(photoFile) : null)
+                            }}
+                            onClear={() => {
+                                setPhotoFile(null)
+                                setPhotoPath(null)
+                            }}
                         />
                         <Textarea
                             label={tGlossary("inputOperationLine.description")}

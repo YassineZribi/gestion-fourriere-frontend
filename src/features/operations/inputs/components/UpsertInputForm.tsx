@@ -74,6 +74,7 @@ export type UpsertInputDto = Omit<FormData, "inputOperationLines" | "dateTime">
             observation: string | null;
             note: string | null;
             photoFile: File | null;
+            photoPath: string | null;
         }[]
     }
     & { dateTime: string };
@@ -150,7 +151,8 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                 description: line.description,
                 observation: line.observation,
                 note: line.note,
-                photoFile: line.photoFile
+                photoFile: line.photoFile,
+                photoPath: line.photoPath
             }))
         }
         console.log(upsertInputDto);
@@ -175,6 +177,9 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             formData.append(`inputOperationLines[${index}].note`, String(line.note || ''));
             if (line.photoFile !== null) {
                 formData.append(`inputOperationLines[${index}].photoFile`, line.photoFile);
+            }
+            if (line.photoFile == null && line.photoPath == null) {
+                formData.append(`inputOperationLines[${index}].deletePhotoFileIfExists`, String(true));
             }
         });
 

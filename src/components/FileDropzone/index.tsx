@@ -10,19 +10,22 @@ interface Props {
     required?: boolean
     file: FileWithPath | null
     savedFilePath?: string | null
+    clearable?: boolean
     onChange: (file: FileWithPath | null) => void
     onClear: () => void
 }
 
-export default function FileDropzone({ label, required = false, file, savedFilePath, onChange, onClear, ...rest }: /* Partial<DropzoneProps> & */ Props) {
+export default function FileDropzone({ label, required = false, file, savedFilePath, clearable = false, onChange, onClear, ...rest }: /* Partial<DropzoneProps> & */ Props) {
     const { t } = useTranslation()
     const preview = useMemo(() => {
         const imageUrl = file
             ? URL.createObjectURL(file)
-            : savedFilePath ? getFullResourcePath(savedFilePath) : null
+            : savedFilePath 
+                ? savedFilePath.startsWith("blob") ? savedFilePath : getFullResourcePath(savedFilePath) 
+                : null
         if (imageUrl == null) return null
         return <Image src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} maw={150} w={'100%'} mx={"auto"} display={"inline-block"} radius={4} />;
-    }, [file]);
+    }, [file, savedFilePath]);
     return (
         <Box>
             {label && <Input.Label required={required}>{label}</Input.Label>}
@@ -67,7 +70,7 @@ export default function FileDropzone({ label, required = false, file, savedFileP
                 <Box mt={"sm"} pos={"relative"} style={{display:"inline-block"}}>
                     {preview}
                     {
-                        file !== null && (
+                        (file !== null || (clearable && savedFilePath)) && (
                             <Tooltip label={t("buttons.removeModification")} withArrow position='left'>
                                 <Avatar color="red" variant='filled' size={30} pos={"absolute"} right={4} top={4} style={{ zIndex: 1, cursor: 'pointer' }} onClick={onClear}>
                                     <TrashIcon style={{ width: rem(14), height: rem(14) }} />
