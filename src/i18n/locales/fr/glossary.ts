@@ -120,7 +120,7 @@ const glossary: Glossary = {
         discountAmount: "Montant de la remise",
         discountObservation: "Observation de la remise",
         discount: "Remise",
-        totalPaymentAmount: "Montant total à payer après remise",
+        totalPaymentAmount: "Montant total à payer",
         receiptNumber: "Numéro de la quittance",
         receiptDateTime: "Date de la quittance",
         receiptAmount: "Montant de la quittance"

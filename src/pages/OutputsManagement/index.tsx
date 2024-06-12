@@ -1,7 +1,7 @@
 
 import { Center, Loader, Space } from '@mantine/core';
 import Title from '../../components/Title';
-import inputsService from '../../features/operations/inputs/services'
+import outputsService from '../../features/operations/outputs/services'
 import DataTablePagination from '../../components/DataTable/DataTablePagination';
 import DataTableControlPanel from '../../components/DataTable/DataTableControlPanel';
 import useFetchWithPagination from '../../hooks/useFetchWithPagination';
@@ -10,18 +10,15 @@ import TBody from '../../components/DataTable/TBody';
 import DataTable from '../../components/DataTable';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-import Input from '../../types/Input';
-import useFetchSource from '../../features/sources/hooks/useFetchSource';
-import useFetchOwner from '../../features/owners/shared/hooks/useFetchOwner';
 import { useNavigate } from 'react-router-dom';
-import InputsFilterTRow from '../../features/operations/inputs/components/InputsFilterTRow';
-import InputTRow from '../../features/operations/inputs/components/InputTRow';
-import InputsAdvancedFilters from '../../features/operations/inputs/components/InputsAdvancedFilters';
-import useFetchRegister from '../../features/registers/hooks/useFetchRegister';
 import AdvancedFiltersCollapse from '../../components/AdvancedFiltersCollapse';
-import { columnsWidth } from '../../features/operations/inputs/components/helpers';
+import Output from '../../types/Output';
+import OutputsAdvancedFilters from '../../features/operations/outputs/components/OutputsAdvancedFilters';
+import { columnsWidth } from '../../features/operations/outputs/components/helpers';
+import OutputsFilterTRow from '../../features/operations/outputs/components/OutputsFilterTRow';
+import OutputTRow from '../../features/operations/outputs/components/OutputTRow';
 
-export const advancedInputFilterProperties = ["startNumber", "endNumber", "startDate", "endDate", "description", "registerId", "sourceId"] as const;
+export const advancedOutputFilterProperties = ["startNumber", "endNumber", "startDate", "endDate"] as const;
 
 const thColumns = [
     {
@@ -39,27 +36,29 @@ const thColumns = [
         label: "dateTime"
     },
     {
-        label: "owner"
+        name: "totalPaymentAmount",
+        label: "totalPaymentAmount"
     },
     {
-        label: "status"
+        name: "receiptNumber",
+        label: "receiptNumber"
     },
 ] as const
 
-export default function InputsManagement() {
+export default function OutputsManagement() {
     const navigate = useNavigate()
     const { t: tRoot } = useTranslation("root")
     const { t: tGlossary } = useTranslation("glossary")
 
     const thColumnsWithTranslation: Th[] = useMemo(() => thColumns.map(c => (
-        { ...c, label: tGlossary(`input.${c.label}`) }
+        { ...c, label: tGlossary(`output.${c.label}`) }
     )), [tGlossary])
 
     const {
         responseData,
         isLoading,
         error,
-        fetchData: fetchInputs,
+        fetchData: fetchOutputs,
         handleSort,
         handleFilter,
         showFilters,
@@ -75,20 +74,15 @@ export default function InputsManagement() {
         getFilterParams,
         getAdvancedFilterParams,
         getSortList,
-        onCreateEntity: onCreateInput,
-        onUpdateEntity: onUpdateInput,
-        onDeleteEntity: onDeleteInput
+        onCreateEntity: onCreateOutput,
+        onUpdateEntity: onUpdateOutput,
+        onDeleteEntity: onDeleteOutput
 
-    } = useFetchWithPagination<Input>(inputsService.getAllInputsByCriteria, advancedInputFilterProperties);
-
-    const { source: selectedSource } = useFetchSource(getSearchParam('sourceId'))
-    const { owner: selectedOwner } = useFetchOwner(getSearchParam('ownerId'))
-    const { register: selectedRegister } = useFetchRegister(getSearchParam('registerId'))
-
+    } = useFetchWithPagination<Output>(outputsService.getAllOutputsByCriteria, advancedOutputFilterProperties);
 
     return (
         <div>
-            <Title>{tRoot("inputsManagement.title")}</Title>
+            <Title>{tRoot("outputsManagement.title")}</Title>
             <Space my={'xl'} />
             {error && <p>{error}</p>}
             {!responseData && isLoading && <Center><Loader size={50} /></Center>}
@@ -98,9 +92,7 @@ export default function InputsManagement() {
                         showFilters={showAdvancedFilters}
                         onToggleFilters={toggleAdvancedFilters}
                     >
-                        <InputsAdvancedFilters
-                            selectedRegister={selectedRegister}
-                            selectedSource={selectedSource}
+                        <OutputsAdvancedFilters
                             filters={getAdvancedFilterParams()}
                             hasFilters={hasAdvancedFilters()}
                             onFilter={handleFilter}
@@ -109,7 +101,7 @@ export default function InputsManagement() {
                     </AdvancedFiltersCollapse>
                     <Space h="lg" />
                     <DataTableControlPanel
-                        onAddBtnClick={() => navigate('/create-input')}
+                        onAddBtnClick={() => null}
                     />
                     <DataTable>
                         <THead
@@ -123,8 +115,7 @@ export default function InputsManagement() {
                         <TBody
                             showFilters={showFilters}
                             filterRow={
-                                <InputsFilterTRow
-                                    selectedOwner={selectedOwner}
+                                <OutputsFilterTRow
                                     filters={getFilterParams()}
                                     hasFilters={hasFilters()}
                                     onFilter={handleFilter}
@@ -133,11 +124,11 @@ export default function InputsManagement() {
                             }
                         >
                             {
-                                responseData.content.map((input) => (
-                                    <InputTRow
-                                        key={input.id}
-                                        input={input}
-                                        onDeleteInput={onDeleteInput}
+                                responseData.content.map((output) => (
+                                    <OutputTRow
+                                        key={output.id}
+                                        output={output}
+                                        onDeleteOutput={onDeleteOutput}
                                     />
                                 ))
                             }

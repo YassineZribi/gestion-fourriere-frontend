@@ -47,6 +47,9 @@ const root: Root = {
     inputsManagement: {
         title: "إدارة الحجوزات"
     },
+    outputsManagement: {
+        title: "إدارة المخرجات"
+    },
     upsertInput: {
         title: {
             onInsert: "إضافة حجز جديد",

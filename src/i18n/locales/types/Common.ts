@@ -165,6 +165,11 @@ type Common = {
                 message: string
             }
         },
+        outputsActions: {
+            confirmationModal: {
+                message: string
+            }
+        },
         inputOperationLineTRow: {
             confirmationModal: {
                 message: string

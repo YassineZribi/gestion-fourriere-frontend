@@ -45,6 +45,9 @@ type Root = {
     inputsManagement: {
         title: string
     },
+    outputsManagement: {
+        title: string
+    },
     upsertInput: {
         title: {
             onInsert: string,

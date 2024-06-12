@@ -47,6 +47,9 @@ const root: Root = {
     inputsManagement: {
         title: "Inputs management"
     },
+    outputsManagement: {
+        title: "Outputs management"
+    },
     upsertInput: {
         title: {
             onInsert: "Add new input",

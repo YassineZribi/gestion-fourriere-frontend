@@ -167,6 +167,11 @@ const common: Common = {
                 message: "هل أنت متأكد أنك تريد حذف هذا الحجز ؟"
             }
         },
+        outputsActions: {
+            confirmationModal: {
+                message: "هل أنت متأكد أنك تريد حذف عملية الخروج هذه ؟"
+            }
+        },
         inputOperationLineTRow: {
             confirmationModal: {
                 message: "هل أنت متأكد أنك تريد حذف عنصر المحجوزات هذا ؟"

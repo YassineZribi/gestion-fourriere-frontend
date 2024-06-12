@@ -167,6 +167,11 @@ const common: Common = {
                 message: "Are you sure you want to delete this input?"
             }
         },
+        outputsActions: {
+            confirmationModal: {
+                message: "Are you sure you want to delete this output?"
+            }
+        },
         inputOperationLineTRow: {
             confirmationModal: {
                 message: "Are you sure you want to delete this input operation line?"

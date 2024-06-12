@@ -167,6 +167,11 @@ const common: Common = {
                 message: "Êtes-vous sûr de vouloir supprimer cette entrée ?"
             }
         },
+        outputsActions: {
+            confirmationModal: {
+                message: "Êtes-vous sûr de vouloir supprimer cette sortie ?"
+            }
+        },
         inputOperationLineTRow: {
             confirmationModal: {
                 message: "Êtes-vous sûr de vouloir supprimer cette ligne d'entrée ?"

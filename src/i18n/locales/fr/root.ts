@@ -47,6 +47,9 @@ const root: Root = {
     inputsManagement: {
         title: "Gestion des entrées"
     },
+    outputsManagement: {
+        title: "Gestion des sorties"
+    },
     upsertInput: {
         title: {
             onInsert: "Ajouter une nouvelle entrée",

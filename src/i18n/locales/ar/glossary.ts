@@ -120,7 +120,7 @@ const glossary: Glossary = {
         discountAmount: "قيمة الخصم",
         discountObservation: "ملاحظة الخصم",
         discount: "الخصم",
-        totalPaymentAmount: "المبلغ الإجمالي للدفع بعد الخصم",
+        totalPaymentAmount: "المبلغ الإجمالي للدفع",
         receiptNumber: "رقم الوصل",
         receiptDateTime: "تاريخ الوصل",
         receiptAmount: "مبلغ الوصل"

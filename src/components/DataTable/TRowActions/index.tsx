@@ -8,7 +8,7 @@ interface Props {
     startSection?: ReactNode
     actionSize?: CSSProperties['width']
     onShowDetailsBtnClick: () => void;
-    onUpdateBtnClick: () => void;
+    onUpdateBtnClick?: () => void;
     onConfirmBtnClick: () => void;
 }
 

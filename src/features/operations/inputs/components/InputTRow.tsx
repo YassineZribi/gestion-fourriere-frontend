@@ -2,10 +2,10 @@ import { Badge, DefaultMantineColor, Table, Text } from "@mantine/core"
 import Input from "../../../../types/Input"
 import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOption"
 import InputsActions from "./InputsActions"
-import { columnsWidth } from "../../shared/components/helpers"
 import { ProcessingStatusCamelCase, toCamelCaseStatus } from "../../../../types/ProcessingStatus"
 import { useTranslation } from "react-i18next"
 import { DateTimePicker } from "@mantine/dates"
+import { columnsWidth } from "./helpers"
 
 const inputStatusColors: Record<ProcessingStatusCamelCase, DefaultMantineColor> = {
     fullyOut: 'teal',
@@ -24,7 +24,7 @@ export default function InputTRow({ input, onDeleteInput }: Props) {
     return (
         <Table.Tr>
             <Table.Td style={{ width: columnsWidth.number }}>
-                <Text fz="sm" fw={500} ta={"end"} me="md">
+                <Text fz="sm" fw={500} ta={"center"} me="md">
                     {input.number}
                 </Text>
             </Table.Td>

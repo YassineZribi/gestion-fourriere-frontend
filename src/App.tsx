@@ -23,6 +23,7 @@ import OwnersManagement from "./pages/OwnersManagement"
 import UpsertInput from "./pages/UpsertInput"
 import InputsManagement from "./pages/InputsManagement"
 import InsertOutput from "./pages/InsertOutput"
+import OutputsManagement from "./pages/OutputsManagement"
 
 function App() {
   useAppDirection()
@@ -47,6 +48,7 @@ function App() {
           <Route path="/articles-management" element={<ArticlesManagement />} />
           <Route path="/sources-management" element={<SourcesManagement />} />
           <Route path="/inputs-management" element={<InputsManagement />} />
+          <Route path="/outputs-management" element={<OutputsManagement />} />
           {["/owners-management", "/owners-management/:tab"].map(path => (
             <Route key={path} path={path} element={<OwnersManagement />} />
           ))}
