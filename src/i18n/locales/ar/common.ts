@@ -14,7 +14,8 @@ const common: Common = {
         close: "إغلاق"
     },
     labels: {
-        noFilter: "بدون تصفية"
+        noFilter: "بدون تصفية",
+        advancedFilters: "تصفية متقدمة"
     },
     locales: {
         ar: "العربية",

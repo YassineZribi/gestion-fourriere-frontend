@@ -6,7 +6,7 @@ import { getFullResourcePath } from "../../../../lib/axios/api"
 import { PencilIcon, PhotoIcon, TrashIcon } from "@heroicons/react/24/outline"
 import Sup from "../../../../components/Sup"
 import ConfirmationModal from "../../../../components/ConfirmationModal"
-import { columnsWidth } from "./helpers"
+import { columnsWidth } from "../../shared/components/helpers"
 
 interface Props {
     inputOperationLine: InputOperationLineDto

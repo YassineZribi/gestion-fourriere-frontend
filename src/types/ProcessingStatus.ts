@@ -1,7 +1,11 @@
 import { ToCamelCase } from "../utils/utility-types";
 
+export const FULLY_OUT = "FULLY_OUT"
+export const PARTIALLY_OUT = "PARTIALLY_OUT"
+export const FULLY_IN = "FULLY_IN"
 
-export const processingStatuses = ["FULLY_OUT", "PARTIALLY_OUT", "FULLY_IN"] as const;
+
+export const processingStatuses = [FULLY_OUT, PARTIALLY_OUT, FULLY_IN] as const;
 
 
 export type ProcessingStatus = (typeof processingStatuses)[number];

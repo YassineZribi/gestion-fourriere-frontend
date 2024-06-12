@@ -51,6 +51,9 @@ type Root = {
             onUpdate: string
         }
     },
+    insertOutput: {
+        title: string
+    },
     notFound: {
         title: string,
         description: string,

@@ -4,8 +4,8 @@ import { z } from 'zod';
 import { useTranslation } from "react-i18next";
 import Owner from "../../../../types/Owner";
 import { ownerTabs, companies, individuals, OwnerSchemaType } from "../../../../pages/OwnersManagement";
-import CompaniesSelectionManagement from "./CompaniesSelectionManagement";
-import IndividualsSelectionManagement from "./IndividualsSelectionManagement";
+import CompaniesSelectionManagement from "../../companies/components/CompaniesSelectionManagement";
+import IndividualsSelectionManagement from "../../individuals/components/IndividualsSelectionManagement";
 import Company from "../../../../types/Company";
 import Individual from "../../../../types/Individual";
 

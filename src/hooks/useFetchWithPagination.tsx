@@ -3,7 +3,7 @@ import FetchWithPaginationResponse from '../types/FetchWithPaginationResponse';
 import { useSearchParams } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
 
-export default function useFetchWithPagination<T>(fetchFunction: (criteria: string) => Promise<AxiosResponse<FetchWithPaginationResponse<T>, any>>) {
+export default function useFetchWithPagination<T>(fetchFunction: (criteria: string) => Promise<AxiosResponse<FetchWithPaginationResponse<T>, any>>, advancedFilters: readonly string[] = []) {
     const [responseData, setResponseData] = useState<FetchWithPaginationResponse<T> | null>(null)
     const [searchParams, setSearchParams] = useSearchParams()
     const [isLoading, setLoading] = useState(false);
@@ -78,17 +78,50 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         const page = searchParams.get("page")
         if (page && page !== "1") newSearchParams["page"] = "1"
 
+        /* Keep advanced filter params (begin) */
+        for (const advancedFilter of advancedFilters) {
+            const value = searchParams.get(advancedFilter)
+            if (value?.trim()) {
+                newSearchParams[advancedFilter] = value
+            }
+        }
+        /* Keep advanced filter params (end) */
+
         setSearchParams(newSearchParams)
+    }
+
+    const handleClearAdvancedFilters = () => {
+        for (const property of advancedFilters) {
+            searchParams.delete(property)
+        }
+
+        const page = searchParams.get("page")
+        if (page && page !== "1") searchParams.set("page", "1")
+
+        setSearchParams(searchParams)
     }
 
     const getFilterParams = () => {
         const allFilterParams: { [key: string]: any } = {};
 
         for (const [key, value] of searchParams.entries()) {
-            if (key !== "page" && key !== "sort") allFilterParams[key] = value
+            if (key !== "page" && key !== "sort" && !advancedFilters.includes(key)) allFilterParams[key] = value
         }
 
         return allFilterParams
+    }
+
+    const getAdvancedFilterParams = () => {
+        const allAdvancedFilterParams: { [key: string]: any } = {};
+
+        for (const advancedFilter of advancedFilters) {
+            const value = searchParams.get(advancedFilter)
+            if (value?.trim()) {
+                allAdvancedFilterParams[advancedFilter] = value
+            }
+        }
+
+        return allAdvancedFilterParams
     }
 
     const getSearchParam = (key: string) => {
@@ -110,16 +143,32 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         return false
     }
 
+    const hasAdvancedFilters = () => {
+        const advancedFilters = getAdvancedFilterParams()
+        for (const property in advancedFilters) {
+            // console.log(`${property}: ${advancedFilters[property]}`);
+            if (advancedFilters[property]?.trim())
+                return true
+        }
+        return false
+    }
+
     const getSortList = () => {
         return searchParams.getAll("sort")
     }
 
 
     const [showFilters, setShowFilters] = useState(() => hasFilters());
+    const [showAdvancedFilters, setShowAdvancedFilters] = useState(() => hasAdvancedFilters());
 
     const toggleFilters = () => {
         setShowFilters(prev => !prev);
         handleClearFilters()
+    };
+
+    const toggleAdvancedFilters = () => {
+        setShowAdvancedFilters(prev => !prev);
+        handleClearAdvancedFilters()
     };
 
     // all queryParams (including : filterParams + sort + page + size)
@@ -127,6 +176,7 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
 
     const onCreateEntity = () => {
         handleClearFilters()
+        handleClearAdvancedFilters()
         const page = searchParams.get("page")
         if (page === null || page === "1") fetchData()
     }
@@ -147,12 +197,17 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         handleSort,
         handleFilter,
         showFilters,
+        showAdvancedFilters,
         toggleFilters,
+        toggleAdvancedFilters,
         handleClearFilters,
+        handleClearAdvancedFilters,
         hasFilters,
+        hasAdvancedFilters,
         setPageParam,
         getSearchParam,
         getFilterParams,
+        getAdvancedFilterParams,
         getSortList,
         
         onCreateEntity,

@@ -77,9 +77,9 @@ const glossary: Glossary = {
         nationalId: "National Id"
     },
     input: {
-        dateTime: "Date",
-        number: "Number",
-        year: "Year",
+        dateTime: "Input date",
+        number: "Input number",
+        year: "Input year",
         register: "Register",
         subRegister: "Sub-register",
         source: "Source",
@@ -109,6 +109,24 @@ const glossary: Glossary = {
         fullyOut: "Fully out",
         partiallyOut: "Partially out",
         fullyIn: "Fully in"
+    },
+    output: {
+        dateTime: "Output date",
+        number: "Output number",
+        year: "Output year",
+        nightCount: "Night count",
+        totalTransportFee: "Total transport fee",
+        totalPaymentAmountWithoutDiscount: "Total payment amount without discount",
+        discountAmount: "Discount amount",
+        discountObservation: "Discount observation",
+        discount: "Discount",
+        totalPaymentAmount: "Total payment amount",
+        receiptNumber: "Receipt number",
+        receiptDateTime: "Receipt date time",
+        receiptAmount: "Receipt amount"
+    },
+    outputOperationLine: {
+        quantity: "Quantity to be taken out"
     },
     currency: {
         tn: "TND"

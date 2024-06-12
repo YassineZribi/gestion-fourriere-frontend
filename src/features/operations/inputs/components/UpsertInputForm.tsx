@@ -25,7 +25,7 @@ import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Source from "../../../../types/Source";
 import SourceSelectOption from "../../../sources/components/SourceSelectOption";
 import UpsertSourceModal from "../../../sources/components/UpsertSourceModal";
-import OwnerSelectionModal from "./OwnerSelectionModal";
+import OwnerSelectionModal from "../../../owners/shared/components/OwnerSelectionModal";
 import Owner from "../../../../types/Owner";
 import ReadOnlyCombobox from "../../../../components/ReadOnlyCombobox";
 import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOption";
@@ -33,7 +33,8 @@ import { useNavigate } from "react-router-dom";
 import UpsertInputOperationLineModal, { InputOperationLineDto } from "./UpsertInputOperationLineModal";
 import Sup from "../../../../components/Sup";
 import InputOperationLineTRow from "./InputOperationLineTRow";
-import { columnsWidth } from "./helpers";
+import { columnsWidth } from "../../shared/components/helpers";
+import { SummaryTable } from "../../shared/components/SummaryTable";
 
 
 const schema = z.object({
@@ -328,6 +329,7 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                                 form.setFieldValue("subRegisterId", -1)
                                                 form.clearFieldError("subRegisterId")
                                             }}
+                                            shouldClearOption={!subRegister}
                                         >
                                             {
                                                 (subRegister) => <SubRegisterSelectOption subRegister={subRegister} />
@@ -342,37 +344,31 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                 </Flex>
                             </SimpleGrid>
                             <SimpleGrid cols={{ base: 1, lg: 2 }}>
-                                <DateTimePicker
-                                    label={tGlossary("input.dateTime")}
-                                    placeholder={tGlossary("input.dateTime")}
-                                    name="dateTime"
-                                    clearable
+                                <NumberInput
+                                    label={tGlossary("input.number")}
+                                    placeholder={tGlossary("input.number")}
+                                    name="number"
                                     withAsterisk
-                                    {...form.getInputProps('dateTime')}
-                                    valueFormat="DD/MM/YYYY - HH:mm"
+                                    {...form.getInputProps('number')}
                                 />
-                                <Flex gap="5">
-                                    <Box style={{ flexGrow: 1 }}>
-                                        <NumberInput
-                                            label={tGlossary("input.number")}
-                                            placeholder={tGlossary("input.number")}
-                                            name="number"
-                                            withAsterisk
-                                            {...form.getInputProps('number')}
-                                        />
-                                    </Box>
-                                    <Box style={{ flexGrow: 1 }}>
-                                        <NumberInput
-                                            leftSection={<MinusIcon style={{ width: rem(28), height: rem(28), rotate: "-60deg" }} />}
-                                            label={tGlossary("input.year")}
-                                            placeholder={tGlossary("input.year")}
-                                            name="year"
-                                            withAsterisk
-                                            {...form.getInputProps('year')}
-                                        />
-                                    </Box>
-                                </Flex>
+                                <NumberInput
+                                    leftSection={<MinusIcon style={{ width: rem(28), height: rem(28), rotate: "-60deg" }} />}
+                                    label={tGlossary("input.year")}
+                                    placeholder={tGlossary("input.year")}
+                                    name="year"
+                                    withAsterisk
+                                    {...form.getInputProps('year')}
+                                />
                             </SimpleGrid>
+                            <DateTimePicker
+                                label={tGlossary("input.dateTime")}
+                                placeholder={tGlossary("input.dateTime")}
+                                name="dateTime"
+                                clearable
+                                withAsterisk
+                                {...form.getInputProps('dateTime')}
+                                valueFormat="DD/MM/YYYY - HH:mm"
+                            />
                             <Flex gap="5">
                                 <Box style={{ flexGrow: 1 }}>
                                     <SearchableCombobox
@@ -541,28 +537,6 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                 }}
             />
         </>
-    )
-}
-
-interface SummaryTableProps {
-    title: string
-    children: ReactNode
-}
-
-function SummaryTable({ title, children }: SummaryTableProps) {
-    return (
-        <Box ps={{ base: 0, md: 'xl' }}>
-            <table style={{ tableLayout: 'fixed', width: "100%", margin: '25px auto 0' }}>
-                <tbody>
-                    <tr>
-                        <td style={{ width: "60%" }}><Text fw="700">{title}</Text></td>
-                        <td style={{ width: "40%", paddingLeft: 40 }}>
-                            <Text fw="700">{children}</Text>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </Box>
     )
 }
 

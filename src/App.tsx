@@ -22,6 +22,7 @@ import SourcesManagement from "./pages/SourcesManagement"
 import OwnersManagement from "./pages/OwnersManagement"
 import UpsertInput from "./pages/UpsertInput"
 import InputsManagement from "./pages/InputsManagement"
+import InsertOutput from "./pages/InsertOutput"
 
 function App() {
   useAppDirection()
@@ -55,6 +56,7 @@ function App() {
           {["/create-input", "/update-input/:id"].map(path => (
             <Route key={path} path={path} element={<UpsertInput />} />
           ))}
+          <Route path={"/create-output"} element={<InsertOutput />} />
         </Route>
         {/* <Route path="/dashboard" element={
           <PrivateRoute>

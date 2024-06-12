@@ -2,6 +2,7 @@ import { ActionIcon, Group, Table, rem } from "@mantine/core";
 import Th from "../Th";
 import { FunnelIcon } from "@heroicons/react/24/outline";
 import { ACTIONS_COLUMN_WIDTH } from "../../../utils/constants";
+import { CSSProperties } from "react";
 
 type SimpleTh = {
     style?: React.CSSProperties
@@ -22,11 +23,12 @@ interface Props {
     columns: Th[]
     sortList: string[]
     showFilters: boolean
+    actionsColumnWidth?: CSSProperties['width'],
     onSort: (name: string) => void
     onToggleFilters: () => void
 }
 
-export default function THead({ columns, sortList, showFilters, onSort, onToggleFilters }: Props) {
+export default function THead({ columns, sortList, showFilters, actionsColumnWidth = ACTIONS_COLUMN_WIDTH, onSort, onToggleFilters }: Props) {
 
     return (
         <Table.Thead>
@@ -55,7 +57,7 @@ export default function THead({ columns, sortList, showFilters, onSort, onToggle
                             )
                     ))
                 }
-                <Table.Th style={{ width: ACTIONS_COLUMN_WIDTH, paddingBottom: 0, paddingTop: 0 }}>
+                <Table.Th style={{ width: actionsColumnWidth, paddingBottom: 0, paddingTop: 0 }}>
                     <Group gap={0} justify="flex-end">
                         <ActionIcon variant={showFilters ? "light" : "subtle"} color="gray" onClick={onToggleFilters}>
                             <FunnelIcon style={{ width: rem(14), height: rem(14) }} />

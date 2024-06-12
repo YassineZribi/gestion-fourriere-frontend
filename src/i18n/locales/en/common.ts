@@ -14,7 +14,8 @@ const common: Common = {
         close: "Close"
     },
     labels: {
-        noFilter: "No filter"
+        noFilter: "No filter",
+        advancedFilters: "Advanced filters"
     },
     locales: {
         ar: "Arabic",

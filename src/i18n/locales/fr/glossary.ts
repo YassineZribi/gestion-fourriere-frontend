@@ -77,9 +77,9 @@ const glossary: Glossary = {
         nationalId: "CIN"
     },
     input: {
-        dateTime: "Date",
-        number: "Numéro",
-        year: "Année",
+        dateTime: "Date d'entrée",
+        number: "Numéro d'entrée",
+        year: "Année d'entrée",
         register: "Registre",
         subRegister: "Sous-registre",
         source: "Source",
@@ -109,6 +109,24 @@ const glossary: Glossary = {
         fullyOut: "Entièrement sortie",
         partiallyOut: "Partiellement sortie",
         fullyIn: "Entièrement entrée"
+    },
+    output: {
+        dateTime: "Date de sortie",
+        number: "Numéro de sortie",
+        year: "Année de sortie",
+        nightCount: "Nombre de nuits",
+        totalTransportFee: "Frais de transport totaux",
+        totalPaymentAmountWithoutDiscount: "Montant total à payer sans remise",
+        discountAmount: "Montant de la remise",
+        discountObservation: "Observation de la remise",
+        discount: "Remise",
+        totalPaymentAmount: "Montant total à payer après remise",
+        receiptNumber: "Numéro de la quittance",
+        receiptDateTime: "Date de la quittance",
+        receiptAmount: "Montant de la quittance"
+    },
+    outputOperationLine: {
+        quantity: "Quantité à sortir"
     },
     currency: {
         tn: "TND"

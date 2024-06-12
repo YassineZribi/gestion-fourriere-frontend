@@ -16,7 +16,12 @@ import useFetchOwner from '../../features/owners/shared/hooks/useFetchOwner';
 import { useNavigate } from 'react-router-dom';
 import InputsFilterTRow from '../../features/operations/inputs/components/InputsFilterTRow';
 import InputTRow from '../../features/operations/inputs/components/InputTRow';
-import { columnsWidth } from '../../features/operations/inputs/components/helpers';
+import { columnsWidth } from '../../features/operations/shared/components/helpers';
+import InputsAdvancedFilters from '../../features/operations/inputs/components/InputsAdvancedFilters';
+import useFetchRegister from '../../features/registers/hooks/useFetchRegister';
+import AdvancedFiltersCollapse from '../../features/operations/inputs/components/AdvancedFiltersCollapse';
+
+export const advancedInputFilterProperties = ["startNumber", "endNumber", "startDate", "endDate", "description", "registerId", "sourceId"] as const;
 
 const thColumns = [
     {
@@ -32,9 +37,6 @@ const thColumns = [
     {
         name: "dateTime",
         label: "dateTime"
-    },
-    {
-        label: "source"
     },
     {
         label: "owner"
@@ -61,21 +63,27 @@ export default function InputsManagement() {
         handleSort,
         handleFilter,
         showFilters,
+        showAdvancedFilters,
         toggleFilters,
+        toggleAdvancedFilters,
         handleClearFilters,
+        handleClearAdvancedFilters,
         hasFilters,
+        hasAdvancedFilters,
         setPageParam,
         getSearchParam,
         getFilterParams,
+        getAdvancedFilterParams,
         getSortList,
         onCreateEntity: onCreateInput,
         onUpdateEntity: onUpdateInput,
         onDeleteEntity: onDeleteInput
 
-    } = useFetchWithPagination<Input>(inputsService.getAllInputsByCriteria);
+    } = useFetchWithPagination<Input>(inputsService.getAllInputsByCriteria, advancedInputFilterProperties);
 
     const { source: selectedSource } = useFetchSource(getSearchParam('sourceId'))
     const { owner: selectedOwner } = useFetchOwner(getSearchParam('ownerId'))
+    const { register: selectedRegister } = useFetchRegister(getSearchParam('registerId'))
 
 
     return (
@@ -86,6 +94,20 @@ export default function InputsManagement() {
             {!responseData && isLoading && <Center><Loader size={50} /></Center>}
             {responseData && (
                 <>
+                    <AdvancedFiltersCollapse
+                        showFilters={showAdvancedFilters}
+                        onToggleFilters={toggleAdvancedFilters}
+                    >
+                        <InputsAdvancedFilters
+                            selectedRegister={selectedRegister}
+                            selectedSource={selectedSource}
+                            filters={getAdvancedFilterParams()}
+                            hasFilters={hasAdvancedFilters()}
+                            onFilter={handleFilter}
+                            onClearFilters={handleClearAdvancedFilters}
+                        />
+                    </AdvancedFiltersCollapse>
+                    <Space h="lg" />
                     <DataTableControlPanel
                         onAddBtnClick={() => navigate('/create-input')}
                     />
@@ -94,6 +116,7 @@ export default function InputsManagement() {
                             columns={thColumnsWithTranslation}
                             sortList={getSortList()}
                             showFilters={showFilters}
+                            actionsColumnWidth={columnsWidth.actions}
                             onSort={handleSort}
                             onToggleFilters={toggleFilters}
                         />
@@ -101,7 +124,6 @@ export default function InputsManagement() {
                             showFilters={showFilters}
                             filterRow={
                                 <InputsFilterTRow
-                                    selectedSource={selectedSource}
                                     selectedOwner={selectedOwner}
                                     filters={getFilterParams()}
                                     hasFilters={hasFilters()}

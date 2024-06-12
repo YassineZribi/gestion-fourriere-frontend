@@ -14,7 +14,8 @@ const common: Common = {
         close: "Fermer"
     },
     labels: {
-        noFilter: "Pas de filtre"
+        noFilter: "Pas de filtre",
+        advancedFilters: "Filtres avancés"
     },
     locales: {
         ar: "Arabe",
@@ -177,7 +178,7 @@ const common: Common = {
             },
             totalQuantity: "Quantité totale",
             totalNightlyAmount: "Montant total / nuit",
-            totalTransportFee: "Total des frais de transport / nuit"
+            totalTransportFee: "Frais de transport totaux / nuit"
         },
         dataTablePagination: {
             summary: "{{start}} - {{end}} de {{total}}"

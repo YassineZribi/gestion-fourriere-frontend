@@ -1,34 +1,8 @@
-export function formatDate(date: Date | string) {
-    const d = typeof (date) === "string" ? new Date(date) : date
+export function dateDiffInDays(a: Date, b: Date) {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+    // Discard the time and time-zone information.
+    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
-    const options: Intl.DateTimeFormatOptions = {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    };
-
-    const formattedDate = new Intl.DateTimeFormat('fr-FR', options).format(d);
-
-    return formattedDate;
-
-}
-
-export function formatTime(date: Date | string) {
-    const d = typeof (date) === "string" ? new Date(date) : date
-
-    const hours = d.getUTCHours().toString().padStart(2, '0');
-    const minutes = d.getUTCMinutes().toString().padStart(2, '0');
-
-    const formattedTime = `${hours}:${minutes}`;
-
-    return formattedTime;
-}
-
-export function formatDateTime(date: Date | string) {
-    const formattedDate = formatDate(date)
-    const formattedTime = formatTime(date);
-
-    const formattedDateTime = `${formattedDate} - ${formattedTime}`;
-
-    return formattedDateTime;
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }

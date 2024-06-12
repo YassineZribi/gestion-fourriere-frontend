@@ -12,7 +12,8 @@ type Common = {
         close: string
     },
     labels: {
-        noFilter: string
+        noFilter: string,
+        advancedFilters: string
     },
     locales: {
         ar: string,

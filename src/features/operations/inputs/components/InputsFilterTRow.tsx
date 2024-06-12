@@ -2,22 +2,17 @@ import { ComboboxItem, Group, Table } from "@mantine/core";
 import ClearableInput from "../../../../components/ClearableInput";
 import ClearFiltersButton from "../../../../components/DataTable/ClearFiltersButton";
 import { useTranslation } from "react-i18next";
-import SearchableCombobox from "../../../../components/SearchableCombobox";
-import sourcesService from '../../../sources/services'
 import ReadOnlyCombobox from "../../../../components/ReadOnlyCombobox";
 import useModal from "../../../../hooks/useModal";
 import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOption";
-import OwnerSelectionModal from "./OwnerSelectionModal";
+import OwnerSelectionModal from "../../../owners/shared/components/OwnerSelectionModal";
 import Owner from "../../../../types/Owner";
-import Source from "../../../../types/Source";
-import SourceSelectOption from "../../../sources/components/SourceSelectOption";
 import { useMemo, useState } from "react";
 import ClearableDatePickerInput from "../../../../components/ClearableDatePickerInput";
 import { processingStatuses as inputStatuses, toCamelCaseStatus } from "../../../../types/ProcessingStatus";
 import ClearableSelect from "../../../../components/ClearableSelect";
 
 interface Props {
-    selectedSource: Source | null
     selectedOwner: Owner | null
     filters: { [key: string]: string | undefined }
     hasFilters: boolean
@@ -25,7 +20,7 @@ interface Props {
     onClearFilters: () => void
 }
 
-export default function InputsFilterTRow({ selectedSource, selectedOwner, filters, hasFilters, onFilter, onClearFilters }: Props) {
+export default function InputsFilterTRow({ selectedOwner, filters, hasFilters, onFilter, onClearFilters }: Props) {
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
     const inputStatusesFilteringData: ComboboxItem[] = useMemo(() => inputStatuses.map(status => ({
@@ -67,26 +62,6 @@ export default function InputsFilterTRow({ selectedSource, selectedOwner, filter
                         onChange={(newValue) => onFilter("dateTime", newValue?.toISOString() || '')}
                         defaultValue={filters["dateTime"] ? new Date(filters["dateTime"]) : undefined}
                     />
-                </Table.Td>
-                <Table.Td>
-                    <SearchableCombobox
-                        selectedEntity={selectedSource}
-                        placeholder={t("labels.noFilter")}
-                        variant="filled"
-                        onFetch={sourcesService.getAllSourcesByName}
-                        onSelectOption={newSource => {
-                            if (newSource?.id)
-                                onFilter("sourceId", newSource.id.toString())
-                        }}
-                        onClear={() => {
-                            onFilter("sourceId", "")
-                        }}
-                        shouldClearOption={!filters["sourceId"]}
-                    >
-                        {
-                            (source) => <SourceSelectOption source={source} />
-                        }
-                    </SearchableCombobox>
                 </Table.Td>
                 <Table.Td>
                     <ReadOnlyCombobox

@@ -4,11 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
     type?: HTMLInputTypeAttribute
+    placeholder?: string
+    label?: string
     defaultValue: string | undefined
+    variant?: 'default' | 'filled' | 'unstyled'
     onChange: (newValue: string) => void;
 }
 
-export default function ClearableInput({ type = 'text', defaultValue, onChange }: Props) {
+export default function ClearableInput({ type = 'text', label, placeholder, defaultValue, variant ="filled", onChange }: Props) {
   const [value, setValue] = useState<string>(defaultValue || '');
   const { t } = useTranslation()
 
@@ -24,11 +27,11 @@ export default function ClearableInput({ type = 'text', defaultValue, onChange }
   }, [defaultValue])
 
   return (
-    <>
+    <Input.Wrapper label={label}>
       <Input
-        placeholder={t("labels.noFilter")}
+        placeholder={placeholder ?? t("labels.noFilter")}
         type={type}
-        variant='filled'
+        variant={variant}
         value={value}
         onChange={(event) => handleChange(event.currentTarget.value)}
         rightSectionPointerEvents="all"
@@ -40,6 +43,6 @@ export default function ClearableInput({ type = 'text', defaultValue, onChange }
           />
         }
       />
-    </>
+    </Input.Wrapper>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text } from "@mantine/core";
+import { ActionIcon, Text, rem } from "@mantine/core";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import InfoDetailsModal from "../../../../components/InfoDetailsModal";
 import TRowActions from "../../../../components/DataTable/TRowActions";
@@ -11,6 +11,8 @@ import Input from "../../../../types/Input";
 import { useTranslation } from "react-i18next";
 import InputDetails from "./InputDetails";
 import { useNavigate } from "react-router-dom";
+import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
+import { FULLY_OUT } from "../../../../types/ProcessingStatus";
 
 interface Props {
     selectedInput: Input
@@ -21,9 +23,9 @@ export default function InputsActions({ selectedInput, onDeleteInput }: Props) {
     const { t } = useTranslation()
     const navigate = useNavigate()
 
-    const [isInputDetailsModalOpen, {open: openInputDetailsModal, close: closeInputDetailsModal}] = useModal()
+    const [isInputDetailsModalOpen, { open: openInputDetailsModal, close: closeInputDetailsModal }] = useModal()
 
-    const [isConfirmationModalOpen, {open: openConfirmationModal, close: closeConfirmationModal}] = useModal()
+    const [isConfirmationModalOpen, { open: openConfirmationModal, close: closeConfirmationModal }] = useModal()
     const [isDeletingInputLoading, setDeletingInputLoading] = useState(false)
 
     const confirmDeletingEmployee = async () => {
@@ -44,6 +46,13 @@ export default function InputsActions({ selectedInput, onDeleteInput }: Props) {
     return (
         <>
             <TRowActions
+                startSection={
+                    selectedInput.status !== FULLY_OUT && (
+                        <ActionIcon variant="subtle" color="teal" onClick={() => navigate("/create-output?inputId=" + selectedInput.id) }>
+                            <ArrowsRightLeftIcon style={{ width: rem(14), height: rem(14) }} />
+                        </ActionIcon>
+                    )
+                }
                 onShowDetailsBtnClick={openInputDetailsModal}
                 onUpdateBtnClick={() => navigate("/update-input/" + selectedInput.id)}
                 onConfirmBtnClick={openConfirmationModal}

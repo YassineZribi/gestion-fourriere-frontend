@@ -108,6 +108,24 @@ type Glossary = {
         partiallyOut: string,
         fullyIn: string
     },
+    output: {
+        dateTime: string,
+        number: string,
+        year: string,
+        nightCount: string,
+        totalTransportFee: string,
+        totalPaymentAmountWithoutDiscount: string,
+        discountAmount: string,
+        discountObservation: string,
+        discount: string,
+        totalPaymentAmount: string,
+        receiptNumber: string,
+        receiptDateTime: string,
+        receiptAmount: string
+    },
+    outputOperationLine: {
+        quantity: string
+    },
     currency: {
         tn: string
     },

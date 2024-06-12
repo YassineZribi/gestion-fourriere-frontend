@@ -23,6 +23,10 @@ class InputsService {
         return PRIVATE_API.patch<Input>("/operations/inputs/" + id, formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
     }
 
+    updateInputOwner(id: number, data: { newOwnerId: number }) {
+        return PRIVATE_API.patch<Input>(`/operations/inputs/${id}/owner`, data)
+    }
+
     deleteInput(id: number) {
         return PRIVATE_API.delete<Input>("/operations/inputs/" + id)
     }

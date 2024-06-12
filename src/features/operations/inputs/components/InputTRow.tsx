@@ -1,12 +1,11 @@
-import { Avatar, Badge, DefaultMantineColor, Group, Table, Text } from "@mantine/core"
-import { ACTIONS_COLUMN_WIDTH } from "../../../../utils/constants"
+import { Badge, DefaultMantineColor, Table, Text } from "@mantine/core"
 import Input from "../../../../types/Input"
 import OwnerSelectOption from "../../../owners/shared/components/OwnerSelectOption"
 import InputsActions from "./InputsActions"
-import { columnsWidth } from "./helpers"
-import { formatDateTime } from "../../../../utils/date"
+import { columnsWidth } from "../../shared/components/helpers"
 import { ProcessingStatusCamelCase, toCamelCaseStatus } from "../../../../types/ProcessingStatus"
 import { useTranslation } from "react-i18next"
+import { DateTimePicker } from "@mantine/dates"
 
 const inputStatusColors: Record<ProcessingStatusCamelCase, DefaultMantineColor> = {
     fullyOut: 'teal',
@@ -32,18 +31,17 @@ export default function InputTRow({ input, onDeleteInput }: Props) {
 
             <Table.Td style={{ width: columnsWidth.year }}>
                 <Text fz="sm" fw={500}>
-                    <span style={{opacity: 0.6, fontSize: 18}}>/</span> {input.year}
+                    <span style={{ opacity: 0.6, fontSize: 18 }}>/</span> {input.year}
                 </Text>
             </Table.Td>
 
             <Table.Td>
-                <Text fz="sm" fw={400} fs="italic">
-                    {formatDateTime(input.dateTime)}
-                </Text>
-            </Table.Td>
-
-            <Table.Td>
-                <Badge c="violet" variant="light" style={{ textTransform: 'initial', maxWidth: "100%" }} title={input.source.name}>{input.source.name}</Badge>
+                    <DateTimePicker
+                        variant="unstyled"
+                        valueFormat="DD/MM/YYYY - HH:mm"
+                        value={new Date(input.dateTime)}
+                        readOnly
+                    />
             </Table.Td>
 
             <Table.Td>
@@ -56,7 +54,7 @@ export default function InputTRow({ input, onDeleteInput }: Props) {
                 </Badge>
             </Table.Td>
 
-            <Table.Td style={{ width: ACTIONS_COLUMN_WIDTH }}>
+            <Table.Td style={{ width: columnsWidth.actions }}>
                 <InputsActions
                     selectedInput={input}
                     onDeleteInput={onDeleteInput}

@@ -53,7 +53,7 @@ const glossary: Glossary = {
     },
     article: {
         name: "الإسم",
-        transportFee: "تكاليف النقل",
+        transportFee: "رسوم النقل",
         photo: "الصورة",
         articleFamily: "صنف المحجوزات",
     },
@@ -77,9 +77,9 @@ const glossary: Glossary = {
         nationalId: "رقم ب.ت.و"
     },
     input: {
-        dateTime: "التاريخ",
-        number: "الرقم",
-        year: "السَّنة",
+        dateTime: "تاريخ الحجز",
+        number: "رقم الحجز",
+        year: "سنة الحجز",
         register: "السِّجل",
         subRegister: "السِّجل الفرعي",
         source: "السُّلطة الحاجزة",
@@ -97,7 +97,7 @@ const glossary: Glossary = {
         quantity: "الكمية",
         nightlyAmount: "المبلغ / الليلة",
         subTotalNightlyAmount: "الإجمالي الفرعي / الليلة",
-        transportFee: "تكاليف النقل",
+        transportFee: "رسوم النقل",
         remainingQuantity: "الكمية المتبقية",
         status: "الحالة",
         description: "الوصف",
@@ -109,6 +109,24 @@ const glossary: Glossary = {
         fullyOut: "خروج كامل",
         partiallyOut: "خروج جزئي",
         fullyIn: "في الداخل"
+    },
+    output: {
+        dateTime: "تاريخ الخروج",
+        number: "رقم الخروج",
+        year: "سنة الخروج",
+        nightCount: "عدد الليالي",
+        totalTransportFee: "إجمالي رسوم النقل",
+        totalPaymentAmountWithoutDiscount: "المبلغ الإجمالي للدفع بدون خصم",
+        discountAmount: "قيمة الخصم",
+        discountObservation: "ملاحظة الخصم",
+        discount: "الخصم",
+        totalPaymentAmount: "المبلغ الإجمالي للدفع بعد الخصم",
+        receiptNumber: "رقم الوصل",
+        receiptDateTime: "تاريخ الوصل",
+        receiptAmount: "مبلغ الوصل"
+    },
+    outputOperationLine: {
+        quantity: "الكمّية المراد استخراجها"
     },
     currency: {
         tn: "د.ت"

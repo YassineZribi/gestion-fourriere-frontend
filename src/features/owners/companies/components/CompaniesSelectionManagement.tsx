@@ -1,6 +1,6 @@
 
 import { Center, Loader } from '@mantine/core';
-import companiesService from '../../../owners/companies/services'
+import companiesService from '../services'
 import DataTablePagination from '../../../../components/DataTable/DataTablePagination';
 import DataTableControlPanel from '../../../../components/DataTable/DataTableControlPanel';
 import THead, { type Th } from '../../../../components/DataTable/THead';
@@ -9,9 +9,9 @@ import DataTable from '../../../../components/DataTable';
 import useModal from '../../../../hooks/useModal';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-import UpsertCompanyModal from '../../../owners/companies/components/UpsertCompanyModal';
-import CompaniesFilterTRow from '../../../owners/companies/components/CompaniesFilterTRow';
-import CompanyTRow from '../../../owners/companies/components/CompanyTRow';
+import UpsertCompanyModal from './UpsertCompanyModal';
+import CompaniesFilterTRow from './CompaniesFilterTRow';
+import CompanyTRow from './CompanyTRow';
 import Company from '../../../../types/Company';
 import { thColumns as inheritedThColumns } from '../../../../pages/OwnersManagement/CompaniesManagement';
 import { LINE_SELECTION_COLUMN_WIDTH } from '../../../../utils/constants';

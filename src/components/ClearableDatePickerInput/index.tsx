@@ -5,15 +5,18 @@ import { DatePickerInput, DateValue } from '@mantine/dates';
 
 interface Props {
   defaultValue: Date | undefined
+  placeholder?: string
+  label?: string
+  variant?: 'default' | 'filled' | 'unstyled'
   onChange: (newValue: Date | null) => void;
 }
 
-export default function ClearableDatePickerInput({ defaultValue, onChange }: Props) {
+export default function ClearableDatePickerInput({ label, placeholder, defaultValue, variant ="filled", onChange }: Props) {
   const [value, setValue] = useState<Date | null>(defaultValue ? defaultValue : null);
 
   const { t } = useTranslation()
 
-  const handleChange2 = (newValue: DateValue) => {
+  const handleChange = (newValue: DateValue) => {
       setValue(newValue)
       onChange(newValue)
     
@@ -28,15 +31,16 @@ export default function ClearableDatePickerInput({ defaultValue, onChange }: Pro
   return (
     <>
       <DatePickerInput
-        placeholder={t("labels.noFilter")}
-        variant='filled'
+        placeholder={placeholder ?? t("labels.noFilter")}
+        label={label}
+        variant={variant}
         value={value}
-        onChange={handleChange2}
+        onChange={handleChange}
         rightSectionPointerEvents="all"
         rightSection={
           <CloseButton
             aria-label="Clear input"
-            onClick={() => handleChange2(null)}
+            onClick={() => handleChange(null)}
             style={{ display: value ? undefined : 'none' }}
           />
         }

@@ -4,7 +4,7 @@ import inputsService from "../services"
 import Input from "../../../../types/Input";
 
 export default function useFetchInput(id?: string | number | null) {
-    const [input, setinput] = useState<Input | null>(null)
+    const [input, setInput] = useState<Input | null>(null)
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState('');
 
@@ -13,7 +13,7 @@ export default function useFetchInput(id?: string | number | null) {
         setLoading(true)
         inputsService.getInputById(id)
             .then(res => {
-                setinput(res.data)
+                setInput(res.data)
             })
             .catch(err => {
                 setError(err.message)
