@@ -24,10 +24,10 @@ const root: Root = {
         title: "إدارة المستودعات"
     },
     registersManagement: {
-        title: "إدارة السِّجلّات"
+        title: "إدارة السِّجلاَّت"
     },
     subRegistersManagement: {
-        title: "إدارة السِّجلّات الفرعية"
+        title: "إدارة السِّجلاَّت الفرعية"
     },
     measurementUnitsManagement: {
         title: "إدارة وحدات القياس"
@@ -45,10 +45,10 @@ const root: Root = {
         title: "إدارة مالكي المحجوزات"
     },
     inputsManagement: {
-        title: "إدارة الحجوزات"
+        title: "إدارة عمليات الدخول"
     },
     outputsManagement: {
-        title: "إدارة المخرجات"
+        title: "إدارة عمليات الخروج"
     },
     upsertInput: {
         title: {

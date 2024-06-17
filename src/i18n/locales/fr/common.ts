@@ -22,6 +22,35 @@ const common: Common = {
         en: "Anglais",
         fr: "Français"
     },
+    menu: {
+        dashboard: "Tableau de bord",
+        myProfile: "Mon profil",
+        institution: "Établissement",
+        basicData: {
+            index: "Données de base",
+            warehouses: "Gestion des dépôts",
+            registers: "Gestion des registres",
+            subRegisters: "Gestion des sous-registres",
+            measurementUnits: "Gestion des unités de mesure",
+            articleFamilies: "Gestion des familles d'articles",
+            articles: "Gestion des articles",
+            sources: "Gestion des sources",
+            owners: "Gestion des propriétaires",
+        },
+        operations: {
+            index: "Opérations",
+            inputs: "Gestion des entrées",
+            outputs: "Gestion des sorties"
+        },
+        administration: {
+            index: "Administration",
+            userAccountsManagement: "Gestion des comptes utilisateurs"
+        },
+        security: {
+            index: "Sécurité",
+            changePassword: "Changer le mot de passe"
+        }
+    },
     components: {
         loginForm: {
             forgotPassword: "Mot de passe oublié ?"

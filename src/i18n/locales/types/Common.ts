@@ -20,6 +20,35 @@ type Common = {
         en: string,
         fr: string
     },
+    menu: {
+        dashboard: string,
+        myProfile: string,
+        institution: string,
+        basicData: {
+            index: string,
+            warehouses: string,
+            registers: string,
+            subRegisters: string,
+            measurementUnits: string,
+            articleFamilies: string,
+            articles: string,
+            sources: string,
+            owners: string,
+        },
+        operations: {
+            index: string,
+            inputs: string,
+            outputs: string
+        },
+        administration: {
+            index: string,
+            userAccountsManagement: string
+        },
+        security: {
+            index: string,
+            changePassword: string
+        }
+    },
     components: {
         loginForm: {
             forgotPassword: string

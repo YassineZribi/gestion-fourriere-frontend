@@ -22,6 +22,35 @@ const common: Common = {
         en: "الإنجليزية",
         fr: "الفرنسية"
     },
+    menu: {
+        dashboard: "لوحة القيادة",
+        myProfile: "ملفي الشخصي",
+        institution: "المؤسسة",
+        basicData: {
+            index: "البيانات الأساسية",
+            warehouses: "إدارة المستودعات",
+            registers: "إدارة السِّجلاَّت",
+            subRegisters: "إدارة السِّجلاَّت الفرعية",
+            measurementUnits: "إدارة وحدات القياس",
+            articleFamilies: "إدارة أصناف المحجوزات",
+            articles: "إدارة المحجوزات",
+            sources: "إدارة سُلطات الحجز",
+            owners: "إدارة مالكي المحجوزات",
+        },
+        operations: {
+            index: "العمليات",
+            inputs: "إدارة عمليات الدخول",
+            outputs: "إدارة عمليات الخروج"
+        },
+        administration: {
+            index: "الإدارة",
+            userAccountsManagement: "إدارة حسابات المستخدمين"
+        },
+        security: {
+            index: "حماية",
+            changePassword: "تغيير كلمة المرور"
+        }
+    },    
     components: {
         loginForm: {
             forgotPassword: "نسيت كلمة المرور؟"

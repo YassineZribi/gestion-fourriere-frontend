@@ -1,78 +1,81 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollArea, Group, Box, Collapse, ThemeIcon, Text, UnstyledButton, rem, AppShell, useDirection } from '@mantine/core';
 import { AdjustmentsVerticalIcon, ArrowsRightLeftIcon, BuildingLibraryIcon, ChartPieIcon, ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, LockClosedIcon, UserIcon } from '@heroicons/react/24/outline'
 import classes from './index.module.css';
 import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
+import { useTranslation } from 'react-i18next';
 
-type SimpleMenuItem = {
+type GenericMenuItem = {
     label: string;
     icon: React.FC<any>;
+}
+
+type SimpleMenuItem = GenericMenuItem & {
     link: string;
     tabs?: string[];
 }
 
-type ComplexMenuItem = {
-    label: string;
-    icon: React.FC<any>;
+type ComplexMenuItem = GenericMenuItem & {
     initiallyOpened?: boolean;
     links: Omit<SimpleMenuItem, "icon">[]
 }
 
 type MenuItem = SimpleMenuItem | ComplexMenuItem
 
-const mockdata: MenuItem[] = [
-    { label: 'Dashboard', icon: ChartPieIcon, link: '/dashboard' },
-    { label: 'Profile', icon: UserIcon, link: '/profile' },
-    { label: 'Institution', icon: BuildingLibraryIcon, link: '/institution', tabs: ["profile", "chart"] },
-    {
-        label: 'Basic data',
-        icon: ClipboardDocumentListIcon,
-        initiallyOpened: false,
-        links: [
-            { label: 'Warehouses management', link: '/warehouses-management' },
-            { label: 'Registers management', link: '/registers-management' },
-            { label: 'Sub-registers management', link: '/sub-registers-management' },
-            { label: 'Measurement units management', link: '/measurement-units-management' },
-            { label: 'Article families management', link: '/article-families-management' },
-            { label: 'Articles management', link: '/articles-management' },
-            { label: 'Sources management', link: '/sources-management' },
-            { label: 'Owners management', link: '/owners-management', tabs: ["individuals", "companies"] }
-        ],
-    },
-    {
-        label: 'Operations',
-        icon: ArrowsRightLeftIcon,
-        initiallyOpened: false,
-        links: [
-            { label: 'Inputs management', link: '/inputs-management' },
-            { label: 'Outputs management', link: '/outputs-management' }
-        ],
-    },
-    {
-        label: 'Administration',
-        icon: AdjustmentsVerticalIcon,
-        initiallyOpened: false,
-        links: [
-            { label: 'User accounts management', link: '/user-accounts-management' },
-        ],
-    },
-    {
-        label: 'Security',
-        icon: LockClosedIcon,
-        initiallyOpened: false,
-        links: [
-            { label: 'Change password', link: '/change-password' },
-        ],
-    }
-];
-
 function isSimpleMenuItem(item: MenuItem): item is SimpleMenuItem {
     return (item as SimpleMenuItem).link !== undefined;
 }
 
 export function NavbarMain() {
-    const links = mockdata.map((item) => {
+    const { t } = useTranslation()
+    const menuData: MenuItem[] = useMemo(() => [
+        { label: t('menu.dashboard'), icon: ChartPieIcon, link: '/dashboard' },
+        { label: t('menu.myProfile'), icon: UserIcon, link: '/profile' },
+        { label: t('menu.institution'), icon: BuildingLibraryIcon, link: '/institution', tabs: ["profile", "chart"] },
+        {
+            label: t('menu.basicData.index'),
+            icon: ClipboardDocumentListIcon,
+            initiallyOpened: false,
+            links: [
+                { label: t('menu.basicData.warehouses'), link: '/warehouses-management' },
+                { label: t('menu.basicData.registers'), link: '/registers-management' },
+                { label: t('menu.basicData.subRegisters'), link: '/sub-registers-management' },
+                { label: t('menu.basicData.measurementUnits'), link: '/measurement-units-management' },
+                { label: t('menu.basicData.articleFamilies'), link: '/article-families-management' },
+                { label: t('menu.basicData.articles'), link: '/articles-management' },
+                { label: t('menu.basicData.sources'), link: '/sources-management' },
+                { label: t('menu.basicData.owners'), link: '/owners-management', tabs: ["individuals", "companies"] }
+            ],
+        },
+        {
+            label: t('menu.operations.index'),
+            icon: ArrowsRightLeftIcon,
+            initiallyOpened: false,
+            links: [
+                { label: t('menu.operations.inputs'), link: '/inputs-management' },
+                { label: t('menu.operations.outputs'), link: '/outputs-management' }
+            ],
+        },
+        {
+            label: t('menu.administration.index'),
+            icon: AdjustmentsVerticalIcon,
+            initiallyOpened: false,
+            links: [
+                { label: t('menu.administration.userAccountsManagement'), link: '/user-accounts-management' },
+            ],
+        },
+        {
+            label: t('menu.security.index'),
+            icon: LockClosedIcon,
+            initiallyOpened: false,
+            links: [
+                { label: t('menu.security.changePassword'), link: '/change-password' },
+            ],
+        }
+    ], [t]);
+
+    const links = useMemo(() => menuData.map((item) => {
         if (isSimpleMenuItem(item)) {
             // menuItem is of type SimpleMenuItem
             console.log("menuItem is of type SimpleMenuItem");
@@ -82,7 +85,7 @@ export function NavbarMain() {
         // menuItem is of type ComplexMenuItem
         console.log("menuItem is of type ComplexMenuItem");
         return <LinksGroup {...item} key={item.label} />
-    });
+    }), [menuData]);
 
     return (
         <AppShell.Section className={classes.links} grow my="md" component={ScrollArea}>
