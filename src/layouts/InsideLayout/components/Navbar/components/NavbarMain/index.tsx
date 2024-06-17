@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ScrollArea, Group, Box, Collapse, ThemeIcon, Text, UnstyledButton, rem, AppShell, useDirection } from '@mantine/core';
-import { AdjustmentsVerticalIcon, ChartPieIcon, ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, LockClosedIcon, PresentationChartBarIcon, UserIcon } from '@heroicons/react/24/outline'
+import { AdjustmentsVerticalIcon, ArrowsRightLeftIcon, BuildingLibraryIcon, ChartPieIcon, ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, LockClosedIcon, UserIcon } from '@heroicons/react/24/outline'
 import classes from './index.module.css';
 import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
@@ -9,6 +9,7 @@ type SimpleMenuItem = {
     label: string;
     icon: React.FC<any>;
     link: string;
+    tabs?: string[];
 }
 
 type ComplexMenuItem = {
@@ -23,12 +24,12 @@ type MenuItem = SimpleMenuItem | ComplexMenuItem
 const mockdata: MenuItem[] = [
     { label: 'Dashboard', icon: ChartPieIcon, link: '/dashboard' },
     { label: 'Profile', icon: UserIcon, link: '/profile' },
+    { label: 'Institution', icon: BuildingLibraryIcon, link: '/institution', tabs: ["profile", "chart"] },
     {
         label: 'Basic data',
         icon: ClipboardDocumentListIcon,
-        initiallyOpened: true,
+        initiallyOpened: false,
         links: [
-            { label: 'Institution', link: '/institution' },
             { label: 'Warehouses management', link: '/warehouses-management' },
             { label: 'Registers management', link: '/registers-management' },
             { label: 'Sub-registers management', link: '/sub-registers-management' },
@@ -36,12 +37,22 @@ const mockdata: MenuItem[] = [
             { label: 'Article families management', link: '/article-families-management' },
             { label: 'Articles management', link: '/articles-management' },
             { label: 'Sources management', link: '/sources-management' },
+            { label: 'Owners management', link: '/owners-management', tabs: ["individuals", "companies"] }
+        ],
+    },
+    {
+        label: 'Operations',
+        icon: ArrowsRightLeftIcon,
+        initiallyOpened: false,
+        links: [
+            { label: 'Inputs management', link: '/inputs-management' },
+            { label: 'Outputs management', link: '/outputs-management' }
         ],
     },
     {
         label: 'Administration',
-        icon: PresentationChartBarIcon,
-        initiallyOpened: true,
+        icon: AdjustmentsVerticalIcon,
+        initiallyOpened: false,
         links: [
             { label: 'User accounts management', link: '/user-accounts-management' },
         ],
@@ -49,12 +60,11 @@ const mockdata: MenuItem[] = [
     {
         label: 'Security',
         icon: LockClosedIcon,
-        initiallyOpened: true,
+        initiallyOpened: false,
         links: [
             { label: 'Change password', link: '/change-password' },
         ],
-    },
-    { label: 'Settings', icon: AdjustmentsVerticalIcon, link: '/settings' },
+    }
 ];
 
 function isSimpleMenuItem(item: MenuItem): item is SimpleMenuItem {
@@ -93,7 +103,7 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, links }: LinksG
     const items = links.map((link) => (
         <Text
             component={Link}
-            className={classNames(classes.link, { [classes.active]: pathname === link.link })}
+            className={classNames(classes.link, { [classes.active]: pathname === link.link || link.tabs?.some(tab => pathname === link.link + "/" + tab) })}
             to={link.link}
             key={link.label}
             onClick={() => {/*event.preventDefault()*/ }}
@@ -134,12 +144,12 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, links }: LinksG
 
 type SingleLinkProps = SimpleMenuItem
 
-export function SingleLink({ icon: Icon, label, link }: SingleLinkProps) {
+export function SingleLink({ icon: Icon, label, link, tabs }: SingleLinkProps) {
     const { pathname } = useLocation()
 
     return (
         <div className={classes.container}>
-            <UnstyledButton component={Link} to={link} className={classNames(classes.control, { [classes.active]: pathname === link })}>
+            <UnstyledButton component={Link} to={link} className={classNames(classes.control, { [classes.active]: pathname === link || tabs?.some(tab => pathname === link + "/" + tab) })}>
                 <Group justify="space-between" gap={0}>
                     <Box style={{ display: 'flex', alignItems: 'center' }}>
                         <ThemeIcon variant="light" size={30}>
