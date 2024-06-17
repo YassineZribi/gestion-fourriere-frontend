@@ -1,28 +1,34 @@
 import { useState } from "react";
-import { Anchor, Avatar, Button, Center, FileInput, Group, InputLabel, Modal, ModalBaseProps, SimpleGrid, Stack, TextInput, Tooltip, rem } from "@mantine/core";
+import { Anchor, Button, Group, Modal, ModalBaseProps, Radio, SimpleGrid, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
+import { getCountryCallingCode, getNationalNumber } from "../../../../lib/libphonenumber-js";
+import { capitalize, wait } from "../../../../utils/helpers";
+import PhoneInputWithCountryCombobox from "../../../../components/PhoneInput";
+import useRolesStore from "../../../../store/useRolesStore";
 import employeesService from "../services"
-import { capitalize, wait } from "../../../utils/helpers";
-import Employee from "../../../types/Employee";
-import { alertInfo, alertSuccess } from "../../../utils/feedback";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { getFullResourcePath } from "../../../lib/axios/api";
+import { alertSuccess } from "../../../../utils/feedback";
 import { useTranslation } from "react-i18next";
-import SearchableCombobox from "../../../components/SearchableCombobox";
+import { RoleNameLowercase } from "../../../../types/Role";
+import SearchableCombobox from "../../../../components/SearchableCombobox";
 import EmployeeSelectOption from "./EmployeeSelectOption";
+import Employee from "../../../../types/Employee";
 
 
 const schema = z.object({
     firstName: z.string().min(1, 'First name is required'),
     lastName: z.string().min(1, 'Last name is required'),
-    position: z.string().min(1, 'Last name is required'),
+    email: z.string().email('Invalid email'),
+    dial_code: z.string(),
+    nationalPhoneNumber: z.string().min(1, 'Phone number is required'),
+    roleName: z.string().min(1, 'Role is required'),
+    position: z.string().min(1, 'Last name is required')
 });
 
 export type FormData = z.infer<typeof schema>
 
-export type UpsertEmployeeDto = FormData & { managerId: number | null }
+export type UpsertEmployeeDto = Omit<FormData, 'dial_code' | 'nationalPhoneNumber'> & { phoneNumber: string } & { managerId: number | null }
 
 interface Props {
     title: string
@@ -33,9 +39,9 @@ interface Props {
     onSubmit: (savedEmployee: Employee) => void
 }
 
-export default function UpsertEmployeeModal({ title, size = "md", isOpened, selectedEmployee, onClose, onSubmit }: Props) {
+export default function UpsertEmployeeModal({ title, size = "lg", isOpened, selectedEmployee, onClose, onSubmit }: Props) {
     const [isSubmitting, setSubmitting] = useState(false)
-    const [photoFile, setPhotoFile] = useState<File | null>(null)
+    const { roles } = useRolesStore()
     const [manager, setManager] = useState(selectedEmployee?.manager ?? null)
     const { t } = useTranslation()
     const { t: tGlossary } = useTranslation("glossary")
@@ -44,20 +50,22 @@ export default function UpsertEmployeeModal({ title, size = "md", isOpened, sele
         initialValues: {
             firstName: selectedEmployee?.firstName || '',
             lastName: selectedEmployee?.lastName || '',
-            position: selectedEmployee?.position || '',
+            email: selectedEmployee?.email || '',
+            dial_code: (selectedEmployee?.phoneNumber && getCountryCallingCode(selectedEmployee.phoneNumber)) ?? '+216',
+            nationalPhoneNumber: (selectedEmployee?.phoneNumber && getNationalNumber(selectedEmployee.phoneNumber)) ?? '',
+            roleName: selectedEmployee?.role.name.toLowerCase() || '',
+            position: selectedEmployee?.position || ''
         },
         validate: zodResolver(schema),
     });
-
-
-    const handleCancel = () => {
-        onClose()
-    }
 
     const handleSubmit = async (data: FormData) => {
         const upsertEmployeeDto: UpsertEmployeeDto = {
             firstName: data.firstName,
             lastName: data.lastName,
+            email: data.email,
+            phoneNumber: data.dial_code + data.nationalPhoneNumber,
+            roleName: data.roleName,
             position: data.position,
             managerId: manager?.id ?? null
         }
@@ -68,18 +76,17 @@ export default function UpsertEmployeeModal({ title, size = "md", isOpened, sele
             setSubmitting(true)
             await wait(2000)
             if (selectedEmployee) {
-                const res = await employeesService.updateEmployee(selectedEmployee.id, upsertEmployeeDto, photoFile)
+                const res = await employeesService.updateEmployee(selectedEmployee.id, upsertEmployeeDto)
                 savedEmployee = res.data
-                alertSuccess("Employee updated successfully!")
+                alertSuccess("Employee account updated successfully!")
             } else {
-                const res = await employeesService.createEmployee(upsertEmployeeDto, photoFile)
+                const res = await employeesService.createEmployee(upsertEmployeeDto)
                 savedEmployee = res.data
-                alertSuccess("New employee added successfully!")
+                alertSuccess("New employee account created successfully!")
                 form.reset()
                 setManager(null)
             }
-            setPhotoFile(null)
-            
+
             onSubmit(savedEmployee)
             onClose()
         } catch (error) {
@@ -90,47 +97,8 @@ export default function UpsertEmployeeModal({ title, size = "md", isOpened, sele
     }
 
     return (
-        <Modal title={title} size={size} opened={isOpened} onClose={handleCancel} closeOnClickOutside={false}>
+        <Modal title={title} size={size} opened={isOpened} onClose={onClose} closeOnClickOutside={false}>
             <form autoComplete="off" onSubmit={form.onSubmit(handleSubmit)}>
-                <Center mb={'xl'}>
-                    <div style={{ position: 'relative' }}>
-                        {
-                            photoFile !== null && (
-                                <Tooltip label={t("buttons.removeModification")} withArrow position='bottom'>
-                                    <Avatar color="red" variant='filled' size={30} style={{ position: "absolute", left: 0, bottom: 0, zIndex: 1, cursor: 'pointer' }} onClick={() => setPhotoFile(null)}>
-                                        <TrashIcon style={{ width: rem(14), height: rem(14) }} />
-                                    </Avatar>
-                                </Tooltip>
-                            )
-                        }
-                        <InputLabel htmlFor='profile-photo'>
-                            <Tooltip label={t("buttons.update")} withArrow position='bottom'>
-                                <Avatar color="blue" variant='filled' size={30} style={{ position: "absolute", right: 0, bottom: 0, zIndex: 1, cursor: 'pointer' }}>
-                                    <PencilIcon style={{ width: rem(14), height: rem(14) }} />
-                                </Avatar>
-                            </Tooltip>
-                        </InputLabel>
-                        <Avatar
-                            size={120}
-                            radius={120}
-                            style={{ border: "2px solid" }}
-                            src={
-                                photoFile
-                                    ? URL.createObjectURL(photoFile)
-                                    : selectedEmployee?.photoPath ? getFullResourcePath(selectedEmployee.photoPath) : null
-                            }
-                        />
-                        <FileInput
-                            id='profile-photo'
-                            accept="image/*"
-                            onChange={file => {
-                                setPhotoFile(file);
-                                alertInfo('Click on "Save changes" to confirm the modification')
-                            }}
-                            style={{ display: 'none' }}
-                        />
-                    </div>
-                </Center>
                 <Stack>
                     <SimpleGrid cols={{ base: 1, sm: 2 }}>
                         <TextInput
@@ -152,11 +120,33 @@ export default function UpsertEmployeeModal({ title, size = "md", isOpened, sele
 
                     <SimpleGrid cols={{ base: 1, sm: 2 }}>
                         <TextInput
+                            label={tGlossary("employee.email")}
+                            placeholder={tGlossary("employee.email")}
+                            name="email"
+                            withAsterisk
+                            {...form.getInputProps('email')}
+                        />
+                        <TextInput
                             label={tGlossary("employee.position")}
                             placeholder={tGlossary("employee.position")}
                             name="position"
                             withAsterisk
                             {...form.getInputProps('position')}
+                        />
+                    </SimpleGrid>
+
+                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                        <PhoneInputWithCountryCombobox
+                            input={{
+                                label: tGlossary("employee.phoneNumber"),
+                                placeholder: tGlossary("employee.phoneNumber"),
+                                name: "nationalPhoneNumber",
+                                ...form.getInputProps('nationalPhoneNumber')
+                            }}
+                            combobox={{
+                                onChange: (v) => form.setFieldValue('dial_code', v),
+                                dial_code: form.values.dial_code
+                            }}
                         />
                         <SearchableCombobox
                             selectedEntity={manager}
@@ -176,10 +166,31 @@ export default function UpsertEmployeeModal({ title, size = "md", isOpened, sele
                         </SearchableCombobox>
                     </SimpleGrid>
 
+                    <Radio.Group
+                        label={tGlossary("employee.role")}
+                        name="roleName"
+                        {...form.getInputProps('roleName')}
+                        withAsterisk
+                    >
+                        <Group justify="center" gap={"xl"}>
+                            {
+                                roles.map((role) => {
+                                    const roleNameLowercase = role.name.toLowerCase() as RoleNameLowercase;
+                                    return (
+                                        <Radio
+                                            key={role.id}
+                                            value={role.name.toLowerCase()}
+                                            label={capitalize(tGlossary(`roles.${roleNameLowercase}`))}
+                                        />
+                                    )
+                                })
+                            }
+                        </Group>
+                    </Radio.Group>
                 </Stack>
 
                 <Group justify="space-between" mt="xl">
-                    <Anchor component="button" type="button" variant="gradient" onClick={handleCancel} size="sm">
+                    <Anchor component="button" type="button" variant="gradient" onClick={onClose} size="sm">
                         {t("buttons.cancel")}
                     </Anchor>
                     <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>

@@ -17,6 +17,9 @@ type Glossary = {
     employee: {
         firstName: string,
         lastName: string,
+        email: string,
+        phoneNumber: string,
+        role: string,
         position: string,
         manager: string
     },

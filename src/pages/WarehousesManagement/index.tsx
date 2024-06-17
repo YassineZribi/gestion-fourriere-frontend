@@ -11,7 +11,7 @@ import DataTable from '../../components/DataTable';
 import useModal from '../../hooks/useModal';
 import Warehouse from '../../types/Warehouse';
 import UpsertWarehouseModal from '../../features/warehouses/components/UpsertWarehouseModal';
-import useFetchEmployee from '../../features/employees/hooks/useFetchEmployee';
+import useFetchEmployee from '../../features/users/employees/hooks/useFetchEmployee';
 import WarehouseTRow from '../../features/warehouses/components/WarehouseTRow';
 import WarehousesFilterTRow from '../../features/warehouses/components/WarehousesFilterTRow';
 import { useTranslation } from 'react-i18next';

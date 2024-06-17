@@ -1,6 +1,6 @@
 import { Avatar, Group, Text } from "@mantine/core";
-import { getFullResourcePath } from "../../../lib/axios/api";
-import Employee from "../../../types/Employee";
+import { getFullResourcePath } from "../../../../lib/axios/api";
+import Employee from "../../../../types/Employee";
 
 interface Props {
     employee: Employee

@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Text } from "@mantine/core";
-import ConfirmationModal from "../../../components/ConfirmationModal";
+import ConfirmationModal from "../../../../components/ConfirmationModal";
 import UpsertEmployeeModal from "./UpsertEmployeeModal";
-import InfoDetailsModal from "../../../components/InfoDetailsModal";
+import InfoDetailsModal from "../../../../components/InfoDetailsModal";
 import EmployeeDetails from "./EmployeeDetails";
-import TRowActions from "../../../components/DataTable/TRowActions";
-import useModal from "../../../hooks/useModal";
+import TRowActions from "../../../../components/DataTable/TRowActions";
+import useModal from "../../../../hooks/useModal";
 import employeesService from "../services"
-import { wait } from "../../../utils/helpers";
-import { alertSuccess } from "../../../utils/feedback";
-import Employee from "../../../types/Employee";
+import { wait } from "../../../../utils/helpers";
+import { alertSuccess } from "../../../../utils/feedback";
 import { useTranslation } from "react-i18next";
+import Employee from "../../../../types/Employee";
 
 interface Props {
     selectedEmployee: Employee
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function EmployeesActions({ selectedEmployee, onDeleteEmployee, onUpdateEmployee }: Props) {
-    const {t} = useTranslation()
+    const { t } = useTranslation();
 
     const [isUpdateEmployeeModalOpen, {open: openUpdateEmployeeModal, close: closeUpdateEmployeeModal}] = useModal()
 
@@ -33,7 +33,7 @@ export default function EmployeesActions({ selectedEmployee, onDeleteEmployee, o
         try {
             await wait(2000)
             await employeesService.deleteEmployee(selectedEmployee.id)
-            alertSuccess("Employee deleted successfully!")
+            alertSuccess("Employee account deleted successfully!")
             onDeleteEmployee()
         } catch (error) {
             console.log(error);

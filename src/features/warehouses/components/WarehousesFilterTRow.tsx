@@ -4,8 +4,8 @@ import ClearFiltersButton from "../../../components/DataTable/ClearFiltersButton
 import Employee from "../../../types/Employee";
 import { useTranslation } from "react-i18next";
 import SearchableCombobox from "../../../components/SearchableCombobox";
-import employeesService from '../../employees/services'
-import EmployeeSelectOption from "../../employees/components/EmployeeSelectOption";
+import employeesService from '../../users/employees/services'
+import EmployeeSelectOption from "../../users/employees/components/EmployeeSelectOption";
 
 interface Props {
     selectedManager: Employee | null

@@ -19,6 +19,9 @@ const glossary: Glossary = {
     employee: {
         firstName: "First Name",
         lastName: "Last Name",
+        email: "Email",
+        phoneNumber: "Phone Number",
+        role: "Role",
         position: "Position",
         manager: "Manager"
     },

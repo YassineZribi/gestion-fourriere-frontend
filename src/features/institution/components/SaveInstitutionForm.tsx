@@ -8,15 +8,15 @@ import { zodResolver } from 'mantine-form-zod-resolver';
 import { getCountryCallingCode, getNationalNumber } from '../../../lib/libphonenumber-js';
 import { isNumeric, wait } from '../../../utils/helpers';
 import institutionService from '../services'
-import employeesService from '../../employees/services'
+import employeesService from '../../users/employees/services'
 import { alertInfo, alertSuccess } from '../../../utils/feedback';
 import PhoneInputWithCountryCombobox from '../../../components/PhoneInput';
 import Institution from '../../../types/Institution';
 import { getFullResourcePath } from '../../../lib/axios/api';
 import { useTranslation } from 'react-i18next';
 import SearchableCombobox from '../../../components/SearchableCombobox';
-import EmployeeSelectOption from '../../employees/components/EmployeeSelectOption';
-import UpsertEmployeeModal from '../../employees/components/UpsertEmployeeModal';
+import EmployeeSelectOption from '../../users/employees/components/EmployeeSelectOption';
+import UpsertEmployeeModal from '../../users/employees/components/UpsertEmployeeModal';
 import useModal from '../../../hooks/useModal';
 import PlusIconButton from '../../../components/PlusIconButton';
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import useEffectOnce from "../../../hooks/useEffectOnce";
+import useEffectOnce from "../../../../hooks/useEffectOnce";
 import employeesService from "../services"
-import Employee from "../../../types/Employee";
+import Employee from "../../../../types/Employee";
 
 export default function useFetchEmployee(id: string | number | null) {
     const [employee, setEmployee] = useState<Employee | null>(null)

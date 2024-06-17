@@ -1,8 +1,10 @@
 import { Anchor, Avatar, Badge, Group, Table, Text } from "@mantine/core"
 import EmployeesActions from "./EmployeesActions"
-import { ACTIONS_COLUMN_WIDTH, AVATAR_COLUMN_WIDTH } from "../../../utils/constants"
-import { getFullResourcePath } from "../../../lib/axios/api"
-import Employee from "../../../types/Employee"
+import { ACTIONS_COLUMN_WIDTH, AVATAR_COLUMN_WIDTH } from "../../../../utils/constants"
+import { getFullResourcePath } from "../../../../lib/axios/api"
+import { useTranslation } from "react-i18next"
+import { RoleNameLowercase } from "../../../../types/Role"
+import Employee from "../../../../types/Employee"
 
 const jobColors: Record<string, string> = {
     MANAGER: 'blue',
@@ -17,6 +19,8 @@ interface Props {
 }
 
 export default function EmployeeTRow({ employee, onUpdateEmployee, onDeleteEmployee }: Props) {
+    const { t: tGlossary } = useTranslation("glossary")
+
     return (
         <Table.Tr>
             <Table.Td style={{ width: AVATAR_COLUMN_WIDTH }}>
@@ -40,9 +44,14 @@ export default function EmployeeTRow({ employee, onUpdateEmployee, onDeleteEmplo
             </Table.Td>
 
             <Table.Td>
-                <Badge /*color={jobColors[user.role.name]}*/ variant="light">
-                    {employee.position}
+                <Badge color={jobColors[employee.role.name]} variant="light">
+                    {tGlossary(`roles.${employee.role.name.toLowerCase() as RoleNameLowercase}`)}
                 </Badge>
+            </Table.Td>
+            <Table.Td>
+                <Anchor component="button" size="sm">
+                    {employee.email}
+                </Anchor>
             </Table.Td>
             <Table.Td>
                 {

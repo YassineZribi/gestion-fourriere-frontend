@@ -1,8 +1,8 @@
 import { useState } from "react";
-import useEffectOnce from "../../../hooks/useEffectOnce";
+import useEffectOnce from "../../../../hooks/useEffectOnce";
 import employeesService from "../services"
-import EmployeeWithSubrdinates from "../types/EmployeeWithSubordinates";
-import { AxiosError } from '../../../lib/axios/api';
+import EmployeeWithSubrdinates from "../../../../types/EmployeeWithSubordinates";
+import { AxiosError } from '../../../../lib/axios/api';
 
 
 export default function useFetchChiefExecutiveWithSubordinates() {

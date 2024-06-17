@@ -1,8 +1,6 @@
-export default interface Employee {
-    id: number
-    firstName: string
-    lastName: string
-    position: string
-    photoPath: string | null
+import User from "./User"
+
+export default interface Employee extends User {
+    position: string | null
     manager: Employee | null
 }

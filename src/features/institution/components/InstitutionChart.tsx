@@ -1,7 +1,7 @@
 import { Box, Center, Loader, useMantineTheme, useComputedColorScheme, Space, Text, Stack, Avatar } from "@mantine/core";
 import { Tree, TreeNode } from 'react-organizational-chart';
-import useFetchChiefExecutiveWithSubordinates from "../hooks/useFetchChiefExecutiveWithSubordinates";
-import EmployeeWithSubrdinates from "../types/EmployeeWithSubordinates";
+import useFetchChiefExecutiveWithSubordinates from "../../users/employees/hooks/useFetchChiefExecutiveWithSubordinates";
+import EmployeeWithSubrdinates from "../../../types/EmployeeWithSubordinates";
 import { getFullResourcePath } from "../../../lib/axios/api";
 
 export default function InstitutionChart() {

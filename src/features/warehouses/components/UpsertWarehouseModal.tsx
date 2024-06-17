@@ -5,14 +5,14 @@ import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { wait } from "../../../utils/helpers";
 import warehousesService from "../services"
-import employeesService from '../../employees/services'
+import employeesService from '../../users/employees/services'
 import { alertSuccess } from "../../../utils/feedback";
 import Warehouse from "../../../types/Warehouse";
 import Map, { SFAX_COORDS } from "../../../components/Map";
 import { useTranslation } from "react-i18next";
 import SearchableCombobox from "../../../components/SearchableCombobox";
-import EmployeeSelectOption from "../../employees/components/EmployeeSelectOption";
-import UpsertEmployeeModal from "../../employees/components/UpsertEmployeeModal";
+import EmployeeSelectOption from "../../users/employees/components/EmployeeSelectOption";
+import UpsertEmployeeModal from "../../users/employees/components/UpsertEmployeeModal";
 import useModal from "../../../hooks/useModal";
 import PlusIconButton from "../../../components/PlusIconButton";
 

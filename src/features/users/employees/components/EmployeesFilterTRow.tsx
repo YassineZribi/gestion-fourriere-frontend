@@ -1,11 +1,15 @@
-import { Group, Table } from "@mantine/core";
-import ClearableInput from "../../../components/ClearableInput";
-import ClearFiltersButton from "../../../components/DataTable/ClearFiltersButton";
-import Employee from "../../../types/Employee";
-import employeesService from '../services'
+import { ComboboxItem, Group, Table } from "@mantine/core";
+import ClearableInput from "../../../../components/ClearableInput";
+import ClearableSelect from "../../../../components/ClearableSelect";
+import useRolesStore from "../../../../store/useRolesStore";
+import ClearFiltersButton from "../../../../components/DataTable/ClearFiltersButton";
 import { useTranslation } from "react-i18next";
-import SearchableCombobox from "../../../components/SearchableCombobox";
+import { RoleNameLowercase } from "../../../../types/Role";
+import { useMemo } from "react";
+import SearchableCombobox from "../../../../components/SearchableCombobox";
+import Employee from "../../../../types/Employee";
 import EmployeeSelectOption from "./EmployeeSelectOption";
+import employeesService from "../services"
 
 interface Props {
     selectedManager: Employee | null
@@ -16,7 +20,13 @@ interface Props {
 }
 
 export default function EmployeesFilterTRow({ selectedManager, filters, hasFilters, onFilter, onClearFilters }: Props) {
+    const { roles } = useRolesStore()
     const { t } = useTranslation()
+    const { t: tGlossary } = useTranslation("glossary")
+    const rolesFilteringData: ComboboxItem[] = useMemo(() => roles.map(role => ({
+        value: role.name.toLowerCase(),
+        label: tGlossary(`roles.${role.name.toLowerCase() as RoleNameLowercase}`).toUpperCase()
+    })), [tGlossary])
 
     return (
         <Table.Tr>
@@ -34,9 +44,16 @@ export default function EmployeesFilterTRow({ selectedManager, filters, hasFilte
                 />
             </Table.Td>
             <Table.Td>
+                <ClearableSelect
+                    data={rolesFilteringData}
+                    defaultValue={rolesFilteringData.find(option => option.value === filters["roleName"])}
+                    onChange={(newValue) => onFilter("roleName", newValue)}
+                />
+            </Table.Td>
+            <Table.Td>
                 <ClearableInput
-                    onChange={(newValue) => onFilter("position", newValue)}
-                    defaultValue={filters["position"]}
+                    onChange={(newValue) => onFilter("email", newValue)}
+                    defaultValue={filters["email"]}
                 />
             </Table.Td>
             <Table.Td>

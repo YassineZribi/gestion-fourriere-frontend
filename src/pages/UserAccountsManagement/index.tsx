@@ -1,22 +1,22 @@
 
 import { Center, Loader, Space } from '@mantine/core';
 import Title from '../../components/Title';
-import usersService from '../../features/users/services'
-import User from '../../types/User';
+import employeesService from '../../features/users/employees/services'
 import DataTablePagination from '../../components/DataTable/DataTablePagination';
 import DataTableControlPanel from '../../components/DataTable/DataTableControlPanel';
-import useFetchRoles from '../../features/roles/hooks/useFetchRoles';
 import useFetchWithPagination from '../../hooks/useFetchWithPagination';
 import THead, { type Th } from '../../components/DataTable/THead';
 import TBody from '../../components/DataTable/TBody';
 import DataTable from '../../components/DataTable';
-import UsersFilterTRow from '../../features/users/components/UsersFilterTRow';
-import UpsertUserModal from '../../features/users/components/UpsertUserModal';
-import UserTRow from '../../features/users/components/UserTRow';
+import EmployeesFilterTRow from '../../features/users/employees/components/EmployeesFilterTRow';
+import UpsertEmployeeModal from '../../features/users/employees/components/UpsertEmployeeModal';
+import EmployeeTRow from '../../features/users/employees/components/EmployeeTRow';
 import useModal from '../../hooks/useModal';
 import { AVATAR_COLUMN_WIDTH } from '../../utils/constants';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
+import Employee from '../../types/Employee';
+import useFetchEmployee from '../../features/users/employees/hooks/useFetchEmployee';
 
 const thColumns = [
     {
@@ -39,26 +39,24 @@ const thColumns = [
         label: "email"
     },
     {
-        label: "phoneNumber"
+        label: "manager"
     }
 ] as const
 
 export default function UserAccountsManagement() {
-    useFetchRoles()
-    
     const { t } = useTranslation()
     const { t: tRoot } = useTranslation("root")
     const { t: tGlossary } = useTranslation("glossary")
     
     const thColumnsWithTranslation: Th[] = useMemo(() => thColumns.map(c => (
-        { ...c, label: c.label ? tGlossary(`user.${c.label}`) : c.label }
+        { ...c, label: c.label ? tGlossary(`employee.${c.label}`) : c.label }
     )), [tGlossary])
 
     const {
         responseData,
         isLoading,
         error,
-        fetchData: fetchUsers,
+        fetchData: fetchEmployees,
         handleSort,
         handleFilter,
         showFilters,
@@ -66,13 +64,16 @@ export default function UserAccountsManagement() {
         handleClearFilters,
         hasFilters,
         setPageParam,
+        getSearchParam,
         getFilterParams,
         getSortList,
-        onCreateEntity: onCreateUser,
-        onUpdateEntity: onUpdateUser,
-        onDeleteEntity: onDeleteUser
+        onCreateEntity: onCreateEmployee,
+        onUpdateEntity: onUpdateEmployee,
+        onDeleteEntity: onDeleteEmployee
 
-    } = useFetchWithPagination<User>(usersService.getAllUsersByCriteria);
+    } = useFetchWithPagination<Employee>(employeesService.getAllEmployeessByCriteria);
+
+    const { employee: selectedManager } = useFetchEmployee(getSearchParam('managerId'))
 
     const [isOpen, { open, close }] = useModal()
 
@@ -87,11 +88,11 @@ export default function UserAccountsManagement() {
                     <DataTableControlPanel
                         onAddBtnClick={open}
                     >
-                        <UpsertUserModal
-                            title={t("components.upsertUserModal.title.onInsert")}
+                        <UpsertEmployeeModal
+                            title={t("components.upsertEmployeeModal.title.onInsert")}
                             isOpened={isOpen}
                             onClose={close}
-                            onSubmit={onCreateUser}
+                            onSubmit={onCreateEmployee}
                         />
                     </DataTableControlPanel>
                     <DataTable>
@@ -105,7 +106,8 @@ export default function UserAccountsManagement() {
                         <TBody
                             showFilters={showFilters}
                             filterRow={
-                                <UsersFilterTRow
+                                <EmployeesFilterTRow
+                                    selectedManager={selectedManager}
                                     filters={getFilterParams()}
                                     hasFilters={hasFilters()}
                                     onFilter={handleFilter}
@@ -114,12 +116,12 @@ export default function UserAccountsManagement() {
                             }
                         >
                             {
-                                responseData.content.map((user) => (
-                                    <UserTRow
-                                        key={user.id}
-                                        user={user}
-                                        onUpdateUser={onUpdateUser}
-                                        onDeleteUser={onDeleteUser}
+                                responseData.content.map((employee) => (
+                                    <EmployeeTRow
+                                        key={employee.id}
+                                        employee={employee}
+                                        onUpdateEmployee={onUpdateEmployee}
+                                        onDeleteEmployee={onDeleteEmployee}
                                     />
                                 ))
                             }
