@@ -1,11 +1,12 @@
 import { Box, Center, Loader, useMantineTheme, useComputedColorScheme, Space, Text, Stack, Avatar } from "@mantine/core";
 import { Tree, TreeNode } from 'react-organizational-chart';
-import useFetchChiefExecutiveWithSubordinates from "../../users/employees/hooks/useFetchChiefExecutiveWithSubordinates";
+import useFetchOrganizationalChart from "../hooks/useFetchOrganizationalChart";
 import EmployeeWithSubrdinates from "../../../types/EmployeeWithSubordinates";
 import { getFullResourcePath } from "../../../lib/axios/api";
 
 export default function InstitutionChart() {
-    const { chiefExecutive, isFetching, error } = useFetchChiefExecutiveWithSubordinates()
+    // fetch chief executive with recursive subordinates
+    const { chiefExecutive, isFetching, error } = useFetchOrganizationalChart()
 
     return (
         <Box maw={600} mx="auto">

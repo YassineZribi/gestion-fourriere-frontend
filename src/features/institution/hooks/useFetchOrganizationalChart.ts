@@ -1,18 +1,18 @@
 import { useState } from "react";
-import useEffectOnce from "../../../../hooks/useEffectOnce";
-import employeesService from "../services"
-import EmployeeWithSubrdinates from "../../../../types/EmployeeWithSubordinates";
-import { AxiosError } from '../../../../lib/axios/api';
+import useEffectOnce from "../../../hooks/useEffectOnce";
+import institutionService from "../services"
+import EmployeeWithSubrdinates from "../../../types/EmployeeWithSubordinates";
+import { AxiosError } from '../../../lib/axios/api';
 
-
-export default function useFetchChiefExecutiveWithSubordinates() {
+// fetch chief executive with recursive subordinates
+export default function useFetchOrganizationalChart() {
     const [chiefExecutive, setChiefExecutive] = useState<EmployeeWithSubrdinates | null>(null)
     const [isFetching, setFetching] = useState(false)
     const [error, setError] = useState('');
 
     useEffectOnce(() => {
         setFetching(true)
-        employeesService.getChiefExecutiveWithRecursiveSubordinates()
+        institutionService.getOrganizationalChart()
             .then(res => {
                 setChiefExecutive(res.data)
             })
