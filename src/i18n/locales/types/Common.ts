@@ -23,7 +23,7 @@ type Common = {
     },
     menu: {
         dashboard: string,
-        myProfile: string,
+        myAccount: string,
         institution: string,
         basicData: {
             index: string,
@@ -44,10 +44,6 @@ type Common = {
         administration: {
             index: string,
             userAccountsManagement: string
-        },
-        security: {
-            index: string,
-            changePassword: string
         }
     },
     components: {

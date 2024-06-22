@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ScrollArea, Group, Box, Collapse, ThemeIcon, Text, UnstyledButton, rem, AppShell, useDirection } from '@mantine/core';
-import { AdjustmentsVerticalIcon, ArrowsRightLeftIcon, BuildingLibraryIcon, ChartPieIcon, ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, LockClosedIcon, UserIcon } from '@heroicons/react/24/outline'
+import { AdjustmentsVerticalIcon, ArrowsRightLeftIcon, BuildingLibraryIcon, ChartPieIcon, ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, UserIcon } from '@heroicons/react/24/outline'
 import classes from './index.module.css';
 import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
@@ -31,7 +31,7 @@ export function NavbarMain() {
     const { t } = useTranslation()
     const menuData: MenuItem[] = useMemo(() => [
         { label: t('menu.dashboard'), icon: ChartPieIcon, link: '/dashboard' },
-        { label: t('menu.myProfile'), icon: UserIcon, link: '/profile' },
+        { label: t('menu.myAccount'), icon: UserIcon, link: '/my-account', tabs: ["profile", "change-password"] },
         { label: t('menu.institution'), icon: BuildingLibraryIcon, link: '/institution', tabs: ["profile", "chart"] },
         {
             label: t('menu.basicData.index'),
@@ -63,14 +63,6 @@ export function NavbarMain() {
             initiallyOpened: false,
             links: [
                 { label: t('menu.administration.userAccountsManagement'), link: '/user-accounts-management' },
-            ],
-        },
-        {
-            label: t('menu.security.index'),
-            icon: LockClosedIcon,
-            initiallyOpened: false,
-            links: [
-                { label: t('menu.security.changePassword'), link: '/change-password' },
             ],
         }
     ], [t]);

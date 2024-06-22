@@ -7,7 +7,7 @@ import NeutralRoute from "./routes/NeutralRoute"
 import useAuthenticatedUser from "./hooks/useAuthenticatedUser"
 import AppLoader from "./components/AppLoader"
 import NotFound from "./pages/NotFound/NotFound"
-import Profile from "./pages/Profile"
+import MyAccount from "./pages/MyAccount"
 import Dashboard from "./pages/Dashboard"
 import ChangePassword from "./pages/ChangePassword"
 import UserAccountsManagement from "./pages/UserAccountsManagement"
@@ -37,8 +37,9 @@ function App() {
 
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/change-password" element={<ChangePassword />} />
+          {["/my-account", "/my-account/:tab"].map(path => (
+            <Route key={path} path={path} element={<MyAccount />} />
+          ))}
           <Route path="/user-accounts-management" element={<UserAccountsManagement />} />
           <Route path="/warehouses-management" element={<WarehousesManagement />} />
           <Route path="/registers-management" element={<RegistersManagement />} />

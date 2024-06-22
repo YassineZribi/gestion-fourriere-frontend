@@ -4,8 +4,11 @@ const root: Root = {
     login: {
         title: "Bienvenue à nouveau !"
     },
-    profile: {
-        title: "Mon profil"
+    myAccount: {
+        tabs: {
+            profile: "Profil",
+            changePassword: "Changer le mot de passe"
+        }
     },
     institution: {
         tabs: {
@@ -13,9 +16,6 @@ const root: Root = {
             employees: "Employés",
             chart: "Organigramme"
         }
-    },
-    changePassword: {
-        title: "Changer le mot de passe"
     },
     userAccountsManagement: {
         title: "Gestion des comptes utilisateurs"

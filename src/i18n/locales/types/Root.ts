@@ -2,8 +2,11 @@ type Root = {
     login: {
         title: string
     },
-    profile: {
-        title: string
+    myAccount: {
+        tabs: {
+            profile: string,
+            changePassword: string
+        }
     },
     institution: {
         tabs: {
@@ -11,9 +14,6 @@ type Root = {
             employees: string,
             chart: string
         }
-    },
-    changePassword: {
-        title: string
     },
     userAccountsManagement: {
         title: string

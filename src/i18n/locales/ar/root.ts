@@ -4,8 +4,11 @@ const root: Root = {
     login: {
         title: "مرحباً بعودتك!"
     },
-    profile: {
-        title: "ملفّي الشّخصي"
+    myAccount: {
+        tabs: {
+            profile: "الملف الشخصي",
+            changePassword: "تغيير كلمة المرور"
+        }
     },
     institution: {
         tabs: {
@@ -13,9 +16,6 @@ const root: Root = {
             employees: "الموظفون",
             chart: "الهيكل التنظيمي"
         }
-    },
-    changePassword: {
-        title: "تغيير كلمة المرور"
     },
     userAccountsManagement: {
         title: "إدارة حسابات المستخدمين"

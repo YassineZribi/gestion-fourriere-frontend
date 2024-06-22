@@ -25,7 +25,7 @@ const common: Common = {
     },
     menu: {
         dashboard: "Dashboard",
-        myProfile: "My profile",
+        myAccount: "My account",
         institution: "Institution",
         basicData: {
             index: "Basic data",
@@ -46,10 +46,6 @@ const common: Common = {
         administration: {
             index: "Administration",
             userAccountsManagement: "User accounts management"
-        },
-        security: {
-            index: "Security",
-            changePassword: "Change password"
         }
     },
     components: {

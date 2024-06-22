@@ -25,7 +25,7 @@ const common: Common = {
     },
     menu: {
         dashboard: "لوحة القيادة",
-        myProfile: "ملفي الشخصي",
+        myAccount: "حسابي الشخصي",
         institution: "المؤسسة",
         basicData: {
             index: "البيانات الأساسية",
@@ -46,10 +46,6 @@ const common: Common = {
         administration: {
             index: "الإدارة",
             userAccountsManagement: "إدارة حسابات المستخدمين"
-        },
-        security: {
-            index: "حماية",
-            changePassword: "تغيير كلمة المرور"
         }
     },    
     components: {
