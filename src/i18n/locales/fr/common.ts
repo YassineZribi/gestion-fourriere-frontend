@@ -1,6 +1,7 @@
 import Common from "../types/Common";
 
 const common: Common = {
+    applicationName: "Application de gestion de fourrière",
     buttons: {
         cancel: "Annuler",
         confirm: "Confirmer",

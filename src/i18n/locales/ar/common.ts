@@ -1,6 +1,7 @@
 import Common from "../types/Common";
 
 const common: Common = {
+    applicationName: "تطبيق لإدارة الحجز",
     buttons: {
         cancel: "إلغاء",
         confirm: "تأكيد",

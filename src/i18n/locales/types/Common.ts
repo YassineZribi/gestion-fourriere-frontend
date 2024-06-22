@@ -1,4 +1,5 @@
 type Common = {
+    applicationName: string,
     buttons: {
         cancel: string,
         confirm: string,

@@ -1,6 +1,7 @@
 import Common from "../types/Common";
 
 const common: Common = {
+    applicationName: "Impound Management Application",
     buttons: {
         cancel: "Cancel",
         confirm: "Confirm",
