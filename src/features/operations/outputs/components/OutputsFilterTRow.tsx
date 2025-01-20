@@ -2,6 +2,7 @@ import { Group, Table } from "@mantine/core";
 import ClearableInput from "../../../../components/ClearableInput";
 import ClearFiltersButton from "../../../../components/DataTable/ClearFiltersButton";
 import ClearableDatePickerInput from "../../../../components/ClearableDatePickerInput";
+import { EXPANDING_ROW_COLUMN_WIDTH } from "../../../../utils/constants";
 
 interface Props {
     filters: { [key: string]: string | undefined }
@@ -14,6 +15,7 @@ export default function OutputsFilterTRow({ filters, hasFilters, onFilter, onCle
     return (
         <>
             <Table.Tr>
+                <Table.Td style={{ width: EXPANDING_ROW_COLUMN_WIDTH }}></Table.Td>
                 <Table.Td>
                     <ClearableInput
                         type="number"
