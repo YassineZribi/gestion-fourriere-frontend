@@ -31,7 +31,7 @@ interface LeafletMapProps {
 export default function LeafletMap({ position, onPositionChange }: LeafletMapProps) {
 
     return (
-        <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: "35vh", width: "100%", borderRadius: 10, colorScheme: "light", direction: "ltr" }}>
+        <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: "35vh", width: "100%", borderRadius: 10, colorScheme: "light", direction: "ltr", zIndex: 0 }}>
             <MapContent
                 position={position}
                 updatePosition={(coords) => onPositionChange(coords)}
