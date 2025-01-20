@@ -4,32 +4,34 @@ import Source from "../../../types/Source";
 import { UpsertSourceDto } from "../components/UpsertSourceModal";
 
 class SourcesService {
-    getAllSourcesByCriteria(criteria: string) {
+    baseUrl = "/sources"
+
+    getAllSourcesByCriteria = (criteria: string) => {
         console.log({criteria});
         
-        return PRIVATE_API.get<FetchWithPaginationResponse<Source>>("/sources?" + criteria)
+        return PRIVATE_API.get<FetchWithPaginationResponse<Source>>(this.baseUrl + "?" + criteria)
     }
 
-    getAllSourcesByName(search: string) {
+    getAllSourcesByName = (search: string) => {
         
-        return PRIVATE_API.get<Source[]>("/sources/search?name=" + search)
+        return PRIVATE_API.get<Source[]>(this.baseUrl + "/search?name=" + search)
     }
 
-    getSourceById(id: string | number) {
+    getSourceById = (id: string | number) => {
         
-        return PRIVATE_API.get<Source>("/sources/" + id)
+        return PRIVATE_API.get<Source>(this.baseUrl + "/" + id)
     }
 
-    createSource(data: UpsertSourceDto) {
-        return PRIVATE_API.post<Source>("/sources", data)
+    createSource = (data: UpsertSourceDto) => {
+        return PRIVATE_API.post<Source>(this.baseUrl, data)
     }
 
-    updateSource(id: number, data: UpsertSourceDto) {
-        return PRIVATE_API.patch<Source>("/sources/" + id, data)
+    updateSource = (id: number, data: UpsertSourceDto) => {
+        return PRIVATE_API.patch<Source>(this.baseUrl + "/" + id, data)
     }
 
-    deleteSource(id: number) {
-        return PRIVATE_API.delete<Source>("/sources/" + id)
+    deleteSource = (id: number) => {
+        return PRIVATE_API.delete<Source>(this.baseUrl + "/" + id)
     }
 }
 
