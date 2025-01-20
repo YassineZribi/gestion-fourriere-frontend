@@ -62,7 +62,7 @@ export function NavbarMain() {
             icon: AdjustmentsVerticalIcon,
             initiallyOpened: false,
             links: [
-                { label: t('menu.administration.userAccountsManagement'), link: '/user-accounts-management' },
+                { label: t('menu.administration.userAccountsManagement'), link: '/users-management' },
             ],
         }
     ], [t]);
@@ -94,7 +94,10 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, links }: LinksG
 
     const { dir } = useDirection();
     const IconChevron = dir === "ltr" ? ChevronRightIcon : ChevronLeftIcon
-    const [opened, setOpened] = useState(initiallyOpened || false);
+    const [opened, setOpened] = useState(() => {
+        const isLinksGroupActive = links.some(link => pathname === link.link || link.tabs?.some(tab => pathname === link.link + "/" + tab))
+        return initiallyOpened || isLinksGroupActive
+    });
     const items = links.map((link) => (
         <Text
             component={Link}
