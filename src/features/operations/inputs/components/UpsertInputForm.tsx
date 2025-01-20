@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { ActionIcon, Box, Button, Flex, Group, NumberInput, SimpleGrid, Stack, Table, Text, Title, rem } from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, Group, NumberInput, SimpleGrid, Stack, Table, Text, TextInput, Title, rem } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { z } from 'zod';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -35,12 +35,16 @@ import Sup from "../../../../components/Sup";
 import InputOperationLineTRow from "./InputOperationLineTRow";
 import { columnsWidth } from "../../shared/components/helpers";
 import { SummaryTable } from "../../shared/components/SummaryTable";
+import Map, { SFAX_COORDS } from "../../../../components/Map";
 
 
 const schema = z.object({
     dateTime: z.date({ invalid_type_error: "DateTime is required" }),
     number: z.number({ invalid_type_error: "Number is required" }),
     year: z.number({ invalid_type_error: "Year is required" }),
+    address: z.string().min(1, 'Address is required'),
+    latitude: z.number({ invalid_type_error: "Latitude is required" }),
+    longitude: z.number({ invalid_type_error: "Longitude is required" }),
     registerId: z.number().refine((value) => value !== -1, {
         message: 'Register is required',
     }),
@@ -122,6 +126,9 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             dateTime: selectedInput ? new Date(selectedInput.dateTime) : new Date(),
             number: selectedInput?.number || 0,
             year: selectedInput?.year || new Date().getFullYear(),
+            address: selectedInput?.address || '',
+            latitude: selectedInput?.latitude || SFAX_COORDS.lat,
+            longitude: selectedInput?.longitude || SFAX_COORDS.lng,
             registerId: selectedInput?.register.id || -1,
             subRegisterId: selectedInput?.subRegister.id || -1,
             sourceId: selectedInput?.source.id || -1,
@@ -140,6 +147,9 @@ export default function UpsertInputForm({ selectedInput }: Props) {
             dateTime: data.dateTime.toISOString(),
             number: data.number,
             year: data.year,
+            address: data.address,
+            latitude: data.latitude,
+            longitude: data.longitude,
             registerId: data.registerId,
             subRegisterId: data.subRegisterId,
             sourceId: data.sourceId,
@@ -163,6 +173,9 @@ export default function UpsertInputForm({ selectedInput }: Props) {
         formData.append("dateTime", upsertInputDto.dateTime);
         formData.append("number", String(upsertInputDto.number));
         formData.append("year", String(upsertInputDto.year));
+        formData.append("address", upsertInputDto.address);
+        formData.append("latitude", String(upsertInputDto.latitude));
+        formData.append("longitude", String(upsertInputDto.longitude));
         formData.append("registerId", String(upsertInputDto.registerId));
         formData.append("subRegisterId", String(upsertInputDto.subRegisterId));
         formData.append("sourceId", String(upsertInputDto.sourceId));
@@ -360,6 +373,41 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                     {...form.getInputProps('year')}
                                 />
                             </SimpleGrid>
+                            <TextInput
+                                label={tGlossary("input.address")}
+                                placeholder={tGlossary("input.address")}
+                                name="address"
+                                withAsterisk
+                                {...form.getInputProps('address')}
+                            />
+                            <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                                <NumberInput
+                                    label={tGlossary("input.latitude")}
+                                    placeholder={tGlossary("input.latitude")}
+                                    name="latitude"
+                                    withAsterisk
+                                    {...form.getInputProps('latitude')}
+                                />
+                                <NumberInput
+                                    label={tGlossary("input.longitude")}
+                                    placeholder={tGlossary("input.longitude")}
+                                    name="longitude"
+                                    withAsterisk
+                                    {...form.getInputProps('longitude')}
+                                />
+                            </SimpleGrid>
+                            <Map
+                                position={{
+                                    lat: form.values.latitude,
+                                    lng: form.values.longitude
+                                }}
+                                onPositionChange={(coords) => {
+                                    form.setFieldValue("latitude", coords.lat)
+                                    form.setFieldValue("longitude", coords.lng)
+                                }}
+                            />
+                        </Stack>
+                        <Stack>
                             <DateTimePicker
                                 label={tGlossary("input.dateTime")}
                                 placeholder={tGlossary("input.dateTime")}
@@ -395,27 +443,25 @@ export default function UpsertInputForm({ selectedInput }: Props) {
                                     onClick={openSourceModal}
                                 />
                             </Flex>
-                            <Box style={{ flexGrow: 1 }}>
-                                <ReadOnlyCombobox
-                                    selectedEntity={owner}
-                                    placeholder={tGlossary("input.owner")}
-                                    label={tGlossary("input.owner")}
-                                    error={form.errors.ownerId?.toString()}
-                                    withAsterisk
-                                    onClear={() => {
-                                        setOwner(null)
-                                        form.setFieldValue("ownerId", -1)
-                                        form.clearFieldError("ownerId")
-                                    }}
-                                    onClick={openOwnerSelectionModal}
-                                >
-                                    {
-                                        (owner) => <OwnerSelectOption owner={owner} />
-                                    }
-                                </ReadOnlyCombobox>
-                            </Box>
-                        </Stack>
-                        <Stack justify="center">
+                            {/* <Box style={{ flexGrow: 1 }}> */}
+                            <ReadOnlyCombobox
+                                selectedEntity={owner}
+                                placeholder={tGlossary("input.owner")}
+                                label={tGlossary("input.owner")}
+                                error={form.errors.ownerId?.toString()}
+                                withAsterisk
+                                onClear={() => {
+                                    setOwner(null)
+                                    form.setFieldValue("ownerId", -1)
+                                    form.clearFieldError("ownerId")
+                                }}
+                                onClick={openOwnerSelectionModal}
+                            >
+                                {
+                                    (owner) => <OwnerSelectOption owner={owner} />
+                                }
+                            </ReadOnlyCombobox>
+                            {/* </Box> */}
                             <SummaryTable title={t("components.upsertInputForm.totalQuantity")}>
                                 {totalQuantity}
                             </SummaryTable>

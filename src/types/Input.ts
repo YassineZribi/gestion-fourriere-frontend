@@ -9,6 +9,9 @@ import SubRegister from "./SubRegister";
 
 export default interface Input extends Operation {
     status: ProcessingStatus
+    address: string
+    latitude: number
+    longitude: number
     register: Register
     subRegister: SubRegister
     owner: Owner

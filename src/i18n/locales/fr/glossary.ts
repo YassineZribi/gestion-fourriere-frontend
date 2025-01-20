@@ -83,6 +83,9 @@ const glossary: Glossary = {
         dateTime: "Date d'entrée",
         number: "Numéro d'entrée",
         year: "Année d'entrée",
+        address: "Adresse",
+        latitude: "Latitude",
+        longitude: "Longitude",
         register: "Registre",
         subRegister: "Sous-registre",
         source: "Source",
@@ -137,7 +140,7 @@ const glossary: Glossary = {
     roles: {
         admin: "Admin",
         manager: "Manager",
-        operator: "Opérateur"
+        operator: "Agent administratif"
     },
     calculationMethods: {
         perUnit: "Par unité",
