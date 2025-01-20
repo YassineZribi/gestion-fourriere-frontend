@@ -9,7 +9,7 @@ import THead, { type Th } from '../../components/DataTable/THead';
 import TBody from '../../components/DataTable/TBody';
 import DataTable from '../../components/DataTable';
 import { useTranslation } from 'react-i18next';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdvancedFiltersCollapse from '../../components/AdvancedFiltersCollapse';
 import Output from '../../types/Output';
@@ -17,10 +17,15 @@ import OutputsAdvancedFilters from '../../features/operations/outputs/components
 import { columnsWidth } from '../../features/operations/outputs/components/helpers';
 import OutputsFilterTRow from '../../features/operations/outputs/components/OutputsFilterTRow';
 import OutputTRow from '../../features/operations/outputs/components/OutputTRow';
+import { EXPANDING_ROW_COLUMN_WIDTH } from '../../utils/constants';
 
 export const advancedOutputFilterProperties = ["startNumber", "endNumber", "startDate", "endDate"] as const;
 
 const thColumns = [
+    {
+        style: { width: EXPANDING_ROW_COLUMN_WIDTH },
+        label: ""
+    },
     {
         style: { width: columnsWidth.number },
         name: "number",
@@ -47,11 +52,12 @@ const thColumns = [
 
 export default function OutputsManagement() {
     const navigate = useNavigate()
+    const [isGeneratingPdf, setGeneratingPdf] = useState(false);
     const { t: tRoot } = useTranslation("root")
     const { t: tGlossary } = useTranslation("glossary")
 
     const thColumnsWithTranslation: Th[] = useMemo(() => thColumns.map(c => (
-        { ...c, label: tGlossary(`output.${c.label}`) }
+        { ...c, label: c.label ? tGlossary(`output.${c.label}`) : c.label }
     )), [tGlossary])
 
     const {
@@ -71,6 +77,7 @@ export default function OutputsManagement() {
         hasAdvancedFilters,
         setPageParam,
         getSearchParam,
+        getSearchParams,
         getFilterParams,
         getAdvancedFilterParams,
         getSortList,
@@ -79,6 +86,21 @@ export default function OutputsManagement() {
         onDeleteEntity: onDeleteOutput
 
     } = useFetchWithPagination<Output>(outputsService.getAllOutputsByCriteria, advancedOutputFilterProperties);
+
+    const handleGeneratePdf = () => {
+        setGeneratingPdf(true)
+        outputsService.generateOutputsReport(getSearchParams().toString())
+        .then(res => {
+            // Create a blob URL for the PDF
+            const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+
+            // Open the blob URL in a new tab
+            window.open(pdfUrl, '_blank');
+        })
+        .catch(err => console.log(err))
+        .finally(() => setGeneratingPdf(false))
+    }
 
     return (
         <div>
@@ -101,7 +123,8 @@ export default function OutputsManagement() {
                     </AdvancedFiltersCollapse>
                     <Space h="lg" />
                     <DataTableControlPanel
-                        onAddBtnClick={() => null}
+                        onGeneratePdfBtnClick={handleGeneratePdf}
+                        isGeneratingPdf={isGeneratingPdf}
                     />
                     <DataTable>
                         <THead

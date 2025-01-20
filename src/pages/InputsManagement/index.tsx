@@ -9,7 +9,7 @@ import THead, { type Th } from '../../components/DataTable/THead';
 import TBody from '../../components/DataTable/TBody';
 import DataTable from '../../components/DataTable';
 import { useTranslation } from 'react-i18next';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Input from '../../types/Input';
 import useFetchSource from '../../features/sources/hooks/useFetchSource';
 import useFetchOwner from '../../features/owners/shared/hooks/useFetchOwner';
@@ -48,6 +48,7 @@ const thColumns = [
 
 export default function InputsManagement() {
     const navigate = useNavigate()
+    const [isGeneratingPdf, setGeneratingPdf] = useState(false);
     const { t: tRoot } = useTranslation("root")
     const { t: tGlossary } = useTranslation("glossary")
 
@@ -72,6 +73,7 @@ export default function InputsManagement() {
         hasAdvancedFilters,
         setPageParam,
         getSearchParam,
+        getSearchParams,
         getFilterParams,
         getAdvancedFilterParams,
         getSortList,
@@ -84,6 +86,21 @@ export default function InputsManagement() {
     const { source: selectedSource } = useFetchSource(getSearchParam('sourceId'))
     const { owner: selectedOwner } = useFetchOwner(getSearchParam('ownerId'))
     const { register: selectedRegister } = useFetchRegister(getSearchParam('registerId'))
+
+    const handleGeneratePdf = () => {
+        setGeneratingPdf(true)
+        inputsService.generateInputsReport(getSearchParams().toString())
+        .then(res => {
+            // Create a blob URL for the PDF
+            const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+
+            // Open the blob URL in a new tab
+            window.open(pdfUrl, '_blank');
+        })
+        .catch(err => console.log(err))
+        .finally(() => setGeneratingPdf(false))
+    }
 
 
     return (
@@ -110,6 +127,8 @@ export default function InputsManagement() {
                     <Space h="lg" />
                     <DataTableControlPanel
                         onAddBtnClick={() => navigate('/create-input')}
+                        onGeneratePdfBtnClick={handleGeneratePdf}
+                        isGeneratingPdf={isGeneratingPdf}
                     />
                     <DataTable>
                         <THead
