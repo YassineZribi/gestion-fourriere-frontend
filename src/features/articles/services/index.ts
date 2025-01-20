@@ -1,58 +1,37 @@
 import { PRIVATE_API } from "../../../lib/axios/api";
 import Article from "../../../types/Article";
 import FetchWithPaginationResponse from "../../../types/FetchWithPaginationResponse";
-import { APPLICATION_JSON, MULTIPART_FORM_DATA } from "../../../utils/constants";
-import { UpsertArticleDto } from "../components/UpsertArticleModal";
+import { MULTIPART_FORM_DATA } from "../../../utils/constants";
 
 class ArticlesService {
-    getAllArticlesByCriteria(criteria: string) {
+    baseUrl = "/articles"
+
+    getAllArticlesByCriteria = (criteria: string) => {
         console.log({criteria});
         
-        return PRIVATE_API.get<FetchWithPaginationResponse<Article>>("/articles?" + criteria)
+        return PRIVATE_API.get<FetchWithPaginationResponse<Article>>(this.baseUrl + "?" + criteria)
     }
 
-    getAllArticlesByName(search: string) {
+    getAllArticlesByName = (search: string) => {
         
-        return PRIVATE_API.get<Article[]>("/articles/search?name=" + search)
+        return PRIVATE_API.get<Article[]>(this.baseUrl + "/search?name=" + search)
     }
 
-    getArticleById(id: string | number) {
+    getArticleById = (id: string | number) => {
         
-        return PRIVATE_API.get<Article>("/articles/" + id)
+        return PRIVATE_API.get<Article>(this.baseUrl + "/" + id)
     }
 
-    createArticle(upsertArticleDto: UpsertArticleDto, photoFile: File | null) {
-        const formData = new FormData()
-        
-        // Convert the JSON object to a Blob with 'application/json' content type
-        var data = new Blob([JSON.stringify(upsertArticleDto)], { type: APPLICATION_JSON });
-        
-        formData.append("data", data)
-        
-        if (photoFile) {
-            formData.append("media", photoFile)
-        }
-
-        return PRIVATE_API.post<Article>("/articles", formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
+    createArticle = (formData: FormData) => {
+        return PRIVATE_API.post<Article>(this.baseUrl, formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
     }
 
-    updateArticle(id: number, upsertArticleDto: UpsertArticleDto, photoFile: File | null) {
-        const formData = new FormData()
-        
-        // Convert the JSON object to a Blob with 'application/json' content type
-        var data = new Blob([JSON.stringify(upsertArticleDto)], { type: APPLICATION_JSON });
-        
-        formData.append("data", data)
-        
-        if (photoFile) {
-            formData.append("media", photoFile)
-        }
-
-        return PRIVATE_API.patch<Article>("/articles/" + id, formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
+    updateArticle = (id: number, formData: FormData) => {
+        return PRIVATE_API.patch<Article>(this.baseUrl + "/" + id, formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
     }
 
-    deleteArticle(id: number) {
-        return PRIVATE_API.delete<Article>("/articles/" + id)
+    deleteArticle = (id: number) => {
+        return PRIVATE_API.delete<Article>(this.baseUrl + "/" + id)
     }
 }
 

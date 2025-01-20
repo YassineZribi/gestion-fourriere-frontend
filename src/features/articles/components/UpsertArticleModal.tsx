@@ -65,15 +65,22 @@ export default function UpsertArticleModal({ title, isOpened, selectedArticle, o
         }
         console.log(upsertArticleDto);
 
+        const formData = new FormData()
+        formData.append("name", upsertArticleDto.name)
+        formData.append("transportFee", String(upsertArticleDto.transportFee))
+        formData.append("articleFamilyId", String(upsertArticleDto.articleFamilyId))
+        if (photoFile !== null) {
+            formData.append("photoFile", photoFile)
+        }
 
         try {
             setSubmitting(true)
             await wait(2000)
             if (selectedArticle) {
-                await articlesService.updateArticle(selectedArticle.id, upsertArticleDto, photoFile)
+                await articlesService.updateArticle(selectedArticle.id, formData)
                 alertSuccess("Article updated successfully!")
             } else {
-                await articlesService.createArticle(upsertArticleDto, photoFile)
+                await articlesService.createArticle(formData)
                 alertSuccess("New article created successfully!")
                 form.reset()
                 setArticleFamily(null)
