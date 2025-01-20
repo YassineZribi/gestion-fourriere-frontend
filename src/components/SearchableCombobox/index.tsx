@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { CloseButton, Combobox, Input, InputBase, Loader, useCombobox } from '@mantine/core';
 import { AxiosResponse } from '../../lib/axios/api';
+import { useTranslation } from 'react-i18next';
 
 interface Props<T> {
   children: (data: T) => ReactNode
@@ -19,7 +20,7 @@ interface Props<T> {
 
 export default function SearchableCombobox<T extends { id: number }>({ children, selectedEntity, placeholder, label, error, disabled = false, withAsterisk = false, variant = "default", shouldClearOption, onFetch, onSelectOption, onClear }: Props<T>) {
   const [search, setSearch] = useState('');
-
+  const {t} = useTranslation()
   const [value, setValue] = useState<string | null>(selectedEntity ? selectedEntity.id.toString() : null);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T[]>([]);
@@ -132,7 +133,7 @@ export default function SearchableCombobox<T extends { id: number }>({ children,
               combobox.resetSelectedOption();
             });
           }}
-          placeholder="Search"
+          placeholder={t("buttons.search")}
         />
         <Combobox.Options h={200} style={{ overflowY: 'auto' }}>
           {
