@@ -12,7 +12,9 @@ const common: Common = {
         add: "إضافة",
         removeModification: "إزالة التعديل",
         update: "تغيير",
-        close: "إغلاق"
+        close: "إغلاق",
+        search: "بحث",
+        export: "استخراج"
     },
     labels: {
         noFilter: "بدون تصفية",
@@ -22,6 +24,20 @@ const common: Common = {
         ar: "العربية",
         en: "الإنجليزية",
         fr: "الفرنسية"
+    },
+    months: {
+        january: "جانفي",
+        february: "فيفري",
+        march: "مارس",
+        april: "أفريل",
+        may: "ماي",
+        june: "جوان",
+        july: "جويلية",
+        august: "أوت",
+        september: "سبتمبر",
+        october: "أكتوبر",
+        november: "نوفمبر",
+        december: "ديسمبر"
     },
     menu: {
         dashboard: "لوحة القيادة",
@@ -45,9 +61,9 @@ const common: Common = {
         },
         administration: {
             index: "الإدارة",
-            userAccountsManagement: "إدارة حسابات المستخدمين"
+            userAccountsManagement: "إدارة المستخدمين"
         }
-    },    
+    },
     components: {
         loginForm: {
             forgotPassword: "نسيت كلمة المرور؟"
@@ -101,8 +117,8 @@ const common: Common = {
         },
         upsertArticleModal: {
             title: {
-                onInsert: "إضافة محجوز جديد",
-                onUpdate: "تحديث بيانات المحجوز"
+                onInsert: "إضافة عنصر جديد",
+                onUpdate: "تحديث بيانات العناصر"
             }
         },
         upsertSourceModal: {
@@ -220,6 +236,63 @@ const common: Common = {
         fileDropzone: {
             message: "اسحب ملفًا هنا أو انقر للتحميل",
             note: "يجب ألا يتجاوز حجم الملف {{limit}} ميجابايت"
+        },
+        operationsQuantityStatisticsForm: {
+            title: "احصائيات حول المحجوزات خلال سنة",
+            quantityDistributionBy: {
+                title: "توزيع الكمية حسب",
+                options: {
+                    months: "الأشهر",
+                    days: "الأيام"
+                }
+            },
+            filteringBy: {
+                title: "اختيار المحجوز حسب",
+                options: {
+                    notSpecified: "غير محدد",
+                    register: "السِّجل",
+                    articleFamily: "الصنف"
+                }
+            }
+        },
+        incomeStatisticsForm: {
+            title: "احصائيات حول مداخيل الحجز البلدي خلال سنة",
+            incomeDistributionBy: {
+                title: "توزيع المداخيل حسب",
+                options: {
+                    months: "الأشهر",
+                    days: "الأيام"
+                }
+            },
+            filteringBy: {
+                title: "اختيار المحجوز حسب",
+                options: {
+                    notSpecified: "غير محدد",
+                    register: "السِّجل",
+                    articleFamily: "الصنف"
+                }
+            }
+        },
+        operationsQuantityStatisticsChart: {
+            quantities: "الكمية",
+            inputQuantity: "كمية المدخلات",
+            outputQuantity: "كمية المخرجات",
+            title: "احصائيات حول المحجوزات"
+        },
+        IncomeStatisticsChart: {
+            income: "المداخيل",
+            title: "احصائيات حول مداخيل الحجز البلدي"
+        },
+        operationsQuantityStatisticsTable: {
+            months: "الأشهر",
+            days: "الأيام",
+            inputQuantity: "كمية المدخلات",
+            outputQuantity: "كمية المخرجات",
+        },
+        incomeStatisticsTable: {
+            days: "الأيام",
+            months: "الأشهر",
+            income: "المداخيل"
         }
     }
 } as const;

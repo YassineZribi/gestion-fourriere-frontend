@@ -12,7 +12,9 @@ const common: Common = {
         add: "Ajouter",
         removeModification: "Supprimer la modification",
         update: "Mettre à jour",
-        close: "Fermer"
+        close: "Fermer",
+        search: "Rechercher",
+        export: "Exporter"
     },
     labels: {
         noFilter: "Pas de filtre",
@@ -22,6 +24,20 @@ const common: Common = {
         ar: "Arabe",
         en: "Anglais",
         fr: "Français"
+    },
+    months: {
+        january: "Janvier",
+        february: "Février",
+        march: "Mars",
+        april: "Avril",
+        may: "Mai",
+        june: "Juin",
+        july: "Juillet",
+        august: "Août",
+        september: "Septembre",
+        october: "Octobre",
+        november: "Novembre",
+        december: "Décembre"
     },
     menu: {
         dashboard: "Tableau de bord",
@@ -45,7 +61,7 @@ const common: Common = {
         },
         administration: {
             index: "Administration",
-            userAccountsManagement: "Gestion des comptes utilisateurs"
+            userAccountsManagement: "Gestion des utilisateurs"
         }
     },
     components: {
@@ -220,6 +236,63 @@ const common: Common = {
         fileDropzone: {
             message: "Faites glisser un fichier ici ou cliquez pour le télécharger",
             note: "Le fichier ne doit pas dépasser {{limit}} Mo"
+        },
+        operationsQuantityStatisticsForm: {
+            title: "Statistiques des saisies en fourrière pour l'année",
+            quantityDistributionBy: {
+                title: "Répartition de la quantité selon",
+                options: {
+                    months: "Mois",
+                    days: "Jours"
+                }
+            },
+            filteringBy: {
+                title: "Filtrage par",
+                options: {
+                    notSpecified: "Non spécifié",
+                    register: "Registre",
+                    articleFamily: "Famille d'articles"
+                }
+            }
+        },
+        incomeStatisticsForm: {
+            title: "Statistiques des revenus des saisies pour l'année",
+            incomeDistributionBy: {
+                title: "Répartition des revenus selon",
+                options: {
+                    months: "Mois",
+                    days: "Jours"
+                }
+            },
+            filteringBy: {
+                title: "Filtrage par",
+                options: {
+                    notSpecified: "Non spécifié",
+                    register: "Registre",
+                    articleFamily: "Famille d'articles"
+                }
+            }
+        },
+        operationsQuantityStatisticsChart: {
+            quantities: "Quantités",
+            inputQuantity: "Quantité entrée",
+            outputQuantity: "Quantité sortie",
+            title: "Statistiques des saisies en fourrière"
+        },
+        IncomeStatisticsChart: {
+            income: "Revenus",
+            title: "Statistiques des revenus des saisies"
+        },
+        operationsQuantityStatisticsTable: {
+            days: "Jours",
+            months: "Mois",
+            inputQuantity: "Quantité entrée",
+            outputQuantity: "Quantité sortie",
+        },
+        incomeStatisticsTable: {
+            days: "Jours",
+            months: "Mois",
+            income: "Revenus",
         }
     }
 } as const;

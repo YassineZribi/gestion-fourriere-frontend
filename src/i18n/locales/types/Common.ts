@@ -10,7 +10,9 @@ type Common = {
         add: string,
         removeModification: string,
         update: string,
-        close: string
+        close: string,
+        search: string,
+        export: string
     },
     labels: {
         noFilter: string,
@@ -20,6 +22,20 @@ type Common = {
         ar: string,
         en: string,
         fr: string
+    },
+    months: {
+        january: string,
+        february: string,
+        march: string,
+        april: string,
+        may: string,
+        june: string,
+        july: string,
+        august: string,
+        september: string,
+        october: string,
+        november: string,
+        december: string
     },
     menu: {
         dashboard: string,
@@ -218,6 +234,63 @@ type Common = {
         fileDropzone: {
             message: string,
             note: string
+        },
+        operationsQuantityStatisticsForm: {
+            title: string,
+            quantityDistributionBy: {
+                title: string,
+                options: {
+                    months: string,
+                    days: string
+                }
+            },
+            filteringBy: {
+                title: string,
+                options: {
+                    notSpecified: string,
+                    register: string,
+                    articleFamily: string
+                }
+            }
+        },
+        incomeStatisticsForm: {
+            title: string,
+            incomeDistributionBy: {
+                title: string,
+                options: {
+                    months: string,
+                    days: string
+                }
+            },
+            filteringBy: {
+                title: string,
+                options: {
+                    notSpecified: string,
+                    register: string,
+                    articleFamily: string
+                }
+            }
+        },
+        operationsQuantityStatisticsChart: {
+            quantities: string,
+            inputQuantity: string,
+            outputQuantity: string,
+            title: string
+        },
+        IncomeStatisticsChart: {
+            income: string,
+            title: string
+        },
+        operationsQuantityStatisticsTable: {
+            days: string,
+            months: string,
+            inputQuantity: string,
+            outputQuantity: string,
+        },
+        incomeStatisticsTable: {
+            days: string,
+            months: string,
+            income: string
         }
     },
 };

@@ -12,7 +12,9 @@ const common: Common = {
         add: "Add",
         removeModification: "Remove modification",
         update: "Update",
-        close: "Close"
+        close: "Close",
+        search: "Search",
+        export: "Export"
     },
     labels: {
         noFilter: "No filter",
@@ -22,6 +24,20 @@ const common: Common = {
         ar: "Arabic",
         en: "English",
         fr: "French"
+    },
+    months: {
+        january: "January",
+        february: "February",
+        march: "March",
+        april: "April",
+        may: "May",
+        june: "June",
+        july: "July",
+        august: "August",
+        september: "September",
+        october: "October",
+        november: "November",
+        december: "December"
     },
     menu: {
         dashboard: "Dashboard",
@@ -45,7 +61,7 @@ const common: Common = {
         },
         administration: {
             index: "Administration",
-            userAccountsManagement: "User accounts management"
+            userAccountsManagement: "Users management"
         }
     },
     components: {
@@ -220,6 +236,63 @@ const common: Common = {
         fileDropzone: {
             message: "Drag a file here or click to upload",
             note: "File should not exceed {{limit}}mb"
+        },
+        operationsQuantityStatisticsForm: {
+            title: "Impoundment statistics for the year",
+            quantityDistributionBy: {
+                title: "Quantity distribution by",
+                options: {
+                    months: "Months",
+                    days: "Days"
+                }
+            },
+            filteringBy: {
+                title: "Filtering by",
+                options: {
+                    notSpecified: "Not specified",
+                    register: "Register",
+                    articleFamily: "Article family"
+                }
+            }
+        },
+        incomeStatisticsForm: {
+            title: "Income statistics from municipal seizures for the year",
+            incomeDistributionBy: {
+                title: "Income distribution by",
+                options: {
+                    months: "Months",
+                    days: "Days"
+                }
+            },
+            filteringBy: {
+                title: "Filtering by",
+                options: {
+                    notSpecified: "Not specified",
+                    register: "Register",
+                    articleFamily: "Article family"
+                }
+            }
+        },
+        operationsQuantityStatisticsChart: {
+            quantities: "Quantities",
+            inputQuantity: "Input quantity",
+            outputQuantity: "Output quantity",
+            title: "Impoundment statistics"
+        },
+        IncomeStatisticsChart: {
+            income: "Income",
+            title: "Income statistics from municipal seizures"
+        },
+        operationsQuantityStatisticsTable: {
+            days: "Days",
+            months: "Months",
+            inputQuantity: "Input quantity",
+            outputQuantity: "Output quantity",
+        },
+        incomeStatisticsTable: {
+            days: "Days",
+            months: "Months",
+            income: "Income",
         }
     }
 } as const;

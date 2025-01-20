@@ -7,3 +7,19 @@ export const ACTIONS_COLUMN_WIDTH = SINGLE_ACTION_COLUMN_WIDTH * 3
 
 export const AVATAR_COLUMN_WIDTH = 80
 export const LINE_SELECTION_COLUMN_WIDTH = 80
+export const EXPANDING_ROW_COLUMN_WIDTH = 60
+
+export const MONTHS = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december"
+] as const;
