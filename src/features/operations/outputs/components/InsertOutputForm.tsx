@@ -133,7 +133,7 @@ export default function InsertOutputForm({ input }: Props) {
             await wait(2000)
             await outputsService.createOutput(insertOutputDto)
             alertSuccess("New output created successfully!")
-            // navigate('/inputs-management')
+            navigate('/outputs-management')
         } catch (error) {
             console.log(error);
         } finally {
