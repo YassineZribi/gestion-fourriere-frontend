@@ -18,7 +18,7 @@ const root: Root = {
         }
     },
     userAccountsManagement: {
-        title: "إدارة حسابات المستخدمين"
+        title: "إدارة المستخدمين"
     },
     warehousesManagement: {
         title: "إدارة المستودعات"

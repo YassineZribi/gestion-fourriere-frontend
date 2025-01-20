@@ -9,7 +9,6 @@ import AppLoader from "./components/AppLoader"
 import NotFound from "./pages/NotFound/NotFound"
 import MyAccount from "./pages/MyAccount"
 import Dashboard from "./pages/Dashboard"
-import ChangePassword from "./pages/ChangePassword"
 import UserAccountsManagement from "./pages/UserAccountsManagement"
 import Institution from "./pages/Institution"
 import WarehousesManagement from "./pages/WarehousesManagement"
@@ -40,7 +39,7 @@ function App() {
           {["/my-account", "/my-account/:tab"].map(path => (
             <Route key={path} path={path} element={<MyAccount />} />
           ))}
-          <Route path="/user-accounts-management" element={<UserAccountsManagement />} />
+          <Route path="/users-management" element={<UserAccountsManagement />} />
           <Route path="/warehouses-management" element={<WarehousesManagement />} />
           <Route path="/registers-management" element={<RegistersManagement />} />
           <Route path="/sub-registers-management" element={<SubRegistersManagement />} />
