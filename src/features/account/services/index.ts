@@ -1,31 +1,21 @@
 import { PRIVATE_API } from "../../../lib/axios/api";
 import User from "../../../types/User";
-import { APPLICATION_JSON, MULTIPART_FORM_DATA } from "../../../utils/constants";
-import { UpdateProfileDto } from "../components/UpdateProfileForm";
+import { MULTIPART_FORM_DATA } from "../../../utils/constants";
 import ChangePasswordDto from "../types/ChangePasswordDto";
 
 class AccountService {
-    getProfile() {
-        return PRIVATE_API.get<User>("/account/profile")
+    baseUrl = "/account"
+
+    getProfile = () => {
+        return PRIVATE_API.get<User>(this.baseUrl + "/profile")
     }
 
-    updateProfile(updateProfileDto: UpdateProfileDto, photoFile: File | null) {
-        const formData = new FormData()
-        
-        // Convert the JSON object to a Blob with 'application/json' content type
-        var data = new Blob([JSON.stringify(updateProfileDto)], { type: APPLICATION_JSON });
-        
-        formData.append("data", data)
-        
-        if (photoFile) {
-            formData.append("media", photoFile)
-        }
-
-        return PRIVATE_API.patch<User>("/account/profile", formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
+    updateProfile = (formData: FormData) => {
+        return PRIVATE_API.patch<User>(this.baseUrl + "/profile", formData, { headers: { "Content-Type": MULTIPART_FORM_DATA } })
     }
 
-    changePassword(data: ChangePasswordDto) {
-        return PRIVATE_API.patch("/account/change-password", data)
+    changePassword = (data: ChangePasswordDto) => {
+        return PRIVATE_API.patch(this.baseUrl + "/change-password", data)
     }
 }
 

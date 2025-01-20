@@ -60,10 +60,19 @@ export default function UpdateProfileForm() {
             phoneNumber: values.dial_code + values.nationalPhoneNumber
         }
 
+        const formData = new FormData()
+        // formData.append("email", updateProfileDto.email)
+        formData.append("firstName", updateProfileDto.firstName)
+        formData.append("lastName", updateProfileDto.lastName)
+        formData.append("phoneNumber", updateProfileDto.phoneNumber)
+        if (photoFile !== null) {
+            formData.append("photoFile", photoFile)
+        }
+
         setIsSubmitting(true)
         try {
             await wait(2000)
-            const res = await accountService.updateProfile(updateProfileDto, photoFile)
+            const res = await accountService.updateProfile(formData)
             updateAuthenticatedUser(res.data)
             setPhotoFile(null)
             alertSuccess("Profile updated successfully!")
@@ -121,12 +130,14 @@ export default function UpdateProfileForm() {
                     label={tGlossary("user.firstName")}
                     placeholder={tGlossary("user.firstName")}
                     name="firstName"
+                    withAsterisk
                     {...form.getInputProps('firstName')}
                 />
                 <TextInput
                     label={tGlossary("user.lastName")}
                     placeholder={tGlossary("user.lastName")}
                     name="lastName"
+                    withAsterisk
                     {...form.getInputProps('lastName')}
                 />
             </SimpleGrid>
@@ -144,6 +155,7 @@ export default function UpdateProfileForm() {
                         label: tGlossary("user.phoneNumber"),
                         placeholder: tGlossary("user.phoneNumber"),
                         name: "nationalPhoneNumber",
+                        withAsterisk: true,
                         ...form.getInputProps('nationalPhoneNumber')
                     }}
                     combobox={{
