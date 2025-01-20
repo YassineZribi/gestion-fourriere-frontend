@@ -13,6 +13,8 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         setLoading(true)
         try {
             const res = await fetchFunction(searchParams.toString())
+            console.log(res.data);
+            
             setResponseData(res.data)
         } catch (err: any) {
             setError(err.message)
@@ -128,6 +130,10 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         return searchParams.get(key)
     } 
 
+    const getSearchParams = () => {
+        return searchParams
+    }
+
     const setPageParam = (pageNumber: number) => {
         searchParams.set("page", String(pageNumber))
         setSearchParams(searchParams)
@@ -206,6 +212,7 @@ export default function useFetchWithPagination<T>(fetchFunction: (criteria: stri
         hasAdvancedFilters,
         setPageParam,
         getSearchParam,
+        getSearchParams,
         getFilterParams,
         getAdvancedFilterParams,
         getSortList,
