@@ -4,12 +4,14 @@ import Header from './components/Header';
 import Navbar from './components/Navbar';
 import Main from './components/Main';
 import { ReactNode } from 'react';
+import useFetchRoles from '../../features/roles/hooks/useFetchRoles';
 
 interface Props {
   children: ReactNode
 }
 
 export default function InsideLayout({children}: Props) {
+  useFetchRoles()
   const [opened, { toggle }] = useDisclosure();
 
   return (
